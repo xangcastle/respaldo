@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block superior %}{% endblock %}
+{% block inferior %}
+<div class="container documento">
+	<div class="well pagina recibo">
+		<caption><h2 align="center" class="titulo">Cuadro de Resumen</h2></caption>
+		<h4 align="center" class="equipo">Periodo desde {{ periodo.fecha_inicial }} hasta {{ periodo.fecha_final }}</h4>
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>Area</th>
+					<th>Copias</th>
+					<th>Precio/Copia</th>
+					<th>Total</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for r in recibos %}
+				<tr>
+					<td>{{ r.equipo.area }}</td>
+					<td><div align="right">{{ r.total_copias }}</div></td>
+					<td>{{ r.precio_copia }}</td>
+					<td><div align="right">{{ r.total_dolares }}</div></td>
+				</tr>
+			{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="2"><h4 align="center">Sub Total </h4></td>
+					<td colspan="2"><h4 align="center">{{periodo.total_dolares}}</h4></td>
+				</tr>
+				<tr>
+					<td colspan="2"><h4 align="center">IVA </h4></td>
+					<td colspan="2"><h4 align="center">{{periodo.iva}}</h4></td>
+				</tr>
+				<tr>
+					<td colspan="2"><h4 align="center">Total </h4></td>
+					<td colspan="2"><h4 align="center">{{periodo.total}}</h4></td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+{% endblock %}

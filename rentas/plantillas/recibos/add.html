@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block titulo %} Equipo {{equipo.modelo}} {% endblock titulo %}
+{% block contenido %}
+<form class="form-horizontal" action="." method="POST" enctype="multipart/form-data">
+  <fieldset>
+    <legend>{{etiqueta}}</legend>
+	<div class="row">
+		<div class="span3">
+			{% csrf_token %}
+			{{ form.as_p}}
+		</div>
+		{% if areas %}
+		<div class="span7">
+			<table class="table table-hover table-bordered">
+		    	<thead>
+		                <tr>
+		                  <th>Codigo</th>
+		                  <th>Area</th>
+		                  <th>Encargado</th>
+		                  <th>Cantidad</th>
+		                </tr>
+		        </thead>
+		    {% for a in areas %}
+		     	<tbody>
+		     		<tr class="success">
+						<td>{{ a.codigo }}</td>
+						<td>{{ a.nombre }}</td>
+						<td>{{ a.responsable }}</td>
+						<td><input id="id_cantidad" name="cantidad" type="text-small" value="0"></td>
+					</tr>
+				</tbody>
+			{% endfor %}
+		    </table>
+		</div>
+		{% endif %}
+	</div>
+	<div align="center">
+		<button type="submit" class="btn btn-large btn-primary">Guardar</button>
+	</div>
+		</fieldset>
+	</form>
+{% endblock contenido %}

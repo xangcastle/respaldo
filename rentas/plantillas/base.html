@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+  <meta charset='utf-8'>
+  <title>{% block titulo %}Delta Copiers Team{% endblock titulo %}</title>
+  <link rel='stylesheet' type='text/css' href="{{ STATIC_URL }}css/bootstrap.min.css">
+  <link rel='stylesheet' type='text/css' href="{{ STATIC_URL }}css/bootstrap-responsive.min.css">
+  <link rel='stylesheet' type='text/css' href="{{ STATIC_URL }}css/estilo.css">
+</head>
+<body>
+{% block superior %}
+    <div  class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="{% url "principal" %}"> DeltaCopiers S.A. </a>
+            {% if user.is_authenticated %}
+            <p class="navbar-text pull-right">
+              Logged in as {{ user.username }}
+            </p>
+            {% endif %}
+            <ul class="nav">
+              <li><a href="{% url "equipos" %}">Equipos</a></li>
+              <li><a href="#">Recibos</a></li>
+              <li><a href="{% url "toners" %}">Cambio de Toner</a></li>
+              {% if user.is_authenticated %}
+			  <li><a href="/salir/"> Cerrar Sesion </a></li>
+		      {% else %}
+			  <li><a href="/entrar/"> Iniciar Sesion </a></li>
+		      {% endif %}
+        </div>
+      </div>
+    </div>
+{% endblock superior %}
+{% block inferior %}
+<div class="hero-unit">
+<div class="well">
+{% block contenido %}{% endblock contenido %}
+</div>
+</div>
+{% endblock inferior %}
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+</body>
+</html>

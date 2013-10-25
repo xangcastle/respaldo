@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% block titulo %} Recibo {{recibo.id}} {% endblock titulo %}
+{%block contenido %}
+<div class="row">
+	<div class="span1">
+		<div class="panel-default">Fecha Inicial</div>
+		<div class="label">Fecha Final  </div>
+		<div class="label">Contador Inicial  </div>
+		<div class="label">Contador Final  </div>
+	</div>
+	<div class="span1">
+		<div class="label">{{ recibo.periodo.fecha_inicial }}</div>
+		<div class="label">{{ recibo.periodo.fecha_final }}</div>
+		<div class="label">{{ recibo.contador_inicial }}</div>
+		<div class="label">{{ recibo.contador_final }}</div>
+	</div>
+<div class="span1 offset1">
+		<div class="label">Marca</div>
+		<div class="label">Modelo</div>
+		<div class="label">Valor Techo</div>
+	</div>
+	<div class="span4">
+		<div class="label">{{ recibo.equipo.marca }}</div>
+		<div class="label">{{ recibo.equipo.modelo }}</div>
+		<div class="label">{{ recibo.equipo.minimo }}</div>
+		          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">Panel title</h3>
+            </div>
+            <div class="panel-body">
+              Panel content
+            </div>
+          </div>
+	</div>
+</div>
+<div class="row">
+<!-- Button to trigger modal -->
+<a href="#myModal" role="button" class="btn" data-toggle="modal">Launch demo modal</a>
+ 
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Recibo Numero {{ recibo.id }}</h3>
+  </div>
+  <div class="modal-body">
+    {{ form }}
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Aceptar</button>
+  </div>
+</div>
+</div>
+{% endblock contenido %}

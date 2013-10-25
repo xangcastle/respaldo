@@ -1,0 +1,35 @@
+.container, .documento {
+	background-color: #000;
+}
+.recibo {
+	background-color: #ggg;
+	max-width: 215mm;
+	width: 215mm;
+	max-height: 279mm;
+	height: 279mm;
+}
+.recibo .titulo {
+	margin: 18px;
+	margin-top:3px;
+	font-family: serif;
+	font-size: 25px;
+}
+.recibo .equipo {
+	font-style: italic;
+	font-size: 14px;
+	margin: 15px;
+	margin-top: 17px;
+}
+table th, .table td{
+	padding: 3px;
+	padding-left: 10px;
+	width: 215px;
+}
+.recibo .label{
+	font-size: 12px;
+	background: none;
+	color: #000;
+}
+.recibo h6 {
+	margin: 5px;
+}

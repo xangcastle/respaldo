@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block contenido %}
+{% if equipos %}
+    <table class="table table-hover">
+    	<thead>
+                <tr>
+                  <th><h4 align="center">Area</h4></th>
+                  <th><h4 align="center">Marca</h4></th>
+                  <th><h4 align="center">Modelo</h4></th>
+                  <th><h4 align="center">Serie</h4></th>
+                  <th><h4 align="center">Dir IP</h4></th>
+                  <th><h4 align="center">Opciones</h4></th>
+                </tr>
+        </thead>
+    {% for e in equipos %}
+     	<tbody>
+     		<tr class="success">
+     			<td>{{ e.area }}</td>
+				<td>{{ e.marca }}</td>
+				<td>{{ e.modelo }}</td>
+				<td>{{ e.serie }}</td>
+				<td>{{ e.comentarios }}</td>
+				<td>
+					<div class="btn-group" align="center">
+						<a class="btn btn-mini btn-info" href="/rentas/recibo/{{e.id}}/" align="center"><i class="icon-edit"></i>   Recibo</a><
+						<a class="btn btn-mini btn-success" href="/rentas/toner/add/{{e.id}}/" align="center"><i class="icon-tint"></i>   Toner</a>
+						<a class="btn btn-mini btn-success" href="/rentas/recibo/add/{{e.id}}/" align="center"><i class="icon-th-list"></i>   Mantenimiento</a>
+						<a class="btn btn-mini btn-danger" href="/rentas/recibo/add/{{e.id}}/" align="center"><i class="icon-th-list"></i>   Desperfecto</a>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	{% endfor %}
+    </table>
+	{% else %}
+	{% if ban %}
+	<h3>Su busqueda no produjo resultados.</h3>
+	{% else %}
+	<h3>No existen equipos registrados.</h3>
+	{% endif %}
+{% endif %}
+
+{% endblock contenido %}
