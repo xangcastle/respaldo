@@ -28,13 +28,14 @@ class EquipoAdmin(admin.ModelAdmin):
 class UbicacionAdmin(admin.ModelAdmin):
     list_display = ('nombre','direccion')
     ordering = ('nombre',)
-    inlines = [Areainline]
+    #inlines = [Areainline]
     
 class ReciboAdmin(admin.ModelAdmin):
-    list_display = ('area','equipo','ubicacion','serie','copia_contador','copia_detalles','precio_copia','total_dolares')
+    list_display = ('area','ubicacion','equipo','contador_final','imprimir','precio_copia','total_dolares')
     list_filter = ('periodo',)
     ordering = ('equipo',)
     inlines = [DetalleInline]
+    list_editable = ('contador_final',)
     
 class MantenimientoAdmin(admin.ModelAdmin):
     list_display = ('fecha','equipo','tecnico','contador')
@@ -44,9 +45,23 @@ class MarcaAdmin(admin.ModelAdmin):
     inlines = [Equipoinline]
     
 class PeriodoAdmin(admin.ModelAdmin):
-    list_display = ('fecha_inicial','fecha_final','total_copias','total_dolares','cerrado')
+    list_display = ('fecha_inicial','fecha_final','total_copias','total_dolares','cerrado','cuadro')
     list_filter = ('cerrado',)
     inlines = [Reciboinline]
+    
+    
+    def save_model(self, request, obj, form, change):
+        obj.save()
+        equipos  = Equipo.objects.filter(activo=True)
+        for e in equipos:
+            r = Recibo()
+            r.periodo = obj
+            r.equipo = e
+            r.precio_copia = e.precio_copia
+            r.contador_inicial = e.contador
+            r.contador_final = e.contador
+            r.save()
+        obj.save()
     
 admin.site.register(Area,AreaAdmin)
 admin.site.register(Equipo,EquipoAdmin)

@@ -43,6 +43,7 @@ class Marca(models.Model):
         return self.nombre
 
 class Equipo(models.Model):
+    
     ubicacion   =   models.ForeignKey('Ubicacion',verbose_name="Ubicacion del Equipo",null=True,blank=True)
     marca       =   models.ForeignKey(Marca)
     modelo      =   models.CharField(max_length=50)
@@ -56,8 +57,9 @@ class Equipo(models.Model):
     comentarios =   models.CharField(max_length=400,null=True,blank=True)
     activo      =   models.BooleanField(default=True)
     consumibles =   models.ManyToManyField(Item,null=True,blank=True,through=Consumible)
+    
     def __unicode__(self):
-        return self.modelo + ' ' + self.serie
+        return self.modelo + ' - ' + self.serie
     def nombre_completo(self):
         return str(self.modelo) + '  -  ' + str(self.ubicacion)
     def area(self):
@@ -107,6 +109,11 @@ class Reemplazo(models.Model):
 
 
 class Periodo(models.Model):
+    
+    def cuadro(self):
+        return '<a href="/rentas/cuadro/%s">Cuadro</a>' % (self.id)
+    cuadro.allow_tags = True
+    
     fecha_inicial   =   models.DateField()
     fecha_final     =   models.DateField()
     cerrado         =   models.BooleanField()    
@@ -132,10 +139,16 @@ class Periodo(models.Model):
         return round((self.total_dolares() + self.iva()),2)
     
 class Recibo(models.Model):
+    
+    def imprimir(self):
+        return '<a class=\"btn btn-mini btn-info\" href=\"/rentas/recibo/%s/\" align=\"center\"><i class=\"icon-edit\"></i>   Imprimir</a>' % (self.id)
+    
+    imprimir.allow_tags = True
+    
     periodo         =   models.ForeignKey(Periodo)
     equipo          =   models.ForeignKey(Equipo)
     contador_inicial =  models.IntegerField()
-    contador_final =    models.IntegerField()
+    contador_final =    models.IntegerField(null=True)
     precio_copia    =   models.FloatField()
     def __unicode__(self):
         return self.equipo.modelo + ' fecha : ' + str(self.periodo.fecha_final)
@@ -183,7 +196,7 @@ class Area(models.Model):
     codigo = models.IntegerField(verbose_name='Unidad Ejecutora')
     equipo = models.ForeignKey(Equipo,verbose_name="Impresora por Defecto",null=True,blank=True)
     def __unicode__(self):
-        return self.nombre
+        return self.nombre + ' ' + self.responsable
     def get_direccion(self):
         u = self.ubicacion.direccion
         return u
