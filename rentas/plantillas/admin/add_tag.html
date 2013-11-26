@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% load admin_urls %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+    <p>{% blocktrans with escaped_object=object %}Estas Seguro de cambiar la {{ tag_name }} "{{ escaped_object }}"? All of the following related items will be deleted:{% endblocktrans %}</p>
+    <ul>{{ tag_list|unordered_list }}</ul>
+    <form action="" method="post">{% csrf_token %}
+    {{ tag_form }}
+    <div>
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="{% trans "Yes, I'm sure" %}" />
+    </div>
+    </form>
+{% endblock %}

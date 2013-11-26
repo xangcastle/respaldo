@@ -1,0 +1,48 @@
+{% extends "admin/change_form.html" %}
+
+{% block form_top %}
+  <p>Formulario para el Ingreso de Facturas...</p>
+{% endblock %}
+
+{% block escript %}
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="{{ STATIC_URL }}js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}css/ui.css"></script>
+	<script src="{{ STATIC_URL }}js/ui.js"></script>
+	<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}js/jsapi.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	    {% include 'autocomplete_light/static.html' %}
+    <script>
+	$(document).ready(function(){
+		
+		$('#id_nombre').focusin(function(){
+			
+				$.ajax({
+		                  type:"GET",
+		                  contentType:"application/json; charset=utf-8",
+		                  dateType:"json",
+		                  url:"{% url 'completarCliente' %}",
+		                  data: {id:$(".div .hilight").attr("data-value"),csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()},
+		                  success:function(response){
+		                  		if(response.nombre!='nada') {
+		                  			$('#id_nombre').val(response.nombre);
+		                  			$('#id_ident').val(response.identificacion);
+		                  			$('#id_telefono').val(response.telefono);
+		                  			$('#id_direccion').val(response.direccion);
+		                  		} else {
+		                  			$('#id_nombre').val('');
+		                        	$('#id_ident').val('');
+		                        	$('#id_telefono').val('');
+		                        	$('#id_direccion').val('');
+		                        }
+		                  }
+		        });
+			
+		});
+		
+
+		
+	});
+	</script>
+{% endblock %}
