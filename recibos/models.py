@@ -17,6 +17,7 @@ class UnidadMedida(models.Model):
     class Meta:
         verbose_name = "Unidad de Medida"
         verbose_name_plural = "Unidades de Medida"
+        ordering = ('nombre',)
     
 class Item(models.Model):
     no_parte    =   models.CharField(max_length=25, verbose_name="Numero de Parte")
@@ -80,7 +81,10 @@ class Equipo(models.Model):
             else:
                 a = self.ubicacion
         return a
-
+    
+    class Meta:
+        ordering = ('modelo',)
+    
 class AsistenciaTecnica(models.Model):
     fecha       =   models.DateField(auto_now=True)
     numero      =   models.IntegerField(verbose_name="Numero de Orden")
@@ -141,7 +145,7 @@ class Periodo(models.Model):
 class Recibo(models.Model):
     
     def imprimir(self):
-        return '<a class=\"btn btn-mini btn-info\" href=\"/rentas/recibo/%s/\" align=\"center\"><i class=\"icon-edit\"></i>   Imprimir</a>' % (self.id)
+        return '<a class="btn btn-mini btn-info" href="/rentas/recibo/%s/" align="center"><i class="icon-edit"></i>   Imprimir</a>' % (self.id)
     
     imprimir.allow_tags = True
     
@@ -150,8 +154,10 @@ class Recibo(models.Model):
     contador_inicial =  models.IntegerField()
     contador_final =    models.IntegerField(null=True)
     precio_copia    =   models.FloatField()
+    
     def __unicode__(self):
         return self.equipo.modelo + ' fecha : ' + str(self.periodo.fecha_final)
+    
     def detalles(self):
         d = Detalle.objects.filter(recibo=self)
         return d
@@ -201,6 +207,9 @@ class Area(models.Model):
         u = self.ubicacion.direccion
         return u
     direccion = property(get_direccion)
+    
+    class Meta:
+        ordering = ('nombre','responsable')
     
 class Detalle(models.Model):
     recibo = models.ForeignKey(Recibo)
