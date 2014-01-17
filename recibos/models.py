@@ -33,6 +33,9 @@ class Consumible(models.Model):
     item        =   models.ForeignKey(Item)
     cantidad    =   models.FloatField()
 
+    def __unicode__(self):
+        return self.item.nombre
+
 class Marca(models.Model):
     OPCIONES_TIPO = (
                      ('OR','FABRICANTE ORIGINAL'),
