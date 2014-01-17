@@ -120,8 +120,6 @@ class Reemplazo(models.Model):
     consumible  =   models.ForeignKey(Consumible)
     costo_consumible = models.FloatField()
     
-    def __unicode__(self):
-        return str(self.fecha)
     class Meta:
         verbose_name = 'Reemplazo de partes o consumibles'
         verbose_name_plural = 'Reemplazo de partes o consumibles'
