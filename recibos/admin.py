@@ -1,5 +1,5 @@
 from django.contrib import admin
-from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Consumible,Item,UnidadMedida
+from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Consumible,Item,UnidadMedida,AsistenciaTecnica
 
 
 class DetalleInline(admin.TabularInline):
@@ -63,6 +63,13 @@ class PeriodoAdmin(admin.ModelAdmin):
             r.save()
         obj.save()
     
+    
+class asistencia_tecnica_admin(admin.ModelAdmin):
+    exclude = ('numero','tecnico')
+    
+    def save_model(self, request, obj, form, change):
+        obj.tecnico = request.userr
+        obj.save()
 admin.site.register(Area,AreaAdmin)
 admin.site.register(Equipo,EquipoAdmin)
 admin.site.register(Periodo,PeriodoAdmin)
@@ -71,3 +78,4 @@ admin.site.register(Ubicacion,UbicacionAdmin)
 admin.site.register(Marca,MarcaAdmin)
 admin.site.register(Item)
 admin.site.register(UnidadMedida)
+admin.site.register(AsistenciaTecnica,asistencia_tecnica_admin)

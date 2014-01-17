@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Sum,Max
 from django.contrib.auth.models import User
 
 #############
@@ -91,7 +91,18 @@ class AsistenciaTecnica(models.Model):
     tecnico     =   models.ForeignKey(User)
     equipo      =   models.ForeignKey(Equipo)
     contador    =   models.IntegerField()
-    comentarios =   models.TextField(blank=True)    
+    comentarios =   models.TextField(blank=True)   
+    
+    def get_numero(self):
+        if AsistenciaTecnica.objects.all().count() > 0:
+            return AsistenciaTecnica.objects.all().aggregate(Max('numero'))['numero__max'] + 1
+        else:
+            return 1
+    
+    def save(self):
+        self.numero = self.get_numero()
+        super(AsistenciaTecnica,self).save()
+    
     def partes_usadas(self):
         return Reemplazo.objects.filter(asis_tec=self)    
     def costo_total(self):
