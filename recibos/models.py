@@ -116,12 +116,17 @@ class Reemplazo(models.Model):
     tecnico     =   models.ForeignKey(User)
     consumible  =   models.ForeignKey(Consumible)
     costo_consumible = models.FloatField()
+    
     def __unicode__(self):
         return str(self.fecha)
     class Meta:
         verbose_name = 'Reemplazo de partes o consumibles'
         verbose_name_plural = 'Reemplazo de partes o consumibles'
-
+        
+    def save(self):
+        self.equipo = self.asis_tec.equipo
+        self.tecnico = self.asis_tec.tecnico
+        super(Reemplazo,self).save()
 
 class Periodo(models.Model):
     
