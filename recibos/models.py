@@ -111,7 +111,7 @@ class AsistenciaTecnica(models.Model):
     def costo_total(self):
         return Reemplazo.objects.aggregate(costo=Sum('costo_consumible'))['costo']    
     def __unicode__(self):
-        return str(self.numero) + str(self.tecnico.name)
+        return str(self.numero) + str(self.tecnico.username)
 
 class Reemplazo(models.Model):
     asis_tec    =   models.ForeignKey(AsistenciaTecnica)
