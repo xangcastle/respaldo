@@ -51,17 +51,25 @@ class PeriodoAdmin(admin.ModelAdmin):
     
     
     def save_model(self, request, obj, form, change):
-        obj.save()
-        equipos  = Equipo.objects.filter(activo=True)
-        for e in equipos:
-            r = Recibo()
-            r.periodo = obj
-            r.equipo = e
-            r.precio_copia = e.precio_copia
-            r.contador_inicial = e.contador
-            r.contador_final = e.contador
-            r.save()
-        obj.save()
+        if not obj.id:
+            obj.save()
+            equipos  = Equipo.objects.filter(activo=True)
+            for e in equipos:
+                r = Recibo()
+                r.periodo = obj
+                r.equipo = e
+                r.precio_copia = e.precio_copia
+                r.contador_inicial = e.contador
+                r.contador_final = e.contador
+                r.save()
+            obj.save()
+            
+        if obj.cerrado == True:
+            recibos = Recibo.objects.filter(periodo=obj)
+            for r in recibos:
+                e = r.equipo
+                e.contador = r.contador_final
+                e.save()
     
 class partes(admin.TabularInline):
     model = Reemplazo
