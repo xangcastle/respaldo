@@ -70,6 +70,7 @@ class PeriodoAdmin(admin.ModelAdmin):
                 e = r.equipo
                 e.contador = r.contador_final
                 e.save()
+            obj.save()
     
 class partes(admin.TabularInline):
     model = Reemplazo
