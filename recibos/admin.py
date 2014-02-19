@@ -85,13 +85,16 @@ class asistencia_tecnica_admin(admin.ModelAdmin):
         obj.tecnico = request.user
         obj.save()
         
-        
+class item_admin(admin.ModelAdmin):
+    list_display = ('no_parte','nombre','duracion','costo')
+    
+
 admin.site.register(Area,AreaAdmin)
 admin.site.register(Equipo,EquipoAdmin)
 admin.site.register(Periodo,PeriodoAdmin)
 admin.site.register(Recibo,ReciboAdmin)
 admin.site.register(Ubicacion,UbicacionAdmin)
 admin.site.register(Marca,MarcaAdmin)
-admin.site.register(Item)
+admin.site.register(Item,item_admin)
 admin.site.register(UnidadMedida)
 admin.site.register(AsistenciaTecnica,asistencia_tecnica_admin)
