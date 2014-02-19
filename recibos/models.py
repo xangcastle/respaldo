@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.db.models import Sum,Max
 from django.contrib.auth.models import User
+from datetime import date, timedelta
 
 #############
 ###EQUIPOS###
@@ -172,6 +173,7 @@ class Periodo(models.Model):
             r.equipo = equipo
             r.contador_inicial = equipo.contador
             r.contador_final = equipo.contador
+            r.precio_copia = equipo.precio_copia
             r.save()
     
     def generar_recibos(self):
@@ -179,6 +181,11 @@ class Periodo(models.Model):
             self.crear_recibo(e)
             
     def cerrar(self):
+        ps = Periodo()
+        ps.fecha_inicial = self.fecha_final
+        ps.fecha_final = self.fecha_final + timedelta(days=30)
+        ps.cerrado = False
+        ps.save()
         for r in self.recibos():
             e = r.equipo
             e.contador = r.contador_final
