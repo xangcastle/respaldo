@@ -33,7 +33,7 @@ class UbicacionAdmin(admin.ModelAdmin):
     #inlines = [Areainline]
     
 class ReciboAdmin(admin.ModelAdmin):
-    list_display = ('area','equipo','contador_inicial','contador_final','total_copias','imprimir','precio_copia','total_dolares','copia_diferencia')
+    list_display = ('area','equipo','contador_inicial','contador_final','total_copias','copia_diferencia','imprimir')
     list_filter = ('periodo',)
     ordering = ('equipo',)
     inlines = [DetalleInline]
