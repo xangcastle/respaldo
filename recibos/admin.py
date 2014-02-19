@@ -48,7 +48,10 @@ class MarcaAdmin(admin.ModelAdmin):
     
 class PeriodoAdmin(admin.ModelAdmin):
     list_display = ('fecha_inicial','fecha_final','total_copias','total_dolares','cerrado','cuadro')
-    list_filter = ('cerrado',)
+    list_filter = (
+                   ('fecha_inicial',admin.DateFieldListFilter),
+                   ('cerrado'),
+                   )
     inlines = [Reciboinline]
     
     
