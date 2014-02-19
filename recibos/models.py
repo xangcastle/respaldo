@@ -243,7 +243,10 @@ class Recibo(models.Model):
         return self.equipo.ubicacion
     def area(self):
         return self.equipo.area()
-            
+    
+    class Meta:
+        ordering = ['equipo.ubicacion',]
+                
 class Ubicacion(models.Model):
     nombre      =   models.CharField(max_length=50)
     direccion   =   models.CharField(max_length=400)
