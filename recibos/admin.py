@@ -5,6 +5,7 @@ from resources import Item_resouce
 
 class DetalleInline(admin.TabularInline):
     model = Detalle
+    extra = 0
 class Equipoinline(admin.TabularInline):
     model = Equipo
 class Areainline(admin.TabularInline):
