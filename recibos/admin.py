@@ -1,6 +1,7 @@
 from django.contrib import admin
 from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Consumible,Item,UnidadMedida,AsistenciaTecnica,Reemplazo
-
+from import_export.admin import ImportExportModelAdmin
+from resources import Item_resouce
 
 class DetalleInline(admin.TabularInline):
     model = Detalle
@@ -83,11 +84,12 @@ class asistencia_tecnica_admin(admin.ModelAdmin):
     
     def save_model(self, request, obj, form, change):
         obj.tecnico = request.user
-        obj.save()
-        
-class item_admin(admin.ModelAdmin):
-    list_display = ('no_parte','nombre','duracion','costo')
+        obj.save()    
     
+class Item_admin(ImportExportModelAdmin,admin.ModelAdmin):
+    # resouce_class = Item_resouce
+    list_display = ('no_parte','nombre','duracion','costo')
+    search_fields = ('no_parte','nombre')
 
 admin.site.register(Area,AreaAdmin)
 admin.site.register(Equipo,EquipoAdmin)
@@ -95,6 +97,6 @@ admin.site.register(Periodo,PeriodoAdmin)
 admin.site.register(Recibo,ReciboAdmin)
 admin.site.register(Ubicacion,UbicacionAdmin)
 admin.site.register(Marca,MarcaAdmin)
-admin.site.register(Item,item_admin)
+admin.site.register(Item,Item_admin)
 admin.site.register(UnidadMedida)
 admin.site.register(AsistenciaTecnica,asistencia_tecnica_admin)
