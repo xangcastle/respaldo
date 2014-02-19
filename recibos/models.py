@@ -159,6 +159,37 @@ class Periodo(models.Model):
     def total(self):
         return round((self.total_dolares() + self.iva()),2)
     
+    def equipos_activos(self):
+        return Equipo.objects.filter(activo=True)
+    
+    def equipos_activos_sin_recibo(self):
+        return self.equipos_activos().exclude(id__in=self.recibos().values_list('equipo',flat=True))
+    
+    def crear_recibo(self,equipo):
+        if equipo:
+            r = Recibo()
+            r.periodo = self
+            r.equipo = equipo
+            r.contador_inicial = equipo.contador
+            r.contador_final = equipo.contador
+            r.save()
+    
+    def generar_recibos(self):
+        for e in self.equipos_activos_sin_recibo():
+            self.crear_recibo(e)
+            
+    def cerrar(self):
+        for r in self.recibos():
+            e = r.equipo
+            e.contador = r.contador_final
+            e.save()
+            
+    def save(self):
+        self.generar_recibos()
+        if self.cerrado == True:
+            self.cerrar()
+        super(Periodo,self).save()
+
 class Recibo(models.Model):
     
     def imprimir(self):
@@ -186,11 +217,20 @@ class Recibo(models.Model):
         return total
     def copia_contador(self):
         return self.contador_final - self.contador_inicial
+    
+    def copia_diferencia(self):
+        if self.detalles():
+            return self.copia_contador() - self.copia_detalles()
+        else:
+            return 0
+    copia_diferencia.short_description = "Inconsitencias en el contador"
+    
     def total_copias(self):
         if self.detalles():
             return self.copia_detalles()
         else:
             return self.copia_contador()
+        
     def total_dolares(self):
         return round((self.total_copias() * self.precio_copia),2)
     def serie(self):

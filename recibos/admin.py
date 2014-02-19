@@ -33,7 +33,7 @@ class UbicacionAdmin(admin.ModelAdmin):
     #inlines = [Areainline]
     
 class ReciboAdmin(admin.ModelAdmin):
-    list_display = ('area','equipo','contador_final','total_copias','imprimir','precio_copia','total_dolares')
+    list_display = ('area','equipo','contador_final','total_copias','imprimir','precio_copia','total_dolares','copia_diferencia')
     list_filter = ('periodo',)
     ordering = ('equipo',)
     inlines = [DetalleInline]
@@ -51,28 +51,6 @@ class PeriodoAdmin(admin.ModelAdmin):
     list_filter = ('cerrado',)
     inlines = [Reciboinline]
     
-    
-    def save_model(self, request, obj, form, change):
-        if not obj.id:
-            obj.save()
-            equipos  = Equipo.objects.filter(activo=True)
-            for e in equipos:
-                r = Recibo()
-                r.periodo = obj
-                r.equipo = e
-                r.precio_copia = e.precio_copia
-                r.contador_inicial = e.contador
-                r.contador_final = e.contador
-                r.save()
-            obj.save()
-            
-        if obj.cerrado == True:
-            recibos = Recibo.objects.filter(periodo=obj)
-            for r in recibos:
-                e = r.equipo
-                e.contador = r.contador_final
-                e.save()
-            obj.save()
     
 class partes(admin.TabularInline):
     model = Reemplazo
