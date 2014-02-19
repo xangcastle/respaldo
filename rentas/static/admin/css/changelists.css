@@ -235,6 +235,9 @@
 
 #changelist table input {
     margin: 0;
+	font-size: 11px;
+	padding: 2px;
+	text-align: center;
 }
 
 #changelist table tbody tr.selected {
