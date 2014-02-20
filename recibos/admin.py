@@ -51,6 +51,11 @@ class PeriodoAdmin(admin.ModelAdmin):
     list_filter = ('fecha_final','cerrado')
     inlines = [Reciboinline]
     
+    def save_model(self, request, obj, form, change):
+        obj.save()
+        obj.generar_recibos()
+        if obj.cerrado:
+            obj.cerrar()
     
 class partes(admin.TabularInline):
     model = Reemplazo

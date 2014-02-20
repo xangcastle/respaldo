@@ -185,12 +185,11 @@ class Periodo(models.Model):
             e = r.equipo
             e.contador = r.contador_final
             e.save()
-            
-    def save(self):
-        self.generar_recibos()
-        if self.cerrado==True:
-            self.cerrar()
-        super(Periodo,self).save()
+        ps = Periodo()
+        ps.fecha_inicial = self.fecha_final
+        ps.fecha_final = self.fecha_final + timedelta(days=30)
+        ps.cerrado = False
+        ps.save()
 
 class Recibo(models.Model):
     
