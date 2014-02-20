@@ -180,16 +180,20 @@ class Periodo(models.Model):
         for e in self.equipos_activos_sin_recibo():
             self.crear_recibo(e)
             
-    def cerrar(self):
-        for r in self.recibos():
-            e = r.equipo
-            e.contador = r.contador_final
-            e.save()
+    def abrir_periodo_siguiente(self):
         ps = Periodo()
         ps.fecha_inicial = self.fecha_final
         ps.fecha_final = self.fecha_final + timedelta(days=30)
         ps.cerrado = False
         ps.save()
+        ps.generar_recibos()
+        
+    def cerrar(self):
+        for r in self.recibos():
+            e = r.equipo
+            e.contador = r.contador_final
+            e.save()
+        self.abrir_periodo_siguiente()
 
 class Recibo(models.Model):
     

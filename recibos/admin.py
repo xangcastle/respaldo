@@ -49,7 +49,6 @@ class MarcaAdmin(admin.ModelAdmin):
 class PeriodoAdmin(admin.ModelAdmin):
     list_display = ('fecha_inicial','fecha_final','total_copias','total_dolares','cerrado','cuadro')
     list_filter = ('fecha_final','cerrado')
-    inlines = [Reciboinline]
     
     def save_model(self, request, obj, form, change):
         obj.save()
