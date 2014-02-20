@@ -192,10 +192,7 @@ class Periodo(models.Model):
             e.save()
             
     def save(self):
-        self.save()
         self.generar_recibos()
-        if self.cerrado == True:
-            self.cerrar()
         super(Periodo,self).save()
 
 class Recibo(models.Model):
