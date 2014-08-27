@@ -20,8 +20,10 @@
 
     {% if not is_popup %}
     <!-- Header -->
-    <div class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation" id="header">
+    
+    <div class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation" id="top-bar">
       <div class="container">
+          
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -29,45 +31,47 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#" id="site-name">MoneyCash</a>
+            <a class="navbar-brand" href="/admin">MoneyCash</a>
         </div>
-        <div class="navbar-collapse collapse" id="branding">
-        {% block branding %}
+          
+        <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
+              {% for app in apps %}
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ventas <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ app.name }}<b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="#">Clientes</a></li>
-                <li><a href="#">Productos</a></li>
-                <li><a href="#">Proformas</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Reporte Ventas</li>
-                <li><a href="#">Analisis de Clientes</a></li>
-                <li><a href="#">Analisis de Productos</a></li>
+                  {% for model in app %}
+                  {% if model.admin_url %}
+                <li><a href="{{ model.admin_url }}">{{ model.name }}</a></li>
+                  {% endif %}
+                  {% endfor %}
               </ul>
             </li>
-            {% endblock %}
+            {% endfor %}
           </ul>
-          {% if user.is_active and user.is_staff %}
-          <ul class="nav navbar-nav navbar-right" id="user-tools">
-            <li><a href="../navbar/">{% trans 'Welcome,' %}<strong>{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}</strong>.</a></li>
-            {% block userlinks %}
-                {% url 'django-admindocs-docroot' as docsroot %}
-                {% if docsroot %}
-                    <li><a href="{{ docsroot }}">{% trans 'Documentation' %}</a></li>
-                {% endif %}
-                {% if user.has_usable_password %}
-                <li><a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a></li>
-                {% endif %}
-                <li><a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a></li>
-            {% endblock %}
-            {% endif %}
-        	{% block nav-global %}{% endblock %}
+          <ul class="nav navbar-nav navbar-right">
+              {% if user.is_active and user.is_staff %}
+              <li class="dropdown">
+                  <a href="#">{% trans 'Welcome,' %}<strong>{% filter force_escape %}{% firstof user.get_short_name user.get_username %}{% endfilter %}</strong>.<b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                        {% block userlinks %}
+                        {% url 'django-admindocs-docroot' as docsroot %}
+                        {% if docsroot %}
+                            <li><a href="{{ docsroot }}">{% trans 'Documentation' %}</a></li>
+                        {% endif %}
+                        {% if user.has_usable_password %}
+                            <li><a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a></li>
+                        {% endif %}
+                            <li><a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a></li>
+                        {% endblock %}   
+                  </ul>
+              </li>
+               {% endif %}
           </ul>
         </div>
       </div>
     </div>
-    <!-- END Header -->
+    	<!-- END Header -->
     {% block breadcrumbs %}
     <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
