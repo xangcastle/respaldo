@@ -12,12 +12,9 @@
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
 </head>
 {% load i18n %}
-
-<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" style="background: url('{{ STATIC_URL }}imagenes/fondo.jpg')" class="wallpaper">
-
 <!-- Container -->
-<div id="container">
-
+<body class="container {% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" style="background: url('{{ STATIC_URL }}imagenes/fondo.jpg')" class="wallpaper">
+<div class="row">
     {% if not is_popup %}
     <!-- Header -->
     
@@ -71,7 +68,9 @@
         </div>
       </div>
     </div>
-    	<!-- END Header -->
+<!-- END Header -->
+</div>
+<div class="row">
     {% block breadcrumbs %}
     <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
@@ -100,11 +99,11 @@
         <br class="clear" />
     </div>
     <!-- END Content -->
-
-    {% block footer %}<div id="footer"></div>{% endblock %}
 </div>
-<!-- END Container -->
+    {% block footer %}<div id="footer"></div>{% endblock %}
+
+
 
 </body>
-
+<!-- END Container -->
 </html>
