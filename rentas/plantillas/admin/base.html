@@ -13,7 +13,7 @@
 </head>
 {% load i18n %}
 <!-- Container -->
-<body class="container {% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" style="background: url('{{ STATIC_URL }}imagenes/fondo.jpg')" class="wallpaper">
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" style="background: url('{{ STATIC_URL }}imagenes/fondo.jpg')" class="wallpaper">
 <div class="row">
     {% if not is_popup %}
     <!-- Header -->
