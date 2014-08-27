@@ -48,7 +48,7 @@ class Marca(models.Model):
         return self.nombre
 
 class Equipo(models.Model):
-    
+    #datos del equipo
     ubicacion   =   models.ForeignKey('Ubicacion',verbose_name="Ubicacion del Equipo",null=True,blank=True)
     marca       =   models.ForeignKey(Marca)
     modelo      =   models.CharField(max_length=50)
@@ -56,12 +56,16 @@ class Equipo(models.Model):
     contador    =   models.IntegerField(default=0)
     minimo      =   models.IntegerField(default=0)
     velocidad   =   models.IntegerField(verbose_name="Copias x Minuto")
+    #datos de facturacion
     papel       =   models.BooleanField(verbose_name="Incluye Papel")
     operador    =   models.BooleanField(verbose_name="Incluye Operador")
     precio_copia =  models.FloatField(verbose_name="Precio x Copias")
     comentarios =   models.CharField(max_length=400,null=True,blank=True)
     activo      =   models.BooleanField(default=True)
     consumibles =   models.ManyToManyField(Item,null=True,blank=True,through=Consumible)
+    #datos contables
+    costo = models.FloatField(null=True,blank=True)
+    vida_util = models.PositiveIntegerField(null=True,blank=True,help_text="vida util en cantidad de copias")
     
     def __unicode__(self):
         return self.modelo + ' - ' + self.serie
@@ -85,6 +89,12 @@ class Equipo(models.Model):
             else:
                 a = self.ubicacion
         return a
+    def valor_de_depreciacion(self):
+        if not self.costo or not self.vida_util:
+            return 0
+        else:
+            return self.costo / (self.vida_util - self.contador)
+    valor_de_depreciacion.allow_tags = True
     
     class Meta:
         ordering = ('modelo',)
