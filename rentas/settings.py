@@ -131,3 +131,8 @@ LOGGING = {
 
 import dj_database_url
 DATABASES['default'] = dj_database_url.config()
+import django.conf.global_settings as DEFAULT_SETTINGS
+
+CUSTOM_PROCESSORS = ('rentas.easy_processors.applist',)
+
+TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + CUSTOM_PROCESSORS
