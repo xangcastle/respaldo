@@ -93,7 +93,7 @@ class Equipo(models.Model):
         if not self.costo or not self.vida_util:
             return 0
         else:
-            return self.costo / (self.vida_util - self.contador)
+            return round(self.costo / (self.vida_util - self.contador),4)
     valor_de_depreciacion.allow_tags = True
     
     class Meta:
