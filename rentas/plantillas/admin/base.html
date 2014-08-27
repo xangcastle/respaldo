@@ -41,9 +41,9 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ app.name }}<b class="caret"></b></a>
               <ul class="dropdown-menu">
                   {% for model in app %}
-                  {% if model.admin_url %}
+                  
                 <li><a href="{{ model.admin_url }}">{{ model.name }}</a></li>
-                  {% endif %}
+                  
                   {% endfor %}
               </ul>
             </li>
