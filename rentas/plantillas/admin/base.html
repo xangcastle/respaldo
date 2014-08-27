@@ -14,8 +14,8 @@
 {% load i18n %}
 <!-- Container -->
 <body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" style="background: url('{{ STATIC_URL }}imagenes/fondo.jpg')" class="wallpaper">
+{% if not is_popup %}
 <div class="row" id="row_navbar">
-    {% if not is_popup %}
     <!-- Header -->
     
     <div class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation" id="top-bar">
@@ -70,15 +70,8 @@
     </div>
 <!-- END Header -->
 </div>
+{% endif %}
 <div class="row">
-    {% block breadcrumbs %}
-    <div class="breadcrumbs">
-    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-    {% if title %} &rsaquo; {{ title }}{% endif %}
-    </div>
-    {% endblock %}
-    {% endif %}
-
     {% block messages %}
         {% if messages %}
         <ul class="messagelist">{% for message in messages %}
