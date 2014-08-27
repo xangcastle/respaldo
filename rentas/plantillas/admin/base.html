@@ -14,7 +14,7 @@
 {% load i18n %}
 <!-- Container -->
 <body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" style="background: url('{{ STATIC_URL }}imagenes/fondo.jpg')" class="wallpaper">
-<div class="row">
+<div class="row" id="row_navbar">
     {% if not is_popup %}
     <!-- Header -->
     
