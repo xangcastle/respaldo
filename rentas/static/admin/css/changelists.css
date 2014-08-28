@@ -1,8 +1,9 @@
 /* CHANGELISTS */
 
 #changelist {
-    position: relative;
+    /*position: relative;*/
     width: 100%;
+    overflow: auto;
 }
 
 #changelist table {
@@ -110,7 +111,8 @@
     /*width: 160px;*/
     border-left: 1px solid #ddd;
     background: #efefef;
-    margin: 5px;
+    margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 #changelist-filter h2 {
