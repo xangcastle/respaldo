@@ -86,8 +86,12 @@
 			{% block filters %}
 			{% if cl.has_filters %}
 			<div id="changelist-filter">
-			<h2>{% trans 'Filter' %}</h2>
-			{% for spec in cl.filter_specs %}{% admin_list_filter cl spec %}{% endfor %}
+				<h2>{% trans 'Filter' %}</h2>
+				{% for spec in cl.filter_specs %}
+					<div id="filter">
+						{% admin_list_filter cl spec %}
+					</div>
+				{% endfor %}
 			</div>
 			{% endif %}
 			{% endblock %}
