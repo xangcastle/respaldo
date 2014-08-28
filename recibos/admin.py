@@ -26,7 +26,7 @@ class EquipoAdmin(admin.ModelAdmin):
     list_filter = ('ubicacion','activo')
     search_fields = ('modelo','serie')
     inlines = [Consumibleinline]
-    list_editable = ()
+    list_editable = ('contador','costo','vida_util')
 class UbicacionAdmin(admin.ModelAdmin):
     list_display = ('nombre','direccion')
     ordering = ('nombre',)
