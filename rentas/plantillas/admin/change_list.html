@@ -51,6 +51,8 @@
 
 {% block content %}
   <div id="content-main">
+  
+  <div class="row">
     {% block object-tools %}
       {% if has_add_permission %}
         <ul class="object-tools">
@@ -64,12 +66,16 @@
         </ul>
       {% endif %}
     {% endblock %}
+    </div>
+    <div class="row">
     {% if cl.formset.errors %}
         <p class="errornote">
         {% blocktrans count cl.formset.errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
         </p>
         {{ cl.formset.non_form_errors }}
     {% endif %}
+     </div>
+     <div class="row">
     <div class="module{% if cl.has_filters %} filtered{% endif %}" id="changelist">
       {% block search %}{% search_form cl %}{% endblock %}
       {% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}
@@ -82,7 +88,8 @@
           </div>
         {% endif %}
       {% endblock %}
-
+      </div>
+<div class="row">
       <form id="changelist-form" action="" method="post"{% if cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %}>{% csrf_token %}
       {% if cl.formset %}
         <div>{{ cl.formset.management_form }}</div>
@@ -95,6 +102,7 @@
       {% endblock %}
       {% block pagination %}{% pagination cl %}{% endblock %}
       </form>
+      </div>
     </div>
   </div>
 {% endblock %}
