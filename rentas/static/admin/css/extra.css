@@ -1,3 +1,7 @@
 #row_navbar {
 	margin-bottom: 50px;
 }
+#message {
+	margin: 0;
+	padding: 2px;
+}
