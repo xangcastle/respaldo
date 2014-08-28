@@ -93,8 +93,15 @@ class Equipo(models.Model):
         if not self.costo or not self.vida_util:
             return 0
         else:
-            return round(self.costo / (self.vida_util - self.contador),4)
+            return round(self.costo / (self.vida_util),4)
     valor_de_depreciacion.allow_tags = True
+    def valor_actual(self):
+        if not self.costo or not self.vida_util:
+            return 0
+        else:
+            return round((self.vida_util - self.contador) * self.valor_de_depreciacion(),4)
+        
+    valor_actual.allowtags = True
     
     class Meta:
         ordering = ('modelo',)

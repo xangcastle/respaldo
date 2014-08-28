@@ -22,7 +22,7 @@ class AreaAdmin(admin.ModelAdmin):
     search_fields = ('nombre','responsable')
 
 class EquipoAdmin(admin.ModelAdmin):
-    list_display = ('modelo','serie','contador','costo','vida_util','area','comentarios','valor_de_depreciacion','activo')
+    list_display = ('modelo','area','contador','costo','vida_util','valor_de_depreciacion','comentarios','valor_actual','activo')
     list_filter = ('ubicacion','activo')
     search_fields = ('modelo','serie')
     inlines = [Consumibleinline]
