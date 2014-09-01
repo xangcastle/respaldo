@@ -525,17 +525,18 @@ input[type=text], input[type=password], textarea, select, .vTextField {
 	color: rgba(0, 0, 0, 0.87);
 	box-shadow: 35px 35px 35px;
 	border-radius: 30px;
-	width: 200px;
-	height: 200px;
+	width: 255px;
+	height: 255px;
 	background-color: rgba(0, 43, 3, 1);
 	background-image: linear-gradient(to bottom,#198000,rgba(13, 160, 0, 0));
 	border: 10px;
 	border-style: ridge;
 	border-color: #096D00;
 	display: inline-block;
-	margin-left: 2%;
-	margin-bottom: 2%;
+	margin-left: 5px;
+	margin-bottom: 5px;
 	overflow-y: auto;
+	padding: 5px;
 }
 
 .desktop .module p, .desktop .module ul, .desktop .module h3, .desktop .module h4, .desktop .module dl, .desktop .module pre {
@@ -708,8 +709,8 @@ a.deletelink:hover {
     padding-left: 0;
     float: right;
     position: relative;
-    margin-top: -2.4em;
-    margin-bottom: -2em;
+    margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 .form-row .object-tools {
