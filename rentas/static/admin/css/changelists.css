@@ -91,6 +91,7 @@
 #changelist #toolbar form input {
     font-size: 11px;
     padding: 1px 2px;
+    height: 32px;
 }
 
 #changelist #toolbar form #searchbar {
@@ -295,4 +296,6 @@
 #changelist .actions .button {
     font-size: 11px;
     padding: 1px 2px;
+	height: 32px;
+	width: 50px;
 }
