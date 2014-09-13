@@ -3,7 +3,7 @@ from django import template
 
 register = template.Library()
 
-@register.simple_tag
+@register.tag
 def get_estadisticas():
     recibos = Recibo.objects.filter(periodo__in=Periodo.objects.filter(cerrado=False))
     if recibos:
