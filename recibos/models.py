@@ -19,7 +19,7 @@ class UnidadMedida(models.Model):
         verbose_name = "Unidad de Medida"
         verbose_name_plural = "Unidades de Medida"
         ordering = ('nombre',)
-    
+
 class Item(models.Model):
     no_parte    =   models.CharField(max_length=25, verbose_name="Numero de Parte")
     nombre      =   models.CharField(max_length=200, verbose_name="Consumible o Repuesto")
@@ -66,7 +66,7 @@ class Equipo(models.Model):
     #datos contables
     costo = models.FloatField(null=True,blank=True)
     vida_util = models.PositiveIntegerField(null=True,blank=True,help_text="vida util en cantidad de copias")
-    
+
     def __unicode__(self):
         return self.modelo + ' - ' + self.serie
     def nombre_completo(self):
@@ -100,34 +100,34 @@ class Equipo(models.Model):
             return 0
         else:
             return round((self.vida_util - self.contador) * self.valor_de_depreciacion(),4)
-        
+
     valor_actual.allowtags = True
-    
+
     class Meta:
         ordering = ('modelo',)
-    
+
 class AsistenciaTecnica(models.Model):
     fecha       =   models.DateField(auto_now=True)
     numero      =   models.IntegerField(verbose_name="Numero de Orden")
     tecnico     =   models.ForeignKey(User)
     equipo      =   models.ForeignKey(Equipo)
     contador    =   models.IntegerField()
-    comentarios =   models.TextField(blank=True)   
-    
+    comentarios =   models.TextField(blank=True)
+
     def get_numero(self):
         if AsistenciaTecnica.objects.all().count() > 0:
             return AsistenciaTecnica.objects.all().aggregate(Max('numero'))['numero__max'] + 1
         else:
             return 1
-    
+
     def save(self):
         self.numero = self.get_numero()
         super(AsistenciaTecnica,self).save()
-    
+
     def partes_usadas(self):
-        return Reemplazo.objects.filter(asis_tec=self)    
+        return Reemplazo.objects.filter(asis_tec=self)
     def costo_total(self):
-        return Reemplazo.objects.aggregate(costo=Sum('costo_consumible'))['costo']    
+        return Reemplazo.objects.aggregate(costo=Sum('costo_consumible'))['costo']
     def __unicode__(self):
         return str(self.numero) + str(self.tecnico.username)
 
@@ -137,25 +137,28 @@ class Reemplazo(models.Model):
     tecnico     =   models.ForeignKey(User)
     consumible  =   models.ForeignKey(Consumible)
     costo_consumible = models.FloatField()
-    
+
     class Meta:
         verbose_name = 'Reemplazo de partes o consumibles'
         verbose_name_plural = 'Reemplazo de partes o consumibles'
-        
+
     def save(self):
         self.equipo = self.asis_tec.equipo
         self.tecnico = self.asis_tec.tecnico
         super(Reemplazo,self).save()
 
 class Periodo(models.Model):
-    
+
     def cuadro(self):
         return '<a href="/rentas/cuadro/%s">Cuadro</a>' % (self.id)
     cuadro.allow_tags = True
-    
+
     fecha_inicial   =   models.DateField()
     fecha_final     =   models.DateField()
-    cerrado         =   models.BooleanField()    
+    cerrado         =   models.BooleanField()
+
+    class Meta:
+        ordering = ('fecha_inicial',)
     def __unicode__(self):
         return 'Desde ' + str(self.fecha_inicial) + ' hasta ' + str(self.fecha_final)
     def recibos(self):
@@ -176,13 +179,13 @@ class Periodo(models.Model):
         return round((self.total_dolares() * 0.15),2)
     def total(self):
         return round((self.total_dolares() + self.iva()),2)
-    
+
     def equipos_activos(self):
         return Equipo.objects.filter(activo=True)
-    
+
     def equipos_activos_sin_recibo(self):
         return self.equipos_activos().exclude(id__in=self.recibos().values_list('equipo',flat=True))
-    
+
     def crear_recibo(self,equipo):
         if equipo:
             r = Recibo()
@@ -192,11 +195,11 @@ class Periodo(models.Model):
             r.contador_final = equipo.contador
             r.precio_copia = equipo.precio_copia
             r.save()
-    
+
     def generar_recibos(self):
         for e in self.equipos_activos_sin_recibo():
             self.crear_recibo(e)
-            
+
     def abrir_periodo_siguiente(self):
         ps = Periodo()
         ps.fecha_inicial = self.fecha_final
@@ -204,7 +207,7 @@ class Periodo(models.Model):
         ps.cerrado = False
         ps.save()
         ps.generar_recibos()
-        
+
     def cerrar(self):
         for r in self.recibos():
             e = r.equipo
@@ -213,21 +216,21 @@ class Periodo(models.Model):
         self.abrir_periodo_siguiente()
 
 class Recibo(models.Model):
-    
+
     def imprimir(self):
         return '<a class="btn btn-mini btn-info" href="/rentas/recibo/%s/" align="center"><i class="icon-edit"></i>   Imprimir</a>' % (self.id)
-    
+
     imprimir.allow_tags = True
-    
+
     periodo         =   models.ForeignKey(Periodo)
     equipo          =   models.ForeignKey(Equipo)
     contador_inicial =  models.IntegerField()
     contador_final =    models.IntegerField(null=True)
     precio_copia    =   models.FloatField()
-    
+
     def __unicode__(self):
         return self.equipo.modelo + ' fecha : ' + str(self.periodo.fecha_final)
-    
+
     def detalles(self):
         d = Detalle.objects.filter(recibo=self)
         return d
@@ -239,20 +242,20 @@ class Recibo(models.Model):
         return total
     def copia_contador(self):
         return self.contador_final - self.contador_inicial
-    
+
     def copia_diferencia(self):
         if self.detalles():
             return self.copia_contador() - self.copia_detalles()
         else:
             return 0
     copia_diferencia.short_description = "Inconsitencias en el contador"
-    
+
     def total_copias(self):
         if self.detalles():
             return self.copia_detalles()
         else:
             return self.copia_contador()
-        
+
     def total_dolares(self):
         return round((self.total_copias() * self.precio_copia),2)
     def serie(self):
@@ -265,7 +268,7 @@ class Recibo(models.Model):
         return self.equipo.ubicacion
     def area(self):
         return self.equipo.area()
-            
+
 class Ubicacion(models.Model):
     nombre      =   models.CharField(max_length=50)
     direccion   =   models.CharField(max_length=400)
@@ -273,7 +276,7 @@ class Ubicacion(models.Model):
         return self.nombre
     class Meta:
         verbose_name_plural = "Ubicaciones"
-    
+
 class Area(models.Model):
     ubicacion = models.ForeignKey(Ubicacion)
     nombre = models.CharField(max_length=50,verbose_name="Area")
@@ -286,23 +289,23 @@ class Area(models.Model):
         u = self.ubicacion.direccion
         return u
     direccion = property(get_direccion)
-    
+
     class Meta:
         ordering = ('nombre','responsable')
-    
+
 class Detalle(models.Model):
     recibo = models.ForeignKey(Recibo)
     area = models.ForeignKey(Area)
     cantidad =  models.IntegerField()
-    
+
     class Meta:
         verbose_name = "Area"
         verbose_name_plural = "Detalles por Area"
 
-    
-    
 
-    
 
-        
+
+
+
+
 
