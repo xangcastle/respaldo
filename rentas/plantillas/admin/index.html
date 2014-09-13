@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static %}
-{% load modulo %}
+
 
 
 
@@ -77,10 +77,9 @@
 </div>
 
 <div class="module">
-	{% get_estadisticas as recibos %}
-	{% for r in recibos %}
-		r.total_copias
-	{% endfor %}
+	{% load modulo %}
+	{% get_estadisticas %}
+	
 </div>
 
 {% endblock %}
