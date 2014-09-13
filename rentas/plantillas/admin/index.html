@@ -1,5 +1,8 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static %}
+{% load modulo %}
+
+
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
 
@@ -72,6 +75,14 @@
             {% endif %}
     </div>
 </div>
+
+<div class="module">
+	{% get_estadisticas as recibos %}
+	{% for r in recibos %}
+		r.total_copias
+	{% endfor %}
+</div>
+
 {% endblock %}
 
 {% block sidebar %}
