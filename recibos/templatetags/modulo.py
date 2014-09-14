@@ -21,10 +21,11 @@ def get_estadisticas(parser, token):
             {% get_estadisticas as [varname]%}
     """
     tokens = token.contents.split()
+    args = len(tokens)
     
     if not len(tokens) == 2:
         raise template.TemplateSyntaxError(
-            "'get_estadisticas' requiere de dos argumentos")
+            "'get_estadisticas' requiere de dos argumentos y se dieron %s" % (args))
     if not tokens[2]=='as':
         raise template.TemplateSyntaxError(
             "'get_estadisticas' requiere que el primer argumento se 'as'")
