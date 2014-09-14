@@ -1,9 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static %}
 
-
-
-
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
@@ -14,39 +11,6 @@
 
 {% block content %}
 <div id="content-main" class="desktop">
-
-{% if app_list %}
-    {% for app in app_list %}
-    <div class="module">
-        <table>
-        <caption>
-            <a href="{{ app.app_url }}" class="section" title="{% blocktrans with name=app.name %}Models in the {{ name }} application{% endblocktrans %}">
-                {% blocktrans with name=app.name %}{{ name }}{% endblocktrans %}
-            </a>
-        </caption>
-        {% for model in app.models %}
-            <tr>
-            {% if model.admin_url %}
-                <th scope="row"><a href="{{ model.admin_url }}">{{ model.name }}</a></th>
-            {% else %}
-                <th scope="row">{{ model.name }}</th>
-            {% endif %}
-
-            {% if model.add_url %}
-                <td><a href="{{ model.add_url }}" class="addlink">{% trans 'Add' %}</a></td>
-            {% else %}
-                <td>&nbsp;</td>
-            {% endif %}
-            
-            </tr>
-        {% endfor %}
-        </table>
-        </div>
-        
-    {% endfor %}
-{% else %}
-    <p>{% trans "You don't have permission to edit anything." %}</p>
-{% endif %}
 <div class="module" id="recent-actions-module">
         <h2>{% trans 'Recent Actions' %}</h2>
         <h3>{% trans 'My Actions' %}</h3>
@@ -89,8 +53,8 @@
 	<tbody>
 	{% for r in recibos %}
 		<tr>
-			<td>{{ r.area }}</td>
-			<td>{{ r.total_copias }}</td>
+			<td><a href="/admin/recibo/r.id">{{ r.area }}</a></td>
+			<td><a href="/admin/recibo/r.id">{{ r.total_copias }}</a></td>
 		</tr>
 	{% endfor %}
 	</tbody>
