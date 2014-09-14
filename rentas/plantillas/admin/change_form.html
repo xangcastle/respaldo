@@ -7,28 +7,22 @@
 {{ media }}
 {% endblock %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />{% endblock %}
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+{% endblock %}
 
 {% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
 
 {% block bodyclass %}{{ opts.app_label }}-{{ opts.object_name.lower }} change-form{% endblock %}
 
-{% if not is_popup %}
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-<a class="btn" href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-<a class="btn" href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ app_label|capfirst|escape }}</a>
-{% if has_change_permission %}<a class="btn" href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>{% else %}{{ opts.verbose_name_plural|capfirst }}{% endif %}
-<a class="btn">{% if add %}{% trans 'Add' %} {{ opts.verbose_name }}{% else %}{{ original|truncatewords:"18" }}{% endif %}</a>
-</div>
-{% endblock %}
-{% endif %}
 
-{% block content %}<div id="content-main">
+{% block content %}
+<div id="content-main">
 {% block object-tools %}
 {% if change %}{% if not is_popup %}
+<div class="row">
   <ul class="object-tools">
-  	<li><a class="viewsitelink">Prueba</a></li>
     {% block object-tools-items %}
     <li><a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="historylink">{% trans "History" %}</a></li>
     {% if has_absolute_url %}
@@ -36,10 +30,11 @@
     {% endif%}
     {% endblock %}
   </ul>
+</div> 
 {% endif %}{% endif %}
 {% endblock %}
-<form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
-<div>
+<div class="row"><form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% csrf_token %}{% block form_top %}{% endblock %}
+
 {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
 {% if save_on_top %}{% block submit_buttons_top %}{% submit_row %}{% endblock %}{% endif %}
 {% if errors %}
@@ -74,6 +69,6 @@
 {# JavaScript for prepopulated fields #}
 {% prepopulated_fields_js %}
 
-</div>
 </form></div>
+</div>
 {% endblock %}

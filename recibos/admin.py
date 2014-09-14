@@ -37,6 +37,7 @@ class ReciboAdmin(admin.ModelAdmin):
     ordering = ('equipo',)
     inlines = [DetalleInline]
     list_editable = ('contador_inicial','contador_final',)
+    fields = (('periodo','equipo'),('contador_inicial','contador_final'),'precio_copia')
     
 class MantenimientoAdmin(admin.ModelAdmin):
     list_display = ('fecha','equipo','tecnico','contador')
