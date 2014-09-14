@@ -23,7 +23,7 @@ def get_estadisticas(parser, token):
     tokens = token.contents.split()
     args = len(tokens)
     
-    if not len(tokens) == 2:
+    if not len(tokens) == 3:
         raise template.TemplateSyntaxError(
             "'get_estadisticas' requiere de dos argumentos y se dieron %s" % (args))
     if not tokens[2]=='as':
