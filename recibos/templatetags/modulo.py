@@ -5,7 +5,7 @@ register = template.Library()
 
 class estadisticasNode(template.Node):
     def __init__(self, varname):
-        self.varname
+        self.varname = varname
 
     def __repr__(self):
         return "<GetEstadisticas Node>"
