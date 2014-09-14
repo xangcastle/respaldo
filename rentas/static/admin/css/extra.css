@@ -1,6 +1,46 @@
 #row_navbar {
 	margin-bottom: 50px;
 }
+.navbar-inverse {
+background-color: rgba(34, 34, 34, 0.83);
+border-color: #080808;
+}
+#system_tittle {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 22px;
+  font-weight: bold;
+  color: white;
+}
+#system_tittle:hover {
+  color: yellow;
+}
+.navbar-inverse .navbar-brand,
+.navbar-inverse .navbar-nav > li > a {
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-nav > li > a:hover {
+  color: yellow;
+}
+.dropdown-menu {
+  background-color: #080808;
+}
+.dropdown-menu>li>a {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  white-space: nowrap;
+  background-color: #080808;
+  color: white;
+}
+.dropdown-menu>li>a:hover {
+  color: yellow;
+  background-color: #080808;
+}
 #content_title {
 	margin: 0;
 	padding: 5px;

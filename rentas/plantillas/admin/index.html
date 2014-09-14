@@ -19,28 +19,39 @@
 	            {% if not admin_log %}
 	            <p>{% trans 'None available' %}</p>
 	            {% else %}
-	            <ul class="actionlist">
+	            <table class="table-hover">
+                    <thead>
+                        <th>Accion</th>
+                    </thead>
+                    <tbody>
 	            {% for entry in admin_log %}
-	            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
-	                {% if entry.is_deletion or not entry.get_admin_url %}
-	                    {{ entry.object_repr }}
-	                {% else %}
-	                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
-	                {% endif %}
-	                <br/>
-	                {% if entry.content_type %}
-	                    <span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
-	                {% else %}
-	                    <span class="mini quiet">{% trans 'Unknown content' %}</span>
-	                {% endif %}
-            </li>
+                        <tr>
+                            <td>
+                            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                                {% if entry.is_deletion or not entry.get_admin_url %}
+                                    {{ entry.object_repr }}
+                                {% else %}
+                                    <a href="{{ entry.get_admin_url }}">
+                                        {% if entry.content_type %}
+                                            {% filter capfirst %}{% trans entry.content_type.name  %}{% endfilter %}
+                                        {% else %}
+                                            {% trans 'Unknown content ' %}
+                                        {% endif %}
+                                            ' {{ entry.object_repr }}'
+                                    </a>
+                                {% endif %}
+                            </li>
+                            </td>
+                        <tr>
+                    <tbody>
             {% endfor %}
-            </ul>
+            </table>
             {% endif %}
 	</div>
 
 <div class="module">
 	<h2>Estadisticas</h2>
+    <h3>Areas</h3>
 	{% load modulo %}
 	{% get_estadisticas as recibos %}
 	<table class="table-hover">
@@ -58,7 +69,7 @@
 		</tr>
 	{% endfor %}
 	</tbody>
-	
+
 	</table>
 </div>
 
@@ -68,6 +79,6 @@
 
 {% block sidebar %}
 <div id="content-related">
-    
+
 </div>
 {% endblock %}
