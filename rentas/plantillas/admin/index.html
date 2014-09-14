@@ -53,10 +53,8 @@
 	<tbody>
 	{% for r in recibos %}
 		<tr>
-			<a href="/admin/recibos/recibo/{{ r.id }}">
-				<td>{{ r.area }</td>
-				<td>{{ r.total_copias }}</td>
-			</a>
+			<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.area }}</a></td>
+			<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.total_copias }}</a></td>
 		</tr>
 	{% endfor %}
 	</tbody>
