@@ -81,7 +81,7 @@
 	{% get_estadisticas as recibos %}
 	<ul>
 	{% for r in recibos %}
-		<li>{{r.equipo }} {{ r.area }} {{ r.total_copias }}</li>
+		<li>{{ r.area }} {{ r.total_copias }}</li>
 	{% endfor %}
 	</ul>
 </div>
