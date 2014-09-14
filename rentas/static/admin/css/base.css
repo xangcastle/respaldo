@@ -527,11 +527,11 @@ input[type=text], input[type=password], textarea, select, .vTextField {
 	border-radius: 30px;
 	width: 255px;
 	height: 255px;
-	background-color: rgba(0, 43, 3, 1);
-	background-image: linear-gradient(to bottom,#198000,rgba(13, 160, 0, 0));
+	background-color: rgba(241, 241, 9, 1);
+	background-image: linear-gradient(to bottom,#8B9110,rgba(13, 160, 0, 0));
 	border: 10px;
 	border-style: ridge;
-	border-color: #096D00;
+	border-color: #DCE761;
 	display: inline-block;
 	margin-left: 5px;
 	margin-bottom: 5px;
