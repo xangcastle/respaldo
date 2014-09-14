@@ -79,6 +79,9 @@
 <div class="module">
 	{% load modulo %}
 	{% get_estadisticas as recibos %}
+	{% for r in recibos %}
+		{{ r.total_copias }}
+	{% endfor %}
 	
 </div>
 
