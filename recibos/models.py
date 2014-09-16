@@ -158,7 +158,7 @@ class Periodo(models.Model):
     cerrado         =   models.BooleanField()
 
     class Meta:
-        ordering = ('fecha_inicial',)
+        ordering = ('-fecha_inicial',)
     def __unicode__(self):
         return 'Desde ' + str(self.fecha_inicial) + ' hasta ' + str(self.fecha_final)
     def recibos(self):
