@@ -1,0 +1,12 @@
+
+@media screen{
+   end-page{ 
+   }
+}
+
+@media print{
+   end-page{ 
+      display:block; 
+      page-break-before:always;
+   }
+}
