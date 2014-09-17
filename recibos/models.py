@@ -217,11 +217,6 @@ class Periodo(models.Model):
 
 class Recibo(models.Model):
 
-    def imprimir(self):
-        return '<a class="btn btn-mini btn-info" href="/rentas/recibo/%s/" align="center"><i class="icon-edit"></i>   Imprimir</a>' % (self.id)
-
-    imprimir.allow_tags = True
-
     periodo         =   models.ForeignKey(Periodo)
     equipo          =   models.ForeignKey(Equipo)
     contador_inicial =  models.IntegerField()

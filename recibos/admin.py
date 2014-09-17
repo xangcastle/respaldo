@@ -34,7 +34,7 @@ class UbicacionAdmin(admin.ModelAdmin):
     #inlines = [Areainline]
     
 class ReciboAdmin(admin.ModelAdmin):
-    list_display = ('area','equipo','contador_inicial','contador_final','total_copias','copia_diferencia','imprimir')
+    list_display = ('area','equipo','contador_inicial','contador_final','total_copias','copia_diferencia')
     list_filter = ('periodo','equipo')
     ordering = ('equipo',)
     inlines = [DetalleInline]
@@ -47,7 +47,7 @@ class ReciboAdmin(admin.ModelAdmin):
         if queryset.count() == 1:
             id_unico = True
         ctx = {'queryset':queryset,'id_unico':id_unico}
-        return render_to_response('recibos/impreso2.html',ctx,context_instance=RequestContext(request))
+        return render_to_response('recibos/impreso.html',ctx,context_instance=RequestContext(request))
     generar_imprimir.short_description = "Imprimir recibos selecionados"
     
 class MantenimientoAdmin(admin.ModelAdmin):

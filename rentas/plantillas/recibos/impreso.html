@@ -2,52 +2,53 @@
 {% block superior %}{% endblock %}
 {% block inferior %}
 
+{% for item in queryset %}
 <div class="container documento">
 	<div class="well pagina recibo">
 		<div class="logo">
 		<caption><h2 align="center" class="titulo">Control de Copias</h2></caption>
 		<table class="table table-bordered table-striped">
 			<thead>
-				<tr><h4 align="center" class="equipo">{{ recibo.equipo.area }}</h4></tr>
+				<tr><h4 align="center" class="equipo">{{ item.equipo.area }}</h4></tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td><div class="label label-inverse">Fecha Inicial</div></td>
-					<td>{{ recibo.fecha_inicial | date:"d/m/y" }}</td>
+					<td>{{ item.fecha_inicial | date:"d/m/y" }}</td>
 					<td><div class="label label-inverse">Fecha Final</div></td>
-					<td>{{ recibo.fecha_final | date:"d/m/y" }}</td>
+					<td>{{ item.fecha_final | date:"d/m/y" }}</td>
 				</tr>
 				<tr>
 					<td><div class="label label-inverse">Marca</div></td>
-					<td>{{ recibo.equipo.marca }}</td>
+					<td>{{ item.equipo.marca }}</td>
 					<td><div class="label label-inverse">Modelo</div></td>
-					<td>{{ recibo.equipo.modelo }}</td>
+					<td>{{ item.equipo.modelo }}</td>
 				</tr>
 				<tr>
 					<td><div class="label label-inverse">Serie</div></td>
-					<td>{{ recibo.equipo.serie }}</td>
+					<td>{{ item.equipo.serie }}</td>
 					<td><div class="label label-inverse">Precio x Copia</div></td>
-					<td>{{ recibo.equipo.precio_copia }}</td>
+					<td>{{ item.equipo.precio_copia }}</td>
 				</tr>
 				<tr>
 					<td><div class="label label-inverse">Incluye Papel</div></td>
-					<td>{{ recibo.equipo.papel }}</td>
+					<td>{{ item.equipo.papel }}</td>
 					<td><div class="label label-inverse">Incluye Operador</div></td>
-					<td>{{ recibo.equipo.operador }}</td>
+					<td>{{ item.equipo.operador }}</td>
 				</tr>
 				<tr>
 					<td><div class="label label-inverse">Contador Inicial</div></td>
-					<td>{{ recibo.contador_inicial }}</td>
+					<td>{{ item.contador_inicial }}</td>
 					<td><div class="label label-inverse">Contador Final</div></td>
-					<td>{{ recibo.contador_final }}</td>
+					<td>{{ item.contador_final }}</td>
 				</tr>
 				<tr>
 					<td><div class="label label-inverse">Velocidad del Equipo</div></td>
-					<td>{{ recibo.equipo.velocidad }} cpm</td>
+					<td>{{ item.equipo.velocidad }} cpm</td>
 					<td><div class="label label-inverse">Valor Techo</div></td>
-					<td>{{ recibo.equipo.minimo }}</td>
+					<td>{{ item.equipo.minimo }}</td>
 				</tr>
-				{% if recibo.detalles %}
+				{% if item.detalles %}
 				<tr>
 					<td colspan="12"><h4 align="center">Detalle por Area</h4></td>
 				</tr>
@@ -57,7 +58,7 @@
 					<td colspan="1"><h6 align="center">Recibido</h6></td>
 					<td colspan="2"><h6 align="center">Firma</h6></td>
 				</tr>
-					{% for d in recibo.detalles %}
+					{% for d in item.detalles %}
 						<tr>
 							<td colspan="1">{{d.area}}</td>
 							<td colspan="1">{{d.cantidad}}</td>
@@ -68,17 +69,18 @@
 				{% else %}
 					<tr class="warning">
 						<td colspan="2"><h5 align="center">Recibido por</h5></td>
-						<td colspan="2"><h6 align="center">{{recibo.equipo.recibe}}</h6></td>
+						<td colspan="2"><h6 align="center">{{ item.equipo.recibe }}</h6></td>
 					</tr>
 				{% endif %}
 			</tbody>
 			<tfoot>
 				<tr>
 					<td colspan="2"><h4 align="center">Total de Copias </h4></td>
-					<td colspan="2"><h4 align="center">{{recibo.total_copias}}</h4></td>
+					<td colspan="2"><h4 align="center">{{ item.total_copias }}</h4></td>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
-</div>
+</div><end-page></end-page>
+{% endfor %}
 {% endblock %}
