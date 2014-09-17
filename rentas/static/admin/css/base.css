@@ -853,6 +853,7 @@ border-radius: 10px;
 
 .dashboard #content {
     width: 100%;
+    overflow: auto;
     margin: 0;
     padding: 0;
 }
