@@ -40,15 +40,15 @@ class ReciboAdmin(admin.ModelAdmin):
     inlines = [DetalleInline]
     list_editable = ('contador_inicial','contador_final',)
     fields = (('periodo','equipo'),('contador_inicial','contador_final'),'precio_copia')
-    #actions = ['imprimir']
+    actions = ['generar_imprimir']
     
-    def imprimir(self, request, queryset):
+    def generar_imprimir(self, request, queryset):
         id_unico = False
         if queryset.count() == 1:
             id_unico = True
         ctx = {'queryset':queryset,'id_unico':id_unico}
         return render_to_response('recibos/impreso2.html',ctx,context_instance=RequestContext(request))
-    imprimir.short_description = "Imprimir recibos selecionados"
+    generar_imprimir.short_description = "Imprimir recibos selecionados"
     
 class MantenimientoAdmin(admin.ModelAdmin):
     list_display = ('fecha','equipo','tecnico','contador')
