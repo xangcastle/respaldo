@@ -2,6 +2,8 @@ from django.contrib import admin
 from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Consumible,Item,UnidadMedida,AsistenciaTecnica,Reemplazo
 from import_export.admin import ImportExportModelAdmin
 from resources import Item_resouce
+from django.template.context import RequestContext
+from django.shortcuts import render_to_response
 
 class DetalleInline(admin.TabularInline):
     model = Detalle
@@ -38,6 +40,15 @@ class ReciboAdmin(admin.ModelAdmin):
     inlines = [DetalleInline]
     list_editable = ('contador_inicial','contador_final',)
     fields = (('periodo','equipo'),('contador_inicial','contador_final'),'precio_copia')
+    actions = [imprimir]
+    
+    def imprimir(self, request, queryset):
+        id_unico = False
+        if queryset.count() == 1:
+            id_unico = True
+        ctx = {'queryset':queryset,'id_unico':id_unico}
+        return render_to_response('recibos/impreso2.html',ctx,context_instance=RequestContext(request))
+    imprimir.short_description = "Imprimir recibos selecionados"
     
 class MantenimientoAdmin(admin.ModelAdmin):
     list_display = ('fecha','equipo','tecnico','contador')
