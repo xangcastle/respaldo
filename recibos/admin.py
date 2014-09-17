@@ -40,7 +40,7 @@ class ReciboAdmin(admin.ModelAdmin):
     inlines = [DetalleInline]
     list_editable = ('contador_inicial','contador_final',)
     fields = (('periodo','equipo'),('contador_inicial','contador_final'),'precio_copia')
-    actions = [imprimir]
+    actions = ['imprimir']
     
     def imprimir(self, request, queryset):
         id_unico = False
