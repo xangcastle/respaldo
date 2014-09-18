@@ -13,39 +13,39 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td>Fecha Inicial</td>
+					<td class="label">Fecha Inicial</td>
 					<td>{{ item.fecha_inicial | date:"d/m/y" }}</td>
-					<td>Fecha Final</td>
+					<td class="label">Fecha Final</td>
 					<td>{{ item.fecha_final | date:"d/m/y" }}</td>
 				</tr>
 				<tr>
-					<td>Marca</td>
+					<td class="label">Marca</td>
 					<td>{{ item.equipo.marca }}</td>
-					<td>Modelo</td>
+					<td class="label">Modelo</td>
 					<td>{{ item.equipo.modelo }}</td>
 				</tr>
 				<tr>
-					<td>Serie</td>
+					<td class="label">Serie</td>
 					<td>{{ item.equipo.serie }}</td>
-					<td>Precio x Copia</td>
+					<td class="label">Precio x Copia</td>
 					<td>{{ item.equipo.precio_copia }}</td>
 				</tr>
 				<tr>
-					<td>Incluye Papel</td>
+					<td class="label">Incluye Papel</td>
 					<td>{{ item.equipo.papel }}</td>
-					<td>Incluye Operador</td>
+					<td class="label">Incluye Operador</td>
 					<td>{{ item.equipo.operador }}</td>
 				</tr>
 				<tr>
-					<td>Contador Inicial</td>
+					<td class="label">Contador Inicial</td>
 					<td>{{ item.contador_inicial }}</td>
-					<td>Contador Final</td>
+					<td class="label">Contador Final</td>
 					<td>{{ item.contador_final }}</td>
 				</tr>
 				<tr>
-					<td>Velocidad del Equipo</td>
+					<td class="label">Velocidad del Equipo</td>
 					<td>{{ item.equipo.velocidad }} cpm</td>
-					<td>Valor Techo</td>
+					<td class="label">Valor Techo</td>
 					<td>{{ item.equipo.minimo }}</td>
 				</tr>
 				{% if item.detalles %}
