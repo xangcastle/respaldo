@@ -3,39 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.db.models import Sum,Max
 from django.contrib.auth.models import User
-from datetime import date, timedelta
-
-#############
-###EQUIPOS###
-#############
-
-
-class UnidadMedida(models.Model):
-    nombre      =   models.CharField(max_length=100)
-    simbolo     =   models.CharField(max_length=5)
-    def __unicode__(self):
-        return self.nombre
-    class Meta:
-        verbose_name = "Unidad de Medida"
-        verbose_name_plural = "Unidades de Medida"
-        ordering = ('nombre',)
-
-class Item(models.Model):
-    no_parte    =   models.CharField(max_length=25, verbose_name="Numero de Parte")
-    nombre      =   models.CharField(max_length=200, verbose_name="Consumible o Repuesto")
-    duracion    =   models.IntegerField()
-    costo       =   models.FloatField()
-    uni_medida  =   models.ForeignKey(UnidadMedida)
-    def __unicode__(self):
-        return self.nombre
-
-class Consumible(models.Model):
-    equipo      =   models.ForeignKey('Equipo')
-    item        =   models.ForeignKey(Item)
-    cantidad    =   models.FloatField()
-
-    def __unicode__(self):
-        return self.item.nombre
+from datetime import timedelta
 
 class Marca(models.Model):
     OPCIONES_TIPO = (
@@ -62,7 +30,6 @@ class Equipo(models.Model):
     precio_copia =  models.FloatField(verbose_name="Precio x Copias")
     comentarios =   models.CharField(max_length=400,null=True,blank=True)
     activo      =   models.BooleanField(default=True)
-    consumibles =   models.ManyToManyField(Item,null=True,blank=True,through=Consumible)
     #datos contables
     costo = models.FloatField(null=True,blank=True)
     vida_util = models.PositiveIntegerField(null=True,blank=True,help_text="vida util en cantidad de copias")
@@ -105,47 +72,6 @@ class Equipo(models.Model):
 
     class Meta:
         ordering = ('modelo',)
-
-class AsistenciaTecnica(models.Model):
-    fecha       =   models.DateField(auto_now=True)
-    numero      =   models.IntegerField(verbose_name="Numero de Orden")
-    tecnico     =   models.ForeignKey(User)
-    equipo      =   models.ForeignKey(Equipo)
-    contador    =   models.IntegerField()
-    comentarios =   models.TextField(blank=True)
-
-    def get_numero(self):
-        if AsistenciaTecnica.objects.all().count() > 0:
-            return AsistenciaTecnica.objects.all().aggregate(Max('numero'))['numero__max'] + 1
-        else:
-            return 1
-
-    def save(self):
-        self.numero = self.get_numero()
-        super(AsistenciaTecnica,self).save()
-
-    def partes_usadas(self):
-        return Reemplazo.objects.filter(asis_tec=self)
-    def costo_total(self):
-        return Reemplazo.objects.aggregate(costo=Sum('costo_consumible'))['costo']
-    def __unicode__(self):
-        return str(self.numero) + str(self.tecnico.username)
-
-class Reemplazo(models.Model):
-    asis_tec    =   models.ForeignKey(AsistenciaTecnica)
-    equipo      =   models.ForeignKey(Equipo)
-    tecnico     =   models.ForeignKey(User)
-    consumible  =   models.ForeignKey(Consumible)
-    costo_consumible = models.FloatField()
-
-    class Meta:
-        verbose_name = 'Reemplazo de partes o consumibles'
-        verbose_name_plural = 'Reemplazo de partes o consumibles'
-
-    def save(self):
-        self.equipo = self.asis_tec.equipo
-        self.tecnico = self.asis_tec.tecnico
-        super(Reemplazo,self).save()
 
 class Periodo(models.Model):
 

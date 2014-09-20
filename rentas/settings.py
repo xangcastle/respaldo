@@ -98,6 +98,7 @@ INSTALLED_APPS = (
     'autocomplete_light',
     'import_export',
     'recibos',
+    'control_de_copias',
 )
 
 # A sample logging configuration. The only tangible logging

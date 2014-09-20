@@ -1,7 +1,6 @@
 from django.contrib import admin
-from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Consumible,Item,UnidadMedida,AsistenciaTecnica,Reemplazo
+from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca
 from import_export.admin import ImportExportModelAdmin
-from resources import Item_resouce
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 
@@ -14,8 +13,6 @@ class Areainline(admin.TabularInline):
     model = Area
 class Reciboinline(admin.TabularInline):
     model = Recibo
-class Consumibleinline(admin.TabularInline):
-    model = Consumible
     
 class AreaAdmin(admin.ModelAdmin):
     list_display = ('nombre','responsable','codigo','equipo','direccion')
@@ -67,19 +64,6 @@ class PeriodoAdmin(admin.ModelAdmin):
         if obj.cerrado:
             obj.cerrar()
     
-class partes(admin.TabularInline):
-    model = Reemplazo
-    extra = 1
-    exclude = ('equipo','tecnico')
-    
-class asistencia_tecnica_admin(admin.ModelAdmin):
-    exclude = ('numero','tecnico')
-    inlines = [partes]
-    
-    def save_model(self, request, obj, form, change):
-        obj.tecnico = request.user
-        obj.save()    
-    
 class Item_admin(ImportExportModelAdmin,admin.ModelAdmin):
     # resouce_class = Item_resouce
     list_display = ('no_parte','nombre','duracion','costo')
@@ -91,6 +75,3 @@ admin.site.register(Periodo,PeriodoAdmin)
 admin.site.register(Recibo,ReciboAdmin)
 admin.site.register(Ubicacion,UbicacionAdmin)
 admin.site.register(Marca,MarcaAdmin)
-#admin.site.register(Item,Item_admin)
-#admin.site.register(UnidadMedida)
-#admin.site.register(AsistenciaTecnica,asistencia_tecnica_admin)
