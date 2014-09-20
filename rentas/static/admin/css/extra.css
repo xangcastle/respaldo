@@ -56,3 +56,13 @@ border-color: #080808;
 #object-tools-content {
 	background-color: aliceblue;
 }
+
+#changelist table input {
+	margin: 0;
+	font-size: 12px;
+	padding: 0px;
+	text-align: center;
+	border: transparent;
+	height: 16px;
+	background-color: transparent;
+}
