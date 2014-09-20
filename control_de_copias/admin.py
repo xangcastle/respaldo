@@ -9,4 +9,5 @@ from recibos.admin import ReciboAdmin
 class recibo_admin(ReciboAdmin):
     list_editable = ('contador_final',)
     actions = ['generar_imprimir']
+    list_filter = ()
 admin.site.register(recibo, recibo_admin)
