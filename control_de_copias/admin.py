@@ -5,7 +5,9 @@ Created on 20/09/2014
 '''
 from django.contrib import admin
 from models import recibo
+from recibos.admin import ReciboAdmin
 class recibo_admin(admin.ModelAdmin):
-    list_display = ('area','equipo','contador_inicial','contador_final','total_copias','copia_diferencia')
-    list_editable = ('contador_inicial','contador_final')
+    list_display = ReciboAdmin.list_display
+    list_editable = ReciboAdmin.list_editable
+    actions = [ReciboAdmin.generar_imprimir]
 admin.site.register(recibo, recibo_admin)
