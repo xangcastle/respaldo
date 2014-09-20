@@ -4,7 +4,7 @@ from django.db import models
 class recibo_manager(models.Manager):
     def get_queryset(self):
         periodos = Periodo.objects.filter(cerrado=False)
-        return super(recibo_manager,self).get_queryset().filter(periodo__in=periodos)
+        return super(recibo_manager,self).get_queryset().all().filter(periodo__in=periodos)
 
 class recibo(Recibo):
     objects = models.Manager()
