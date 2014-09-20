@@ -10,4 +10,5 @@ class recibo_admin(admin.ModelAdmin):
     list_display = ReciboAdmin.list_display
     list_editable = ReciboAdmin.list_editable
     actions = [ReciboAdmin.generar_imprimir]
+    ordering = ['area',]
 admin.site.register(recibo, recibo_admin)
