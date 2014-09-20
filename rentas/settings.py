@@ -99,6 +99,7 @@ INSTALLED_APPS = (
     'import_export',
     'recibos',
     'control_de_copias',
+    'activo_fijo',
 )
 
 # A sample logging configuration. The only tangible logging
