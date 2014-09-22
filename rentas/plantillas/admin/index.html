@@ -12,6 +12,9 @@
 {% block content %}
 
 <div id="content-main" class="desktop">
+	{% load modulo %}
+	{% get_estadisticas as recibos %}
+	
 	<div class="module" id="grafico">
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	    <script type="text/javascript">
@@ -20,7 +23,7 @@
 	function drawChart() {
 	
 	  var data = google.visualization.arrayToDataTable([
-	    ['Area', 				'Produccion'],
+	    ['Area', 'Produccion'],
 	    {% for r in recibos %}
 	    ['{{ r.area }}', {{ r.total_copias }}],
 	    {% endfor %}
@@ -43,8 +46,6 @@
 	<div class="module">
 		<h2>Estadisticas</h2>
 	    <h3>Areas</h3>
-		{% load modulo %}
-		{% get_estadisticas as recibos %}
 		<table class="table-hover">
 		<thead>
 			<tr>
