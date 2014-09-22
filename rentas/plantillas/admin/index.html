@@ -81,15 +81,10 @@ google.setOnLoadCallback(drawChart);
 function drawChart() {
 
   var data = google.visualization.arrayToDataTable([
-    ['Area', 				'Meta', 		'Produccion'],
-    ['CHEQUERAS',  			85000,      	76427],
-    ['IMPRESION CENDIS',  	130000,      	108791],
-    ['DISTRIBUCION',  		6000,       	5789],
-    ['PREMIA BANPRO',  		70000,      	64084],
-    ['OPERACIONES',  		5000,      		6323],
-    ['AUDITORIA INTERNA',  	5000,      		5718],
-    ['CPD',  				5000,      		6089],
-    ['SUCURSAL C. JARDIN',  5000,      		10812]
+    ['Area', 				'Produccion'],
+    {% for r in recibos %}
+    ['{{ r.area }}', {{ r.total_copias }}],
+    {% endfor %}
   ]);
 
   var options = {
