@@ -14,7 +14,43 @@
 <div id="content-main" class="desktop">
 	{% load modulo %}
 	{% get_estadisticas as recibos %}
-	
+	<div class="module" id="recent-actions-module">
+	        <h2>{% trans 'Recent Actions' %}</h2>
+	        <h3>{% trans 'My Actions' %}</h3>
+	            {% load log %}
+	            {% get_admin_log 10 as admin_log for_user user %}
+	            {% if not admin_log %}
+	            <p>{% trans 'None available' %}</p>
+	            {% else %}
+	            <table class="table-hover">
+                    <thead>
+                        <th>Accion</th>
+                    </thead>
+                    <tbody>
+	            {% for entry in admin_log %}
+                        <tr>
+                            <td>
+                            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                                {% if entry.is_deletion or not entry.get_admin_url %}
+                                    {{ entry.object_repr }}
+                                {% else %}
+                                    <a href="{{ entry.get_admin_url }}">
+                                        {% if entry.content_type %}
+                                            {% filter capfirst %}{% trans entry.content_type.name  %}{% endfilter %}
+                                        {% else %}
+                                            {% trans 'Unknown content ' %}
+                                        {% endif %}
+                                            ' {{ entry.object_repr }}'
+                                    </a>
+                                {% endif %}
+                            </li>
+                            </td>
+                        <tr>
+                    <tbody>
+            {% endfor %}
+            </table>
+            {% endif %}
+	</div>
 	<div class="module" id="grafico">
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	    <script type="text/javascript">
@@ -65,49 +101,7 @@
 		</table>
 	</div>
 -->
-<div class="module" id="recent-actions-module">
-	        <h2>{% trans 'Recent Actions' %}</h2>
-	        <h3>{% trans 'My Actions' %}</h3>
-	            {% load log %}
-	            {% get_admin_log 10 as admin_log for_user user %}
-	            {% if not admin_log %}
-	            <p>{% trans 'None available' %}</p>
-	            {% else %}
-	            <table class="table-hover">
-                    <thead>
-                        <th>Accion</th>
-                    </thead>
-                    <tbody>
-	            {% for entry in admin_log %}
-                        <tr>
-                            <td>
-                            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
-                                {% if entry.is_deletion or not entry.get_admin_url %}
-                                    {{ entry.object_repr }}
-                                {% else %}
-                                    <a href="{{ entry.get_admin_url }}">
-                                        {% if entry.content_type %}
-                                            {% filter capfirst %}{% trans entry.content_type.name  %}{% endfilter %}
-                                        {% else %}
-                                            {% trans 'Unknown content ' %}
-                                        {% endif %}
-                                            ' {{ entry.object_repr }}'
-                                    </a>
-                                {% endif %}
-                            </li>
-                            </td>
-                        <tr>
-                    <tbody>
-            {% endfor %}
-            </table>
-            {% endif %}
-	</div>
-</div>
-
-{% endblock %}
-
-{% block sidebar %}
-<div id="content-related">
 
 </div>
+
 {% endblock %}
