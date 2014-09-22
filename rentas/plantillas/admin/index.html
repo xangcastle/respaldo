@@ -10,8 +10,61 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
+
 <div id="content-main" class="desktop">
-	<div class="module" id="recent-actions-module">
+	<div class="module" id="grafico">
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	    <script type="text/javascript">
+	      google.load("visualization", "1", {packages:["corechart"]});
+	google.setOnLoadCallback(drawChart);
+	function drawChart() {
+	
+	  var data = google.visualization.arrayToDataTable([
+	    ['Area', 				'Produccion'],
+	    {% for r in recibos %}
+	    ['{{ r.area }}', {{ r.total_copias }}],
+	    {% endfor %}
+	  ]);
+	
+	  var options = {
+	    title: 'Estadisticas de Produccion',
+	    hAxis: {title: 'Area', titleTextStyle: {color: 'black'}}
+	  };
+	
+	  var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+	
+	  chart.draw(data, options);
+	
+	}
+	    </script>
+	    <div id="chart_div" style="width: 600px; height: 400px;"></div>
+	</div>
+	
+	<div class="module">
+		<h2>Estadisticas</h2>
+	    <h3>Areas</h3>
+		{% load modulo %}
+		{% get_estadisticas as recibos %}
+		<table class="table-hover">
+		<thead>
+			<tr>
+				<th>Area</th>
+				<th>Copias</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for r in recibos %}
+			<tr>
+				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.area }}</a></td>
+				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.total_copias }}</a></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	
+		</table>
+	</div>
+
+<div class="module" id="recent-actions-module">
 	        <h2>{% trans 'Recent Actions' %}</h2>
 	        <h3>{% trans 'My Actions' %}</h3>
 	            {% load log %}
@@ -48,58 +101,6 @@
             </table>
             {% endif %}
 	</div>
-
-<div class="module">
-	<h2>Estadisticas</h2>
-    <h3>Areas</h3>
-	{% load modulo %}
-	{% get_estadisticas as recibos %}
-	<table class="table-hover">
-	<thead>
-		<tr>
-			<th>Area</th>
-			<th>Copias</th>
-		</tr>
-	</thead>
-	<tbody>
-	{% for r in recibos %}
-		<tr>
-			<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.area }}</a></td>
-			<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.total_copias }}</a></td>
-		</tr>
-	{% endfor %}
-	</tbody>
-
-	</table>
-</div>
-
-<div class="module">
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-google.setOnLoadCallback(drawChart);
-function drawChart() {
-
-  var data = google.visualization.arrayToDataTable([
-    ['Area', 				'Produccion'],
-    {% for r in recibos %}
-    ['{{ r.area }}', {{ r.total_copias }}],
-    {% endfor %}
-  ]);
-
-  var options = {
-    title: 'Estadisticas de Produccion',
-    hAxis: {title: 'Area', titleTextStyle: {color: 'black'}}
-  };
-
-  var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-
-  chart.draw(data, options);
-
-}
-    </script>
-    <div id="chart_div" style="width: 610px; height: 400px;"></div>
-</div>
 </div>
 
 {% endblock %}
