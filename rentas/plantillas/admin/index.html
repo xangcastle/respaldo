@@ -51,6 +51,27 @@
             </table>
             {% endif %}
 	</div>
+	<div class="module">
+		<h2>Estadisticas</h2>
+	    <h3>Areas</h3>
+		<table class="table-hover">
+		<thead>
+			<tr>
+				<th>Area</th>
+				<th>Copias</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for r in recibos %}
+			<tr>
+				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.area }}</a></td>
+				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.total_copias }}</a></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	
+		</table>
+	</div>
 	<div class="module" id="grafico">
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 	    <script type="text/javascript">
@@ -78,30 +99,7 @@
 	    </script>
 	    <div id="chart_div" style="width: 900px; height: 400px;"></div>
 	</div>
-	<!--
-	<div class="module">
-		<h2>Estadisticas</h2>
-	    <h3>Areas</h3>
-		<table class="table-hover">
-		<thead>
-			<tr>
-				<th>Area</th>
-				<th>Copias</th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for r in recibos %}
-			<tr>
-				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.area }}</a></td>
-				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.total_copias }}</a></td>
-			</tr>
-		{% endfor %}
-		</tbody>
 	
-		</table>
-	</div>
--->
-
 </div>
 
 {% endblock %}
