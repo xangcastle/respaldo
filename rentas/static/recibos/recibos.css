@@ -1,7 +1,9 @@
 .etiqueta {
 	background-color: #DDB946;
 }
-
+th, td {
+	text-align: center;
+}
 
 @media screen{
    end-page{ 
