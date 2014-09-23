@@ -251,6 +251,7 @@ class DetalleRequisa(models.Model):
     articulo =models.ForeignKey(Articulo)
     cantidad = models.FloatField()
     costo = models.FloatField()
-    
+    def __unicode__(self):
+        return ''
     class Meta:
         verbose_name = 'articulo'

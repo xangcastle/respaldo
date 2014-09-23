@@ -77,6 +77,15 @@ class RequisaAdmin(admin.ModelAdmin):
     list_display = ('id','fecha','area','tipo_requisa')
     #list_filter = ('fecha','tipo_requisa','area')
     inlines = [detalle_requisa_tabular]
+    
+    def imprimir_requisa(self, request, queryset):
+        id_unico = False
+        if queryset.count() == 1:
+            id_unico = True
+        ctx = {'queryset':queryset,'id_unico':id_unico}
+        return render_to_response('recibos/requisa.html',ctx,context_instance=RequestContext(request))
+    imprimir_requisa.short_description = "Imprimir requisas selecionadas"
+    
 class ArticuloAdmin(admin.ModelAdmin):
     pass
 
