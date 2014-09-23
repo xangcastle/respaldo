@@ -80,9 +80,9 @@
 	function drawChart() {
 	
 	  var data = google.visualization.arrayToDataTable([
-	    ['Area', 'Produccion'],
+	    ['Area', 'Meta', 'Copias'],
 	    {% for r in recibos %}
-	    ['{{ r.area }}', {{ r.total_copias }}],
+	    ['{{ r.area }}', {{ r.meta }}, {{ r.total_copias }}],
 	    {% endfor %}
 	  ]);
 	
