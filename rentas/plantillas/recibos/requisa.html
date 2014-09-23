@@ -5,10 +5,10 @@
 <div class="container documento">
 	<div class="well pagina recibo">
 		<div class="logo">
-		<caption><h2 align="center" class="titulo">Requisa de Bodega</h2></caption>
+		<caption><h1 align="center" class="titulo">Requisa de Bodega</h1></caption>
 		<table class="table table-bordered">
 			<thead>
-				<tr><h5 align="center" class="equipo">{{ item.area }}</h5></tr>
+				<tr><h5 align="center" class="equipo">AREA {{ item.area }}</h5></tr>
 			</thead>
 			<tbody>
 				<tr>
@@ -24,13 +24,15 @@
 				<tr>
 					<td colspan="1"><h6 align="center">ARTICULO</h6></td>
 					<td colspan="1"><h6 align="center">CANTIDAD</h6></td>
-					<td colspan="2"><h6 align="center">COSTO UNITARIO</h6></td>
+					<td colspan="1"><h6 align="center">COSTO UNITARIO</h6></td>
+					<td colspan="1"><h6 align="center">TOTAL</h6></td>
 				</tr>
 					{% for d in item.detalles %}
 						<tr>
 							<td colspan="1">{{ d.articulo }}</td>
 							<td colspan="1">{{ d.cantidad }}</td>
-							<td colspan="2">{{ d.area.costo }}</td>
+							<td colspan="2">{{ d.costo }}</td>
+							<td colspan="2">{{ d.total }}</td>
 						</tr>
 					{% endfor %}
 				{% endif %}
