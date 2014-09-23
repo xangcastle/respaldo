@@ -74,6 +74,8 @@ class detalle_requisa_tabular(admin.TabularInline):
     model = DetalleRequisa
     extra = 1
 class RequisaAdmin(admin.ModelAdmin):
+    list_display = ('id','fecha','area','tipo')
+    list_filter = ('fecha','tipo','area')
     inlines = [detalle_requisa_tabular]
 class ArticuloAdmin(admin.ModelAdmin):
     pass

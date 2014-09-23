@@ -232,6 +232,8 @@ class Articulo(models.Model):
     marca = models.ForeignKey(Marca,null=True)
     costo = models.FloatField()
     caracteristicas = models.TextField(null=True,blank=True)
+    def __unicode__(self):
+        return self.descripcion
     
 class Requisa(models.Model):
     TIPO_CHOICES = (
