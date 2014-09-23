@@ -2,6 +2,7 @@
 {% block superior %}{% endblock %}
 {% block inferior %}
 	{% for item in queryset %}
+	<div style="position: absolute; margin-left: 100mm; margin-top: 20mm"># {{ item.id }}</div>
 <div class="container documento">
 	<div class="well pagina recibo">
 		<div class="logo">
