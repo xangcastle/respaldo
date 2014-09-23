@@ -245,6 +245,16 @@ class Requisa(models.Model):
     area = models.ForeignKey(Area,null=True,blank=True)
     recibido = models.CharField(max_length=300,null=True,blank=True)
     entregado = models.CharField(max_length=300,null=True,blank=True)
+    def __unicode__(self):
+        return self.area
+    def detalles(self):
+        return DetalleRequisa.objects.filter(requisa=self)
+    def costo_total(self):
+        t = 0.0
+        if self.detalles():
+            for d in self.detalles():
+                t += d.total()
+        return t
     
 class DetalleRequisa(models.Model):
     requisa = models.ForeignKey(Requisa)
@@ -253,5 +263,7 @@ class DetalleRequisa(models.Model):
     costo = models.FloatField()
     def __unicode__(self):
         return ''
+    def total(self):
+        return self.cantidad * self.costo
     class Meta:
         verbose_name = 'articulo'

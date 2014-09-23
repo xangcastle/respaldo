@@ -1,31 +1,48 @@
 {% extends 'base.html' %}
 {% block superior %}{% endblock %}
 {% block inferior %}
-	<div class="requisa">
-		<h2>Requisa de Bodega</h2>
-		<label>Tipo de Requisa</label>
-		<label>Fecha</label>
-		<label>Area</label>
-		<table>
+	{% for item in queryset %}
+<div class="container documento">
+	<div class="well pagina recibo">
+		<div class="logo">
+		<caption><h2 align="center" class="titulo">Requisa de Bodega</h2></caption>
+		<table class="table table-bordered">
 			<thead>
-				<tr>
-					<th>codigo</th>
-					<th>descripcion</th>
-					<th>cantidad</th>
-					<th>costo</th>
-				</tr>
+				<tr><h4 align="center" class="equipo">{{ item.area }}</h4></tr>
 			</thead>
 			<tbody>
 				<tr>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td></td>
+					<td class="etiqueta">Fecha</td>
+					<td>{{ item.fecha | date:"d/m/y" }}</td>
+					<td class="etiqueta">Tipo de Requisa</td>
+					<td>{{ item.tipo_requisa }}</td>
 				</tr>
+				{% if item.detalles %}
+				<tr>
+					<td colspan="12"><h4 align="center">Detalle por Area</h4></td>
+				</tr>
+				<tr>
+					<td colspan="1"><h6 align="center">Articulo</h6></td>
+					<td colspan="1"><h6 align="center">Cantidad</h6></td>
+					<td colspan="1"><h6 align="center">Costo</h6></td>
+				</tr>
+					{% for d in item.detalles %}
+						<tr>
+							<td colspan="1">{{ d.articulo }}</td>
+							<td colspan="1">{{ d.cantidad }}</td>
+							<td colspan="1">{{ d.area.costo }}</td>
+						</tr>
+					{% endfor %}
+				{% endif %}
 			</tbody>
-			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="2"><h4 align="center">Costo Total</h4></td>
+					<td colspan="2"><h4 align="center">{{ item.costo_total }}</h4></td>
+				</tr>
+			</tfoot>
 		</table>
-		<label>Recibido por</label>
-		<label>Entregado por</label>
 	</div>
+</div><end-page></end-page>
+{% endfor %}
 {% endblock %}
