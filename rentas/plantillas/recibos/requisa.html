@@ -8,23 +8,23 @@
 		<caption><h2 align="center" class="titulo">Requisa de Bodega</h2></caption>
 		<table class="table table-bordered">
 			<thead>
-				<tr><h4 align="center" class="equipo">{{ item.area }}</h4></tr>
+				<tr><h5 align="center" class="equipo">{{ item.area }}</h5></tr>
 			</thead>
 			<tbody>
 				<tr>
 					<td class="etiqueta">Fecha</td>
 					<td>{{ item.fecha | date:"d/m/y" }}</td>
 					<td class="etiqueta">Tipo de Requisa</td>
-					<td>{{ item.tipo_requisa }}</td>
+					<td>{{ item.print_tipo_requisa }}</td>
 				</tr>
 				{% if item.detalles %}
 				<tr>
-					<td colspan="12"><h4 align="center">Detalle por Area</h4></td>
+					<td colspan="12"><h4 align="center">Detalle de Articulos</h4></td>
 				</tr>
 				<tr>
-					<td colspan="1"><h6 align="center">Articulo</h6></td>
-					<td colspan="1"><h6 align="center">Cantidad</h6></td>
-					<td colspan="1"><h6 align="center">Costo</h6></td>
+					<td colspan="1"><h6 align="center">ARTICULO</h6></td>
+					<td colspan="1"><h6 align="center">CANTIDAD</h6></td>
+					<td colspan="2"><h6 align="center">COSTO UNITARIO</h6></td>
 				</tr>
 					{% for d in item.detalles %}
 						<tr>
@@ -39,6 +39,14 @@
 				<tr>
 					<td colspan="2"><h4 align="center">Costo Total</h4></td>
 					<td colspan="2"><h4 align="center">{{ item.costo_total }}</h4></td>
+				</tr>
+				<tr>
+					<td colspan="2"><h4 align="center">Recibi Conforme</h4></td>
+					<td colspan="2"><h4 align="center">Entregue Conforme</h4></td>
+				</tr>
+				<tr>
+					<td colspan="2"><h4 align="center">{{ item.recibido }}</h4></td>
+					<td colspan="2"><h4 align="center">{{ item.entregado }}</h4></td>
 				</tr>
 			</tfoot>
 		</table>

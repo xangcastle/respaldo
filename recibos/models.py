@@ -255,6 +255,11 @@ class Requisa(models.Model):
             for d in self.detalles():
                 t += d.total()
         return t
+    def print_tipo_requisa(self):
+        if self.tipo_requisa == 'EN':
+            return 'ENTRADA'
+        else:
+            return 'SALIDA'
     
 class DetalleRequisa(models.Model):
     requisa = models.ForeignKey(Requisa)
