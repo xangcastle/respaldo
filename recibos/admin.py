@@ -1,5 +1,5 @@
 from django.contrib import admin
-from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca
+from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Requisa,DetalleRequisa
 from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
@@ -69,9 +69,17 @@ class Item_admin(ImportExportModelAdmin,admin.ModelAdmin):
     list_display = ('no_parte','nombre','duracion','costo')
     search_fields = ('no_parte','nombre')
 
+class detalle_requisa_tabular(admin.TabularInline):
+    model = DetalleRequisa
+    extra = 1
+class RequisaAdmin(admin.ModelAdmin):
+    inlines = [detalle_requisa_tabular]
+
+
 admin.site.register(Area,AreaAdmin)
 admin.site.register(Equipo,EquipoAdmin)
 admin.site.register(Periodo,PeriodoAdmin)
 admin.site.register(Recibo,ReciboAdmin)
 admin.site.register(Ubicacion,UbicacionAdmin)
 admin.site.register(Marca,MarcaAdmin)
+admin.site.register(Requisa,RequisaAdmin)

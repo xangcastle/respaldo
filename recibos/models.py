@@ -223,3 +223,32 @@ class Detalle(models.Model):
     class Meta:
         verbose_name = "Area"
         verbose_name_plural = "Detalles por Area"
+        
+#### MODULO DE BODEGA
+
+class Articulo(models.Model):
+    codigo = models.CharField(max_length=30,null=True,blank=True)
+    descripcion = models.CharField(max_length=300)
+    marca = models.ForeignKey(Marca,null=True)
+    costo = models.FloatField()
+    caracteristicas = models.TextField(null=True,blank=True)
+    
+class Requisa(models.Model):
+    TIPO_CHOICES = (
+                    ('EN','ENTRADA'),
+                    ('SA','SALIDA'),
+                    )
+    tipo_requisa = models.CharField(max_length=2,choices=TIPO_CHOICES)
+    fecha = models.DateField()
+    area = models.ForeignKey(Area,null=True,blank=True)
+    recibido = models.CharField(max_length=300,null=True,blank=True)
+    entregado = models.CharField(max_length=300,null=True,blank=True)
+    
+class DetalleRequisa(models.Model):
+    requisa = models.ForeignKey(Requisa)
+    articulo =models.ForeignKey(Articulo)
+    cantidad = models.FloatField()
+    costo = models.FloatField()
+    
+    class Meta:
+        verbose_name = 'articulo'
