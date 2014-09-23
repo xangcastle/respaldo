@@ -77,7 +77,7 @@ class RequisaAdmin(admin.ModelAdmin):
     list_display = ('id','fecha','area','tipo_requisa')
     #list_filter = ('fecha','tipo_requisa','area')
     inlines = [detalle_requisa_tabular]
-    
+    actions = ['imprimir_requisa']
     def imprimir_requisa(self, request, queryset):
         id_unico = False
         if queryset.count() == 1:
