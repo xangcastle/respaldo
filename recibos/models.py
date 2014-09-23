@@ -260,7 +260,8 @@ class Requisa(models.Model):
             return 'ENTRADA'
         else:
             return 'SALIDA'
-    
+    def numero_requisa(self):
+        return str(self.id).zfill(6)
 class DetalleRequisa(models.Model):
     requisa = models.ForeignKey(Requisa)
     articulo =models.ForeignKey(Articulo)

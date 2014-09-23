@@ -2,9 +2,10 @@
 {% block superior %}{% endblock %}
 {% block inferior %}
 	{% for item in queryset %}
-	<div style="position: absolute; margin-left: 100mm; margin-top: 20mm"># {{ item.id }}</div>
+	
 <div class="container documento">
 	<div class="well pagina recibo">
+		<div style="position: absolute; margin-left: 100mm; margin-top: 20mm"># {{ item.numero_requisa }}</div>
 		<div class="logo">
 		<caption><h1 align="center" class="titulo">Requisa de Bodega</h1></caption>
 		<table class="table table-bordered">
