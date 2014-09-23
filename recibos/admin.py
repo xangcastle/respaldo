@@ -1,5 +1,6 @@
 from django.contrib import admin
-from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Requisa,DetalleRequisa
+from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Requisa,DetalleRequisa,\
+    Articulo
 from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
@@ -74,7 +75,8 @@ class detalle_requisa_tabular(admin.TabularInline):
     extra = 1
 class RequisaAdmin(admin.ModelAdmin):
     inlines = [detalle_requisa_tabular]
-
+class ArticuloAdmin(admin.ModelAdmin):
+    pass
 
 admin.site.register(Area,AreaAdmin)
 admin.site.register(Equipo,EquipoAdmin)
@@ -83,3 +85,4 @@ admin.site.register(Recibo,ReciboAdmin)
 admin.site.register(Ubicacion,UbicacionAdmin)
 admin.site.register(Marca,MarcaAdmin)
 admin.site.register(Requisa,RequisaAdmin)
+admin.site.register(Articulo, ArticuloAdmin)
