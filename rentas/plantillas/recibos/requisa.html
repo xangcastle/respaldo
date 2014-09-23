@@ -1,21 +1,6 @@
-<html>
-<head>
-<style type="text/css">
-	.requisa {
-	
-	}
-	.campo {
-		position: absolute;
-	}
-	.tipo {
-	}
-	.fecha {
-	}
-	.area {
-	}
-</style>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block superior %}{% endblock %}
+{% block inferior %}
 	<div class="requisa">
 		<h2>Requisa de Bodega</h2>
 		<label>Tipo de Requisa</label>
@@ -43,5 +28,4 @@
 		<label>Recibido por</label>
 		<label>Entregado por</label>
 	</div>
-</body>
-</html>
+{% endblock %}
