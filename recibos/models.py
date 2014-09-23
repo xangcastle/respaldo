@@ -148,6 +148,7 @@ class Recibo(models.Model):
     contador_inicial =  models.IntegerField()
     contador_final =    models.IntegerField(null=True)
     precio_copia    =   models.FloatField()
+    meta            =   models.FloatField(null=True,blank=True,verbose_name="meta proyectada")
 
     def __unicode__(self):
         return self.equipo.modelo + ' fecha : ' + str(self.periodo.fecha_final)
@@ -222,11 +223,3 @@ class Detalle(models.Model):
     class Meta:
         verbose_name = "Area"
         verbose_name_plural = "Detalles por Area"
-
-
-
-
-
-
-
-

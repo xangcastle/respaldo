@@ -36,7 +36,7 @@ class ReciboAdmin(admin.ModelAdmin):
     ordering = ('-periodo',)
     inlines = [DetalleInline]
     list_editable = ('contador_inicial','contador_final',)
-    fields = (('periodo','equipo'),('contador_inicial','contador_final'),'precio_copia')
+    fields = (('periodo','equipo'),('contador_inicial','contador_final'),'precio_copia','meta')
     actions = ['generar_imprimir']
     
     def generar_imprimir(self, request, queryset):
