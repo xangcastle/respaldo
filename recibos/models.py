@@ -72,6 +72,7 @@ class Equipo(models.Model):
 
     class Meta:
         ordering = ('modelo',)
+        app_label = 'activo fijo'
 
 class Periodo(models.Model):
 
