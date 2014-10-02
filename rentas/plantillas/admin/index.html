@@ -338,7 +338,7 @@
 		<script>
 			var freqData=[
 			{% for r in recibos %}
-			{State:'{{ r.equipo.modelo }}',freq:{low:{{ r.total_dolares }}, mid:{{ r.costo_partes }}, high:{{ r.costo_papel }}}},
+			{State:'{{ r.equipo.modelo }} - {{ r.equipo.serie }}',freq:{low:{{ r.total_dolares }}, mid:{{ r.costo_partes }}, high:{{ r.costo_papel }}}},
 			{% endfor %}
 			];
 			
