@@ -60,8 +60,6 @@
 				<th>Area</th>
 				<th>Copias</th>
 				<th>Meta</th>
-				<th>Costos de Papel</th>
-				<th>Costos de Partes</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -163,9 +161,8 @@
 			
 			        // Add x-axis to the histogram svg.
 			        hGsvg.append("g").attr("class", "x axis")
-			        	.attr("class","prueba")
 			            .attr("transform", "translate(0," + hGDim.h + ")")
-			            .call(d3.svg.axis().scale(x).orient("bottom"));
+			            .call(d3.svg.axis().scale(x).orient("left"));
 			
 			        // Create function for y-axis map.
 			        var y = d3.scale.linear().range([hGDim.h, 0])
