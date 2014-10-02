@@ -322,7 +322,7 @@
 			    
 			    // calculate total frequency by segment for all state.
 			    var tF = ['facturacion','partes','papel'].map(function(d){ 
-			        return {type:d, freq: d3.sum(fData.map(function(t){ return t.freq[d];}))}; 
+			        return {type:d, freq: Math.round(d3.sum(fData.map(function(t){ return t.freq[d];})))}; 
 			    });    
 			    
 			    // calculate total frequency by state for all segment.
