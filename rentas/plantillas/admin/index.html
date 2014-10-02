@@ -163,6 +163,7 @@
 			
 			        // Add x-axis to the histogram svg.
 			        hGsvg.append("g").attr("class", "x axis")
+			        	.attr("class","prueba")
 			            .attr("transform", "translate(0," + hGDim.h + ")")
 			            .call(d3.svg.axis().scale(x).orient("bottom"));
 			
