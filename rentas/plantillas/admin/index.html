@@ -339,6 +339,7 @@
 			var freqData=[
 			{% for r in recibos %}
 			{State:'{{ r.area }}',freq:{low:{{ r.total_dolares }}, mid:{{ r.costo_partes }}, high:{{ r.costo_papel }}}},
+			{% endfor %}
 			];
 			
 			dashboard('#dashboard',freqData);
