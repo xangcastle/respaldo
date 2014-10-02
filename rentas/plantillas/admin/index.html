@@ -162,7 +162,7 @@
 			        // Add x-axis to the histogram svg.
 			        hGsvg.append("g").attr("class", "x axis")
 			            .attr("transform", "translate(0," + hGDim.h + ")")
-			            .call(d3.svg.axis().scale(x).orient("left"));
+			            .call(d3.svg.axis().scale(x).orient("bottom"));
 			
 			        // Create function for y-axis map.
 			        var y = d3.scale.linear().range([hGDim.h, 0])
