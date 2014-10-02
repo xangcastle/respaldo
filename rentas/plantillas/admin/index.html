@@ -59,6 +59,9 @@
 			<tr>
 				<th>Area</th>
 				<th>Copias</th>
+				<th>Meta</th>
+				<th>Costos de Papel</th>
+				<th>Costos de Partes</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -66,6 +69,9 @@
 			<tr>
 				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.area }}</a></td>
 				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.total_copias }}</a></td>
+				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.meta }}</a></td>
+				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.costo_papel }}</a></td>
+				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.costo_partes }}</a></td>
 			</tr>
 		{% endfor %}
 		</tbody>
@@ -80,9 +86,9 @@
 	function drawChart() {
 	
 	  var data = google.visualization.arrayToDataTable([
-	    ['Area', 'Meta', 'Copias'],
+	    ['Area', 'Meta', 'Copias','Costos de Papel','Costos de Partes'],
 	    {% for r in recibos %}
-	    ['{{ r.area }}', {{ r.meta }}, {{ r.total_copias }}],
+	    ['{{ r.area }}', {{ r.meta }}, {{ r.total_copias }}, {{ r.costo_papel }}, {{ r.costo_partes }}],
 	    {% endfor %}
 	  ]);
 	
