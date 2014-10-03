@@ -235,11 +235,18 @@ class Articulo(models.Model):
     marca = models.ForeignKey(Marca,null=True)
     costo = models.FloatField()
     caracteristicas = models.TextField(null=True,blank=True)
-    
-    
-    
+       
     def __unicode__(self):
         return self.descripcion
+    
+    def entradas(self):
+        return DetalleRequisa.entradas.filter(articulo=self)
+    def total_entradas(self):
+        if self.entradas():
+            return self.entradas().aggregate().Sum('cantidad')['cantidad__sum']
+        else:
+            return 0
+    total_entradas.allow_tags = True
     
 class EntradaManager(models.Manager):
     def get_query_set(self):
