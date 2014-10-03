@@ -87,7 +87,7 @@ class RequisaAdmin(admin.ModelAdmin):
     imprimir_requisa.short_description = "Imprimir requisas selecionadas"
     
 class ArticuloAdmin(admin.ModelAdmin):
-    list_display = ('descripcion','marca','costo','total_entradas','total_salidas')
+    list_display = ('descripcion','marca','costo','total_entradas','total_salidas','existencias')
 
 admin.site.register(Area,AreaAdmin)
 admin.site.register(Equipo,EquipoAdmin)
