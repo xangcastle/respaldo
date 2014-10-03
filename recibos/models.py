@@ -235,8 +235,18 @@ class Articulo(models.Model):
     marca = models.ForeignKey(Marca,null=True)
     costo = models.FloatField()
     caracteristicas = models.TextField(null=True,blank=True)
+    
+    
+    
     def __unicode__(self):
         return self.descripcion
+    
+class EntradaManager(models.Manager):
+    def get_query_set(self):
+        return super(EntradaManager,self).get_query_set().filter(tipo_requisa='EN')
+class SalidaManager(models.Manager):
+    def get_query_set(self):
+        return super(SalidaManager,self).get_query_set().filter(tipo_requisa='SA')
     
 class Requisa(models.Model):
     TIPO_CHOICES = (
@@ -248,6 +258,10 @@ class Requisa(models.Model):
     area = models.ForeignKey(Area,null=True,blank=True)
     recibido = models.CharField(max_length=300,null=True,blank=True)
     entregado = models.CharField(max_length=300,null=True,blank=True)
+    
+    objects = models.Manager()
+    entradas = EntradaManager()
+    salidas = SalidaManager()
     
     def __unicode__(self):
         return 'requisa # ' + self.numero_requisa()
@@ -267,11 +281,23 @@ class Requisa(models.Model):
             return 'SALIDA'
     def numero_requisa(self):
         return str(self.id).zfill(6)
+    
+class EntradaArticuloManager(models.Manager):
+    def get_query_set(self):
+        return super(EntradaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.entradas.all())
+class SalidaArticuloManager(models.Manager):
+    def get_query_set(self):
+        return super(EntradaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.salidas.all())    
 class DetalleRequisa(models.Model):
     requisa = models.ForeignKey(Requisa)
     articulo =models.ForeignKey(Articulo)
     cantidad = models.FloatField()
     costo = models.FloatField()
+    
+    objects = models.Manager()
+    entradas = EntradaArticuloManager()
+    salidas = SalidaArticuloManager()
+    
     def __unicode__(self):
         return ''
     def total(self):
