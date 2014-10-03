@@ -249,6 +249,9 @@ class Requisa(models.Model):
     recibido = models.CharField(max_length=300,null=True,blank=True)
     entregado = models.CharField(max_length=300,null=True,blank=True)
     
+    def __unicode__(self):
+        return 'requisa # ' + self.numero_requisa()
+    
     def detalles(self):
         return DetalleRequisa.objects.filter(requisa=self)
     def costo_total(self):
