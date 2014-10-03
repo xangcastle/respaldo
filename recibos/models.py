@@ -307,7 +307,7 @@ class EntradaArticuloManager(models.Manager):
         return super(EntradaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.entradas.all())
 class SalidaArticuloManager(models.Manager):
     def get_query_set(self):
-        return super(EntradaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.salidas.all())    
+        return super(SalidaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.salidas.all())    
 class DetalleRequisa(models.Model):
     requisa = models.ForeignKey(Requisa)
     articulo =models.ForeignKey(Articulo)
