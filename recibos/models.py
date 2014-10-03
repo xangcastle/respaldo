@@ -264,6 +264,7 @@ class Articulo(models.Model):
     def inventario(self):
         return self.existencias() * self.costo
     inventario.allow_tags = True
+    
 class EntradaManager(models.Manager):
     def get_query_set(self):
         return super(EntradaManager,self).get_query_set().filter(tipo_requisa='EN')
