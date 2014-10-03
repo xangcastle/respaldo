@@ -137,7 +137,7 @@
 		<script>
 			function dashboard(id, fData){
 			    var barColor = 'steelblue';
-			    function segColor(c){ return {utilidad:"#807dba", partes:"#e08214",papel:"#41ab5d"}[c]; }
+			    function segColor(c){ return {utilidad:"rgb(88, 83, 187)", partes:"#e08214",papel:"#41ab5d"}[c]; }
 			    
 			    // compute total for each state.
 			    fData.forEach(function(d){d.total=Math.round(d.freq.utilidad+d.freq.partes+d.freq.papel);});
