@@ -82,9 +82,9 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data_inventario = google.visualization.arrayToDataTable([
-          ['Tipo Papel', 'Existencia Actual','Existencia Minima'],
+          ['Tipo Papel', 'Existencia Minima','Existencia Actual'],
           {% for item in inventario %}
-          ['{{ item.descripcion }}',     {{ item.existencias }}, 50],
+          ['{{ item.descripcion }}',  50,   {{ item.existencias }}],
           {% endfor %}
         ]);
 
