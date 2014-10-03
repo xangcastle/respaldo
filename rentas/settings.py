@@ -98,7 +98,7 @@ INSTALLED_APPS = (
     'autocomplete_light',
     'import_export',
     'recibos',
-    'control_de_copias',
+    'produccion',
     'activo_fijo',
 )
 
