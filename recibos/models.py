@@ -248,6 +248,15 @@ class Articulo(models.Model):
             return 0
     total_entradas.allow_tags = True
     
+    def salidas(self):
+        return DetalleRequisa.entradas.filter(articulo=self)
+    def total_salidas(self):
+        if self.salidas():
+            return self.salidas().aggregate(Sum('cantidad'))['cantidad__sum']
+        else:
+            return 0
+    total_salidas.allow_tags = True
+    
 class EntradaManager(models.Manager):
     def get_query_set(self):
         return super(EntradaManager,self).get_query_set().filter(tipo_requisa='EN')
