@@ -243,7 +243,7 @@ class Articulo(models.Model):
         return DetalleRequisa.entradas.filter(articulo=self)
     def total_entradas(self):
         if self.entradas():
-            return 0#self.entradas().aggregate().Sum('cantidad')['cantidad__sum']
+            return self.entradas().aggregate(Sum('cantidad'))['cantidad__sum']
         else:
             return 0
     total_entradas.allow_tags = True
