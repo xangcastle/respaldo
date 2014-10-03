@@ -136,10 +136,10 @@
 		<script>
 			function dashboard(id, fData){
 			    var barColor = 'steelblue';
-			    function segColor(c){ return {facturacion:"#807dba", partes:"#e08214",papel:"#41ab5d"}[c]; }
+			    function segColor(c){ return {utilidad:"#807dba", partes:"#e08214",papel:"#41ab5d"}[c]; }
 			    
 			    // compute total for each state.
-			    fData.forEach(function(d){d.total=Math.round(d.freq.facturacion-(d.freq.partes+d.freq.papel));});
+			    fData.forEach(function(d){d.total=Math.round(d.freq.utilidad+d.freq.partes+d.freq.papel);});
 			    
 			    // function to handle histogram.
 			    function histoGram(fD){
@@ -319,7 +319,7 @@
 			    }
 			    
 			    // calculate total frequency by segment for all state.
-			    var tF = ['facturacion','partes','papel'].map(function(d){ 
+			    var tF = ['utilidad','partes','papel'].map(function(d){ 
 			        return {type:d, freq: Math.round(d3.sum(fData.map(function(t){ return t.freq[d];})))}; 
 			    });    
 			    
@@ -334,7 +334,7 @@
 		<script>
 			var freqData=[
 			{% for r in recibos %}
-			{State:'{{ r.equipo.modelo }}',freq:{facturacion:{{ r.total_dolares }}, partes:{{ r.costo_partes }}, papel:{{ r.costo_papel }}}},
+			{State:'{{ r.equipo.modelo }}',freq:{utilidad:{{ r.total_dolares }}, partes:{{ r.costo_partes }}, papel:{{ r.costo_papel }}}},
 			{% endfor %}
 			];
 			

@@ -183,6 +183,11 @@ class Recibo(models.Model):
 
     def total_dolares(self):
         return round((self.total_copias() * self.precio_copia),2)
+    def total_costos(self):
+        return self.costo_papel + self.costo_partes
+    def utilidad(self):
+        return self.total_dolares() - self.total_costos()
+    
     def serie(self):
         return self.equipo.serie
     def fecha_inicial(self):
@@ -246,7 +251,6 @@ class Articulo(models.Model):
             return self.entradas().aggregate(Sum('cantidad'))['cantidad__sum']
         else:
             return 0
-    total_entradas.allow_tags = True
     
     def salidas(self):
         return DetalleRequisa.salidas.filter(articulo=self)
@@ -255,7 +259,6 @@ class Articulo(models.Model):
             return self.salidas().aggregate(Sum('cantidad'))['cantidad__sum']
         else:
             return 0
-    total_salidas.allow_tags = True
     
     def existencias(self):
         return self.total_entradas() - self.total_salidas()
