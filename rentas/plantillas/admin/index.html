@@ -109,22 +109,20 @@
       google.load("visualization", "1", {packages:["corechart"]});
       google.setOnLoadCallback(drawChart);
       function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Task', 'Hours per Day'],
-          ['Work',     11],
-          ['Eat',      2],
-          ['Commute',  2],
-          ['Watch TV', 2],
-          ['Sleep',    7]
+        var data_inventario = google.visualization.arrayToDataTable([
+          ['Tipo Papel', 'Existencia Actual'],
+          {% for item in inventario %}
+          ['{{ item.descripcion }}',     {{ item.existencias }}],
+          {% endfor %}
         ]);
 
         var options = {
-          title: 'My Daily Activities',
+          title: 'Inventario de Papel',
           is3D: true,
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('inventario_chart'));
-        chart.draw(data, options);
+        chart.draw(data_inventario, options);
       }
     </script>
 	    <div id="inventario_chart" style="width: 350px; height: 350px;"></div>
