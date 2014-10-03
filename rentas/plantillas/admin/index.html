@@ -1,7 +1,15 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static %}
 
-{% block extrahead %}{{ block.super }}<script type="text/javascript" src="https://www.google.com/jsapi"></script>{% endblock %}
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript">
+	var ancho_pantalla = screen.width;
+	var alto_pantalla = screen.height;
+</script>
+{% endblock %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
 
@@ -65,7 +73,7 @@
 	
 	}
 	    </script>
-	    <div id="produccion_chart" style="width: 350px; height: 350px;"></div>
+	    <div id="produccion_chart"></div>
 	</div>
 	<div class="module" id="inventario">
 	 <script type="text/javascript">
@@ -83,8 +91,10 @@
           title: 'Inventario de Papel',
           is3D: true,
         };
-
-        var chart = new google.visualization.PieChart(document.getElementById('inventario_chart'));
+		var chart = d3.select("#inventario_chart")
+					    .attr("width", ancho_pantalla)
+						.attr("height", alto_pantalla);
+        chart = new google.visualization.PieChart(document.getElementById('inventario_chart'));
         chart.draw(data_inventario, options);
       }
     </script>
@@ -123,7 +133,6 @@
 			}
 		</style>
 		<div id='dashboard'></div>
-		<script src="http://d3js.org/d3.v3.min.js"></script>
 		<script>
 			function dashboard(id, fData){
 			    var barColor = 'steelblue';
