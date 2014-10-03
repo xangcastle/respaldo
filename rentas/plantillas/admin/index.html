@@ -73,7 +73,7 @@
 	
 	}
 	    </script>
-	    <div id="produccion_chart"></div>
+	    <div id="produccion_chart" style=" height: 350px;"></div>
 	</div>
 	<div class="module" id="inventario">
 	 <script type="text/javascript">
@@ -91,10 +91,8 @@
           title: 'Inventario de Papel',
           is3D: true,
         };
-		var chart = d3.select("#inventario_chart")
-					    .attr("width", ancho_pantalla)
-						.attr("height", alto_pantalla);
-        chart = new google.visualization.PieChart(document.getElementById('inventario_chart'));
+		
+        var chart = new google.visualization.PieChart(document.getElementById('inventario_chart'));
         chart.draw(data_inventario, options);
       }
     </script>
