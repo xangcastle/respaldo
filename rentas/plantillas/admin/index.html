@@ -64,7 +64,8 @@
 	
 	  var options = {
 	    title: 'Estadisticas de Produccion',
-	    hAxis: {title: 'Area', titleTextStyle: {color: 'black'}}
+	    hAxis: {title: 'Area', titleTextStyle: {color: 'black'}},
+	    backgroundColor: 'transparent',
 	  };
 	
 	  var chart = new google.visualization.ColumnChart(document.getElementById('produccion_chart'));
@@ -81,9 +82,9 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data_inventario = google.visualization.arrayToDataTable([
-          ['Tipo Papel', 'Existencia Actual'],
+          ['Tipo Papel', 'Existencia Actual','Existencia Minima'],
           {% for item in inventario %}
-          ['{{ item.descripcion }}',     {{ item.existencias }}],
+          ['{{ item.descripcion }}',     {{ item.existencias }}, 50],
           {% endfor %}
         ]);
 
