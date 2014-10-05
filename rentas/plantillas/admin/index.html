@@ -146,7 +146,7 @@
 			    
 			    // function to handle histogram.
 			    function histoGram(fD){
-			        var hG={},    hGDim = {t: 60, r: 10, b: 25, l: 10};
+			        var hG={},    hGDim = {t: 60, r: 10, b: 100, l: 10};
 			        hGDim.w = 600, 
 			        hGDim.h = 350;
 			            
@@ -337,13 +337,13 @@
 		<script>
 			var freqData=[
 			{% for r in recibos %}
-			{State:'{{ r.equipo.modelo }}',freq:{utilidad:{{ r.utilidad }}, partes:{{ r.costo_partes }}, papel:{{ r.costo_papel }}}},
+			{State:'{{ r.area }} {{ r.equipo.modelo }}',freq:{utilidad:{{ r.utilidad }}, partes:{{ r.costo_partes }}, papel:{{ r.costo_papel }}}},
 			{% endfor %}
 			];
 			
 			dashboard('#dashboard',freqData);
 			d3.selectAll('.x text')
-	.attr("transform","rotate(-60,0,15)");
+	.attr("transform","rotate(-60,0,30)");
 		</script>
 	
 	</div>
