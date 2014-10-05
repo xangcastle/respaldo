@@ -9,6 +9,26 @@
 	var ancho_pantalla = screen.width;
 	var alto_pantalla = screen.height;
 </script>
+<script type="text/javascript"> 
+function windowSize() { 
+  var myWidth = 0, myHeight = 0; 
+  if( typeof( window.innerWidth ) == 'number' ) { 
+    //No-IE 
+    myWidth = window.innerWidth; 
+    myHeight = window.innerHeight; 
+  } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) { 
+    //IE 6+ 
+    myWidth = document.documentElement.clientWidth; 
+    myHeight = document.documentElement.clientHeight; 
+  } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) { 
+    //IE 4 compatible 
+    myWidth = document.body.clientWidth; 
+    myHeight = document.body.clientHeight; 
+  } 
+    ws = { width: myWidth, height: myHeight };
+    return ws; 
+} 
+</script>
 {% endblock %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
@@ -145,8 +165,8 @@
 			    // function to handle histogram.
 			    function histoGram(fD){
 			        var hG={},    hGDim = {t: 60, r: 0, b: 30, l: 0};
-			        hGDim.w = 500 - hGDim.l - hGDim.r, 
-			        hGDim.h = 300 - hGDim.t - hGDim.b;
+			        hGDim.w = ancho_pantalla - hGDim.l - hGDim.r, 
+			        hGDim.h = alta_pantalla - hGDim.t - hGDim.b;
 			            
 			        //create svg for histogram.
 			        var hGsvg = d3.select(id).append("svg")
