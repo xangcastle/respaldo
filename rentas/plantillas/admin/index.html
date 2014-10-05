@@ -164,9 +164,9 @@ function windowSize() {
 			    
 			    // function to handle histogram.
 			    function histoGram(fD){
-			        var hG={},    hGDim = {t: 60, r: 0, b: 30, l: 0};
-			        hGDim.w = 500 - hGDim.l - hGDim.r, 
-			        hGDim.h = 300 - hGDim.t - hGDim.b;
+			        var hG={},    hGDim = {t: windowSize().height * 0.02, r: windowSize()width * 0.05, b: windowSize().height * 0.02, l: windowSize()width * 0.05};
+			        hGDim.w = windowSize()width * 0.8, 
+			        hGDim.h = windowSize().height * 0.4;
 			            
 			        //create svg for histogram.
 			        var hGsvg = d3.select(id).append("svg")
