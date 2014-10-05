@@ -135,26 +135,7 @@
 			}
 		</style>
 		<div id='dashboard'></div>
-		<script type="text/javascript"> 
-function windowSize() { 
-  var myWidth = 0, myHeight = 0; 
-  if( typeof( window.innerWidth ) == 'number' ) { 
-    //No-IE 
-    myWidth = window.innerWidth; 
-    myHeight = window.innerHeight; 
-  } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) { 
-    //IE 6+ 
-    myWidth = document.documentElement.clientWidth; 
-    myHeight = document.documentElement.clientHeight; 
-  } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) { 
-    //IE 4 compatible 
-    myWidth = document.body.clientWidth; 
-    myHeight = document.body.clientHeight; 
-  } 
-    ws = { width: myWidth, height: myHeight };
-    return ws; 
-} 
-</script>
+	
 		<script>
 			function dashboard(id, fData){
 			    var barColor = 'rgb(23, 92, 156)';
@@ -165,9 +146,9 @@ function windowSize() {
 			    
 			    // function to handle histogram.
 			    function histoGram(fD){
-			        var hG={},    hGDim = {t: windowSize().height * 0.02, r: windowSize()width * 0.05, b: windowSize().height * 0.02, l: windowSize()width * 0.05};
-			        hGDim.w = windowSize()width * 0.8, 
-			        hGDim.h = windowSize().height * 0.4;
+			        var hG={},    hGDim = {t: 60, r: 10, b: 0, l: 10};
+			        hGDim.w = 600, 
+			        hGDim.h = 350;
 			            
 			        //create svg for histogram.
 			        var hGsvg = d3.select(id).append("svg")
