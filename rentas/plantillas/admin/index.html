@@ -117,9 +117,6 @@
 			  stroke: #000;
 			  shape-rendering: crispEdges;
 			}
-			.axis text {
-				rotate: 90;
-			}
 			
 			.x.axis path {  display: none; }
 			.legend{
@@ -345,6 +342,8 @@
 			];
 			
 			dashboard('#dashboard',freqData);
+			d3.selectAll('.x text')
+	.attr("transform","rotate(-60,0,15)");
 		</script>
 	
 	</div>
