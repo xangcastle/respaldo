@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.titulo {
+	fill: white;
+font-size: 13px;
+	}
+</style>
+<svg class="chart"></svg>
+<script src="d3.v3.min.js"></script>
+<script>
+    var data = [
+        { name: 'A', value: 0.08167 },
+        { name: 'B', value: 0.01492 },
+        { name: 'C', value: 0.02782 },
+        { name: 'D', value: 0.04253 },
+        { name: 'E', value: 0.12702 },
+        { name: 'F', value: 0.02288 },
+        { name: 'G', value: 0.02015 },
+        { name: 'H', value: 0.06094 },
+        { name: 'I', value: 0.06966 },
+        { name: 'J', value: 0.00153 },
+        { name: 'K', value: 0.00772 },
+        { name: 'L', value: 0.04025 },
+        { name: 'M', value: 0.02406 },
+        { name: 'N', value: 0.06749 },
+        { name: 'O', value: 0.07507 },
+        { name: 'P', value: 0.01929 },
+        { name: 'Q', value: 0.00095 },
+        { name: 'R', value: 0.05987 },
+        { name: 'S', value: 0.06327 },
+        { name: 'T', value: 0.09056 },
+        { name: 'U', value: 0.02758 },
+        { name: 'V', value: 0.00978 },
+        { name: 'W', value: 0.02360 },
+        { name: 'X', value: 0.00150 },
+        { name: 'Y', value: 0.01974 },
+        { name: 'Z', value: 0.00074 },
+    ];
+</script>
+<script>
+
+var margin = {top: 20, right: 30, bottom: 30, left: 40},
+    width = 1100 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1)
+    .domain(data.map(function(d) { return d.name; }));
+
+var y = d3.scale.linear()
+    .range([height, 0])
+    .domain([0, d3.max(data, function(d) { return d.value; })]);
+
+
+var r = d3.scale.linear()
+	.range([10,30])
+	.domain([0, d3.max(data, function(d) { return d.value; })])
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var chart = d3.select(".chart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  //chart.append("g")
+      //.attr("class", "x axis")
+      //.attr("transform", "translate(0," + height + ")")
+    //  .call(xAxis);
+
+  chart.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+  objects = chart.selectAll(".bar")
+				.data(data);
+	objects.enter().append("circle")
+		.attr("class", "bar")
+		.attr("cx", function(d) { return x(d.name) + 10; })
+		.attr("cy", height)
+		.attr("r",10);
+		
+	objects.enter().append("text")
+		.attr("class", "titulo")
+		.text(function(d) { return d.name; } )
+		.attr("x", function(d) { return x(d.name) + 5; } )
+		.attr("y", height);
+
+function type(d) {
+  d.value = +d.value; // coerce to number
+  return d;
+}
+
+d3.selectAll(".bar")
+    .transition().delay(1500).duration(3000)
+		.attr("cx", function(d) { return x(d.name) + r(d.value)+ 10; })
+		.attr("r", function(d) { return r(d.value); })
+        .attr("cy", function(d) { return y(d.value) + r(d.value) - 10; });
+        
+d3.selectAll(".titulo")
+	.transition().delay(1500).duration(3000)
+		.attr("x", function(d) { return x(d.name) + r(d.value) + 5; } )
+		.attr("y", function(d) { return y(d.value) + r(d.value) - 5; } );
+</script>

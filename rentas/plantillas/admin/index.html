@@ -27,29 +27,7 @@
 	{% get_estadisticas as recibos %}
 	{% load inventario %}
 	{% get_inventario as inventario %}
-	<div class="module" id="estadisticas">
-		<h2>Estadisticas</h2>
-	    <h3>Areas</h3>
-		<table class="table-hover">
-		<thead>
-			<tr>
-				<th>Area</th>
-				<th>Copias</th>
-				<th>Meta</th>
-			</tr>
-		</thead>
-		<tbody>
-		{% for r in recibos %}
-			<tr>
-				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.area }}</a></td>
-				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.total_copias }}</a></td>
-				<td><a href="/admin/recibos/recibo/{{ r.id }}">{{ r.meta }}</a></td>
-			</tr>
-		{% endfor %}
-		</tbody>
 	
-		</table>
-	</div>
 	<div class="module" id="produccion">
 	    <script type="text/javascript">
 	      google.load("visualization", "1", {packages:["corechart"]});
@@ -383,6 +361,29 @@
             {% endfor %}
             </table>
             {% endif %}
+	</div>
+	<div class="module" id="estadisticas">
+		<h2>Estadisticas</h2>
+	    <h3>Areas</h3>
+		<table class="table-hover">
+		<thead>
+			<tr>
+				<th>Area</th>
+				<th>Copias</th>
+				<th>Meta</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for r in recibos %}
+			<tr>
+				<td><a href="/admin/produccion/prduccion_equipo/{{ r.id }}">{{ r.area }}</a></td>
+				<td><a href="/admin/produccion/prduccion_equipo/{{ r.id }}">{{ r.total_copias }}</a></td>
+				<td><a href="/admin/produccion/prduccion_equipo/{{ r.id }}">{{ r.meta }}</a></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	
+		</table>
 	</div>
 </div>
 {% endblock %}
