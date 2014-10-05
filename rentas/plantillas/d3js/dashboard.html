@@ -83,6 +83,7 @@ var datosVenta = [
 ];
 
 datosVenta.forEach(function(d){d.total=d.categorias.categoria1+d.categorias.categoria2+d.categorias.categoria3;});
+
 var barColor = 'steelblue';
     function segColor(c){ return {categoria1:"#807dba", categoria2:"#e08214",categoria3:"#41ab5d"}[c]; }
     
@@ -224,6 +225,10 @@ var barColor = 'steelblue';
         return {type:d, categorias: d3.sum(datosVenta.map(function(t){ return t.categorias[d];}))}; 
     });
 	var pC = pieChart('#dashboard',tF);
+	var tV = var tF = ['Vendedor1','Vendedor2','Vendedor3'].map(function(d){ 
+        return {type:d, total: d3.sum(datosVenta.filter().map(function(t){ return t.categorias[d];}))}; 
+    });
+    var bC = histoGram('#dashboard',tV);
 </script>
 <script>
 function dashboard(id, fData){ 
@@ -291,3 +296,4 @@ function dashboard(id, fData){
 
 
 </script>
+
