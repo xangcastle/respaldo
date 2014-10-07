@@ -131,7 +131,7 @@ LOGGING = {
     }
 }
 
-import dj_database_url
+#import dj_database_url
 #DATABASES['default'] = dj_database_url.config()
 import django.conf.global_settings as DEFAULT_SETTINGS
 
