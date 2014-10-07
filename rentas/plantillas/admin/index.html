@@ -399,7 +399,7 @@
         data.addColumn('number', 'Papel');
         data.addColumn('number', 'Utilidad');
         data.addRows([
-        {% for r in estadisticas %}
+        {% for r in recibos %}
           ['{{ r.equipo.modelo }}',  new Date ({{ r.periodo.fecha_final }}), {{ r.total_copias }}, {{ r.total_dolares }}, {{ r.costo_partes }}, {{ r.costo_papel }}, {{ r.utilidad }}],
         {% endfor %}
         ]);
