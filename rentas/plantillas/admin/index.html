@@ -8,8 +8,6 @@
 <script type="text/javascript">
 	var ancho_pantalla = screen.width;
 	var alto_pantalla = screen.height;
-	alert(ancho_pantalla);
-	alert(alto_pantalla);
 </script>
 
 {% endblock %}
@@ -405,7 +403,9 @@
           ['Oranges', new Date (1989,6,1), 750,  150, 'West'],
           ['Bananas', new Date (1989,6,1), 788,  617, 'West']
         ]);
-
+		
+		alert(ancho_pantalla);
+		alert(alto_pantalla);
         var chart = new google.visualization.MotionChart(document.getElementById('motion_char_div'));
 
         chart.draw(data, {width: 600, height:300});
