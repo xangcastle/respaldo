@@ -59,4 +59,4 @@ def get_estadisticas_all(parser, token):
         raise template.TemplateSyntaxError(
             "'get_estadisticas' requiere que el primer argumento se 'as'")
         
-    return estadisticasNode(varname=tokens[2])
+    return estadisticas_all_Node(varname=tokens[2])
