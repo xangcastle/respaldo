@@ -385,6 +385,7 @@
 		</table>
 	</div>
 	<div class="module" id="motion_chart">
+	{% get_estadisticas_all as estadisticas %}
 		<script type="text/javascript">
       google.load("visualization", "1", {packages:["motionchart"]});
       google.setOnLoadCallback(drawChart);
@@ -398,7 +399,7 @@
         data.addColumn('number', 'Papel');
         data.addColumn('number', 'Utilidad');
         data.addRows([
-        {% for r in recibos %}
+        {% for r in estadisticas %}
           ['{{ r.equipo.modelo }}',  new Date ({{ d.periodo.fecha_final }}), {{ r.total_copias }}, {{ r.total_dolares }}, {{ r.costo_partes }}, {{ r.costo_papel }}, {{ r.utilidad }}],
         {% endfor %}
         ]);
