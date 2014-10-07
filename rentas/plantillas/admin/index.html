@@ -404,10 +404,9 @@
           ['Bananas', new Date (1989,6,1), 788,  617, 'West']
         ]);
 		
-		alert(ancho_pantalla * 0.8);
         var chart = new google.visualization.MotionChart(document.getElementById('motion_char_div'));
 
-        chart.draw(data, {width: 600, height:alto_pantalla * 0.8});
+        chart.draw(data, {width: ancho_pantalla * 0.9, height:alto_pantalla * 0.8});
       }
     </script>
     <div id="motion_char_div"></div>
