@@ -25,7 +25,6 @@
 <div id="content-main" class="desktop">
 	{% load modulo %}
 	{% get_estadisticas as recibos %}
-	{% get_estadisticas_all as estadisticas %}
 	{% load inventario %}
 	{% get_inventario as inventario %}
 	
@@ -397,15 +396,16 @@
         data.addColumn('number', 'Facturacion');
         data.addColumn('number', 'Partes');
         data.addColumn('number', 'Papel');
+        data.addColumn('number', 'Utilidad');
         data.addRows([
         {% for r in recibos %}
-          ['{{ r.equipo.modelo }}',  new Date ({{ r.periodo.fecha_final }}), {{ r.total_copias }}, {{ r.total_dolares }}, {{ r.costo_partes }}, {{ r.costo_papel }}],
+          ['{{ r.equipo.modelo }}',  new Date ({{ d.periodo.fecha_final }}), {{ r.total_copias }}, {{ r.total_dolares }}, {{ r.costo_partes }}, {{ r.costo_papel }}, {{ r.utilidad }}],
         {% endfor %}
         ]);
 		
         var chart = new google.visualization.MotionChart(document.getElementById('motion_char_div'));
 
-        chart.draw(data, {width: 1000, height: 650});
+        chart.draw(data, {width: ancho_pantalla * 0.9, height:alto_pantalla * 0.8});
       }
     </script>
     <div id="motion_char_div"></div>
