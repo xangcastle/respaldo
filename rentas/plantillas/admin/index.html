@@ -407,7 +407,7 @@
 		var options = {};
         options['width'] = ancho_pantalla * 0.9;
         options['height'] = alto_pantalla * 0.8;
-		
+		options['backgroundColor'] = 'transparent';
         var chart = new google.visualization.MotionChart(document.getElementById('motion_char_div'));
 
         chart.draw(data, options);
