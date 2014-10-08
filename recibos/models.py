@@ -200,7 +200,7 @@ class Recibo(models.Model):
     def area(self):
         return self.equipo.area()
     def fecha(self):
-        return str(1000*time.mktime(self.fecha_final.timetuple()))
+        return str(1000*time.mktime(self.periodo.fecha_final.timetuple()))
     
 class Ubicacion(models.Model):
     nombre      =   models.CharField(max_length=50)
