@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from django.db import models
 from django.db.models import Sum
 from datetime import timedelta
+import time
+
 
 class Marca(models.Model):
     OPCIONES_TIPO = (
@@ -197,7 +199,9 @@ class Recibo(models.Model):
         return self.equipo.ubicacion
     def area(self):
         return self.equipo.area()
-
+    def fecha(self):
+        return str(1000*time.mktime(self.fecha_final.timetuple()))
+    
 class Ubicacion(models.Model):
     nombre      =   models.CharField(max_length=50)
     direccion   =   models.CharField(max_length=400)

@@ -400,7 +400,7 @@
         data.addColumn('number', 'Utilidad');
         data.addRows([
         {% for r in estadisticas %}
-          ['{{ r.equipo.modelo }}',  new Date ({{ r.periodo.fecha_final }}), {{ r.total_copias }}, {{ r.total_dolares }}, {{ r.costo_partes }}, {{ r.costo_papel }}, {{ r.utilidad }}],
+          ['{{ r.equipo.modelo }}',  new Date ({{ r.fecha }}), {{ r.total_copias }}, {{ r.total_dolares }}, {{ r.costo_partes }}, {{ r.costo_papel }}, {{ r.utilidad }}],
         {% endfor %}
         ]);
 		
