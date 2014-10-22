@@ -11,8 +11,7 @@ class site_equipo_admin(admin.ModelAdmin):
                 le += s.equipos.values_list('id',flat=True)
         ids = site_equipo.objects.filter(id__in=le).values_list('id',flat=True)
         qs = super(site_equipo_admin, self).get_queryset(request)
-        if request.user.is_superuser:
-            return qs
+        
         return qs.filter(id__in=ids)
 
 admin.site.register(site_equipo,site_equipo_admin)
