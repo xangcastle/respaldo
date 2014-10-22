@@ -1,6 +1,6 @@
 from django.contrib import admin
 from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Requisa,DetalleRequisa,\
-    Articulo,Site
+    Articulo#,Site
 from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
@@ -101,4 +101,4 @@ admin.site.register(Ubicacion,UbicacionAdmin)
 admin.site.register(Marca,MarcaAdmin)
 admin.site.register(Requisa,RequisaAdmin)
 admin.site.register(Articulo, ArticuloAdmin)
-admin.site.register(Site,SiteAdmin)
+#admin.site.register(Site,SiteAdmin)

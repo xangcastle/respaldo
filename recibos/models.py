@@ -238,12 +238,7 @@ class Detalle(models.Model):
         
         
 #### MODULO DE SITE
-class Site(models.Model):
-    name = models.CharField(max_length=255,null=True,blank=True,verbose_name="nombre del site")
-    encargado = models.ForeignKey(User,null=True,blank=True)
-    ubicacion = models.ForeignKey(Ubicacion,null=True,blank=True)
-    equipos = models.ManyToManyField(Equipo,null=True,blank=True)
-    areas = models.ManyToManyField(Area,null=True,blank=True)
+
 ## MODULO DE BODEGA
 
 class Articulo(models.Model):
