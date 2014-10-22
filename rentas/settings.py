@@ -73,6 +73,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'recibos.middleware.user.LocalUserMiddleware',
 )
 
 ROOT_URLCONF = 'rentas.urls'
@@ -99,6 +100,7 @@ INSTALLED_APPS = (
     #'objects-tools',
     'adminactions',
     'recibos',
+    'sites',
     #'produccion',
     #'activo_fijo',
 )
