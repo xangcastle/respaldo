@@ -15,6 +15,6 @@ class site_equipo_admin(admin.ModelAdmin):
             return qs
         return qs.filter(id__in=ids)
 
-admin.site.register(site_equipo)
+admin.site.register(site_equipo,site_equipo_admin)
 admin.site.register(site_inventario)
 admin.site.register(site_requisa)

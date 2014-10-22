@@ -13,6 +13,7 @@ class site_inventario(Articulo):
 class site_equipo(Equipo):
     class Meta:
         proxy = True
+        verbose_name = "equipo"
         
 class site_requisa(Requisa):
     class Meta:
