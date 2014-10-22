@@ -87,16 +87,17 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'grappelli',
+    'import_export',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin',
-    'django.contrib.admindocs',
-    'autocomplete_light',
-    'import_export',
+    'geoposition',
+    #'objects-tools',
+    'adminactions',
     'recibos',
     'produccion',
     'activo_fijo',
