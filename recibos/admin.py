@@ -1,6 +1,6 @@
 from django.contrib import admin
 from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Requisa,DetalleRequisa,\
-    Articulo
+    Articulo,Site
 from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
@@ -90,6 +90,9 @@ class RequisaAdmin(admin.ModelAdmin):
 class ArticuloAdmin(admin.ModelAdmin):
     list_display = ('descripcion','marca','costo','total_entradas','total_salidas','existencias','inventario')
 
+class SiteAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Area,AreaAdmin)
 admin.site.register(Equipo,EquipoAdmin)
 admin.site.register(Periodo,PeriodoAdmin)
@@ -98,3 +101,4 @@ admin.site.register(Ubicacion,UbicacionAdmin)
 admin.site.register(Marca,MarcaAdmin)
 admin.site.register(Requisa,RequisaAdmin)
 admin.site.register(Articulo, ArticuloAdmin)
+admin.site.register(Site,SiteAdmin)

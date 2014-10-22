@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Sum
 from datetime import timedelta
 import time
+from django.contrib.auth.models import User
 
 
 class Marca(models.Model):
@@ -235,7 +236,15 @@ class Detalle(models.Model):
         verbose_name = "Area"
         verbose_name_plural = "Detalles por Area"
         
-#### MODULO DE BODEGA
+        
+#### MODULO DE SITE
+class Site(models.Model):
+    name = models.CharField(max_length=255,null=True,blank=True,verbose_name="nombre del site")
+    encargado = models.ForeignKey(User,null=True,blank=True)
+    ubicacion = models.ForeignKey(Ubicacion,null=True,blank=True)
+    equipos = models.ManyToManyField(Equipo,null=True,blank=True)
+    areas = models.ManyToManyField(Marca,null=True,blank=True)
+## MODULO DE BODEGA
 
 class Articulo(models.Model):
     codigo = models.CharField(max_length=30,null=True,blank=True)
