@@ -5,6 +5,7 @@ from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 
+
 class DetalleInline(admin.TabularInline):
     model = Detalle
     extra = 0
@@ -75,7 +76,7 @@ class detalle_requisa_tabular(admin.TabularInline):
     extra = 1
 class RequisaAdmin(admin.ModelAdmin):
     list_display = ('id','fecha','area','tipo_requisa')
-    #list_filter = ('fecha','tipo_requisa','area')
+    list_filter = ('tipo_requisa','area')
     inlines = [detalle_requisa_tabular]
     actions = ['imprimir_requisa']
     def imprimir_requisa(self, request, queryset):
