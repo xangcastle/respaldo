@@ -81,7 +81,7 @@ ROOT_URLCONF = 'rentas.urls'
 WSGI_APPLICATION = 'rentas.wsgi.application'
 
 TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(__file__),'plantillas')
+    os.path.join(os.path.dirname(__file__),'plantillas'),
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
