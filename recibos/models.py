@@ -243,7 +243,7 @@ class Site(models.Model):
     encargado = models.ForeignKey(User,null=True,blank=True)
     ubicacion = models.ForeignKey(Ubicacion,null=True,blank=True)
     equipos = models.ManyToManyField(Equipo,null=True,blank=True)
-    areas = models.ManyToManyField(Marca,null=True,blank=True)
+    areas = models.ManyToManyField(Area,null=True,blank=True)
 ## MODULO DE BODEGA
 
 class Articulo(models.Model):
