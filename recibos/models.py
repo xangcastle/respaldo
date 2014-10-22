@@ -249,7 +249,7 @@ class Site(models.Model):
 class Articulo(models.Model):
     codigo = models.CharField(max_length=30,null=True,blank=True)
     descripcion = models.CharField(max_length=300)
-    marca = models.ForeignKey(Area,null=True)
+    marca = models.ForeignKey(Marca,null=True)
     costo = models.FloatField()
     caracteristicas = models.TextField(null=True,blank=True)
        
