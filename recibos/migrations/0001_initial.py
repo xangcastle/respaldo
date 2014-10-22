@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -141,6 +143,19 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Site',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=255, null=True, verbose_name='nombre del site', blank=True)),
+                ('areas', models.ManyToManyField(to='recibos.Area', null=True, blank=True)),
+                ('encargado', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('equipos', models.ManyToManyField(to='recibos.Equipo', null=True, blank=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='Ubicacion',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -151,6 +166,12 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Ubicaciones',
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='site',
+            name='ubicacion',
+            field=models.ForeignKey(blank=True, to='recibos.Ubicacion', null=True),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='equipo',

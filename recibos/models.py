@@ -244,6 +244,9 @@ class Site(models.Model):
     ubicacion = models.ForeignKey(Ubicacion,null=True,blank=True)
     equipos = models.ManyToManyField(Equipo,null=True,blank=True)
     areas = models.ManyToManyField(Area,null=True,blank=True)
+    
+    def __unicode__(self):
+        return self.name
 ## MODULO DE BODEGA
 
 class Articulo(models.Model):
