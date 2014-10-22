@@ -26,8 +26,8 @@ class Equipo(models.Model):
     minimo      =   models.IntegerField(default=0)
     velocidad   =   models.IntegerField(verbose_name="Copias x Minuto")
     #datos de facturacion
-    papel       =   models.BooleanField(verbose_name="Incluye Papel")
-    operador    =   models.BooleanField(verbose_name="Incluye Operador")
+    papel       =   models.BooleanField(default=False,verbose_name="Incluye Papel")
+    operador    =   models.BooleanField(default=False,verbose_name="Incluye Operador")
     precio_copia =  models.FloatField(verbose_name="Precio x Copias")
     comentarios =   models.CharField(max_length=400,null=True,blank=True)
     activo      =   models.BooleanField(default=True)
@@ -82,7 +82,7 @@ class Periodo(models.Model):
 
     fecha_inicial   =   models.DateField()
     fecha_final     =   models.DateField()
-    cerrado         =   models.BooleanField()
+    cerrado         =   models.BooleanField(default=False)
 
     class Meta:
         ordering = ('-fecha_inicial',)
@@ -272,10 +272,10 @@ class Articulo(models.Model):
     inventario.allow_tags = True
     
 class EntradaManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return super(EntradaManager,self).get_query_set().filter(tipo_requisa='EN')
 class SalidaManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return super(SalidaManager,self).get_query_set().filter(tipo_requisa='SA')
     
 class Requisa(models.Model):
@@ -313,10 +313,10 @@ class Requisa(models.Model):
         return str(self.id).zfill(6)
     
 class EntradaArticuloManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return super(EntradaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.entradas.all())
 class SalidaArticuloManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return super(SalidaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.salidas.all())    
 class DetalleRequisa(models.Model):
     requisa = models.ForeignKey(Requisa)

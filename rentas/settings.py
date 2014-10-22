@@ -99,8 +99,8 @@ INSTALLED_APPS = (
     #'objects-tools',
     'adminactions',
     'recibos',
-    'produccion',
-    'activo_fijo',
+    #'produccion',
+    #'activo_fijo',
 )
 
 # A sample logging configuration. The only tangible logging
