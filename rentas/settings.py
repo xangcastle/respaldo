@@ -101,8 +101,8 @@ INSTALLED_APPS = (
     'adminactions',
     'recibos',
     'sites',
-    #'produccion',
-    #'activo_fijo',
+    'produccion',
+    'activo_fijo',
 )
 
 # A sample logging configuration. The only tangible logging
