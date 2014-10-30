@@ -310,6 +310,16 @@ class Requisa(models.Model):
     
     def detalles(self):
         return DetalleRequisa.objects.filter(requisa=self)
+    
+    def str_detalle(self):
+        texto = []
+        if self.detalles():
+            for d in self.detalles():
+                item = str(d.cantidad) + d.articulo.descripcion
+                texto.append(item)
+        return ', '.join(texto)
+    str_detalle.short_description = "articulos"
+    
     def costo_total(self):
         t = 0.0
         if self.detalles():
