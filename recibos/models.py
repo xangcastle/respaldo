@@ -255,6 +255,10 @@ class Articulo(models.Model):
     marca = models.ForeignKey(Marca,null=True)
     costo = models.FloatField()
     caracteristicas = models.TextField(null=True,blank=True)
+    
+    class Meta:
+        verbose_name = 'articulo'
+        verbose_name_plural = "inventario"
        
     def __unicode__(self):
         return self.descripcion
