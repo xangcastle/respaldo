@@ -315,7 +315,7 @@ class Requisa(models.Model):
         texto = []
         if self.detalles():
             for d in self.detalles():
-                item = str(d.cantidad) + d.articulo.descripcion
+                item = str(d.cantidad) + ' ' + d.articulo.descripcion
                 texto.append(item)
         return ', '.join(texto)
     str_detalle.short_description = "articulos"
