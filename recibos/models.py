@@ -298,15 +298,20 @@ class SalidaManager(models.Manager):
     
 class Requisa(models.Model):
     TIPO_CHOICES = (
-                    ('EN','ENTRADA'),
-                    ('SA','SALIDA'),
+                    ('EN','REQUISA DE ENTRADA'),
+                    ('SA','REQUISA DE SALIDA'),
+                    ('CO','REQUISA DE CONSUMO'),
+                    ('TR','REQUISA DE TRASLADO'),
                     )
+    
     tipo_requisa = models.CharField(max_length=2,choices=TIPO_CHOICES)
     fecha = models.DateField()
     area = models.ForeignKey(Area,null=True,blank=True)
     recibido = models.CharField(max_length=300,null=True,blank=True)
     entregado = models.CharField(max_length=300,null=True,blank=True)
-    site = models.ForeignKey(Site,null=True,blank=True)
+    site_origen = models.ForeignKey(Site,null=True,blank=True)
+    site_destino = models.ForeignKey(Site,null=True,blank=True)
+    
     objects = models.Manager()
     entradas = EntradaManager()
     salidas = SalidaManager()
