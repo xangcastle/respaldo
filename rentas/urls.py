@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^rentas/', include('recibos.urls')),
+    url(r'^adminactions/', include('adminactions.urls')),
 )
