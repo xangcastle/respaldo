@@ -309,8 +309,8 @@ class Requisa(models.Model):
     area = models.ForeignKey(Area,null=True,blank=True)
     recibido = models.CharField(max_length=300,null=True,blank=True)
     entregado = models.CharField(max_length=300,null=True,blank=True)
-    site_origen = models.ForeignKey(Site,null=True,blank=True)
-    site_destino = models.ForeignKey(Site,null=True,blank=True)
+    site_origen = models.ForeignKey(Site,null=True,blank=True,related_name="site_origen")
+    site_destino = models.ForeignKey(Site,null=True,blank=True,related_name="site_destino")
     
     objects = models.Manager()
     entradas = EntradaManager()
