@@ -81,8 +81,8 @@ class detalle_requisa_tabular(admin.TabularInline):
     model = DetalleRequisa
     extra = 1
 class RequisaAdmin(admin.ModelAdmin):
-    list_display = ('id','fecha','area','tipo_requisa','str_detalle')
-    list_filter = ('tipo_requisa','area')
+    list_display = ('id','fecha','site','tipo_requisa','str_detalle')
+    list_filter = ('tipo_requisa','site')
     inlines = [detalle_requisa_tabular]
     actions = ['imprimir_requisa']
     def imprimir_requisa(self, request, queryset):
