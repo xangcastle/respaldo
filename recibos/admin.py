@@ -1,10 +1,16 @@
 from django.contrib import admin
+from django.contrib.admin import site
 from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Requisa,DetalleRequisa,\
     Articulo,Site
 from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 
+
+import adminactions.actions as actions
+
+# register all adminactions
+actions.add_to_site(site)
 
 class DetalleInline(admin.TabularInline):
     model = Detalle
