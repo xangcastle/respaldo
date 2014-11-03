@@ -316,7 +316,7 @@ class Requisa(models.Model):
     salidas = SalidaManager()
     
     def __unicode__(self):
-        return 'requisa # ' + self.numero_requisa()
+        return self.numero_requisa()
     
     def detalles(self):
         return DetalleRequisa.objects.filter(requisa=self)
@@ -342,7 +342,7 @@ class Requisa(models.Model):
         else:
             return 'SALIDA'
     def numero_requisa(self):
-        return str(self.id).zfill(6)
+        return 'requisa # ' +   str(self.id).zfill(6)
     
 class EntradaArticuloManager(models.Manager):
     def get_queryset(self):
