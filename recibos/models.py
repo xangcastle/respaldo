@@ -78,8 +78,9 @@ class Equipo(models.Model):
 class Periodo(models.Model):
 
     def cuadro(self):
-        return '<a href="/rentas/cuadro/%s">Cuadro</a>' % (self.id)
+        return '<a href="/rentas/cuadro/%s">%s</a>' % (self.id,self.total_dolares())
     cuadro.allow_tags = True
+    cuadro.short_description = "total a facturar"
 
     fecha_inicial   =   models.DateField()
     fecha_final     =   models.DateField()
