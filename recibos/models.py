@@ -295,14 +295,13 @@ class EntradaManager(models.Manager):
         return super(EntradaManager,self).get_query_set().filter(tipo_requisa='EN')
 class SalidaManager(models.Manager):
     def get_queryset(self):
-        return super(SalidaManager,self).get_query_set().filter(tipo_requisa='SA')
+        return super(SalidaManager,self).get_query_set().filter(tipo_requisa__in=('SA','CO'))
     
 class Requisa(models.Model):
     TIPO_CHOICES = (
                     ('EN','REQUISA DE ENTRADA'),
                     ('SA','REQUISA DE SALIDA'),
                     ('CO','REQUISA DE CONSUMO'),
-                    ('TR','REQUISA DE TRASLADO'),
                     )
     
     tipo_requisa = models.CharField(max_length=2,choices=TIPO_CHOICES)
