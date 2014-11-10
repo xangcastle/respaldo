@@ -82,7 +82,7 @@ class detalle_requisa_tabular(admin.TabularInline):
     extra = 1
 class RequisaAdmin(admin.ModelAdmin):
     list_display = ('numero_requisa','fecha','site_origen','site_destino','tipo_requisa','str_detalle')
-    list_filter = ('tipo_requisa','site_origen','site_destino')
+    list_filter = ('periodo','tipo_requisa','site_origen','site_destino')
     search_fields = ('id',)
     inlines = [detalle_requisa_tabular]
     actions = ['imprimir_requisa']
