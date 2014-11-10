@@ -79,7 +79,7 @@ class Equipo(models.Model):
 class Periodo(models.Model):
 
     def cuadro(self):
-        return '<a href="/rentas/cuadro/%s">%s</a>' % (self.id,self.total_dolares())
+        return '<a href="/rentas/cuadro/%s">%s</a>' % (self.id,self.total())
     cuadro.allow_tags = True
     cuadro.short_description = "total a facturar"
 
@@ -105,12 +105,16 @@ class Periodo(models.Model):
             for r in self.recibos():
                 total += r.total_copias() * r.precio_copia
         return round(total,2)
+    total_dolares.short_description = "producion bruta"
     def total_costos(self):
         total = 0.0
         if self.recibos():
             for r in self.recibos():
                 total += r.total_costos()
         return round(total,2)
+    def utilidad_total(self):
+        return self.total_dolares() - self.total_costos()
+    utilidad_total.short_description = "utilidad o perdida"
     def iva(self):
         return round((self.total_dolares() * 0.15),2)
     def total(self):

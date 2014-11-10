@@ -63,7 +63,7 @@ class MarcaAdmin(admin.ModelAdmin):
     inlines = [Equipoinline]
     
 class PeriodoAdmin(admin.ModelAdmin):
-    list_display = ('fecha_inicial','fecha_final','total_copias','cuadro','total_costos','cerrado')
+    list_display = ('fecha_inicial','fecha_final','total_copias','total_dolares','total_costos','utilidad_total','cuadro','cerrado')
     list_filter = ('fecha_final','cerrado')
     
     def save_model(self, request, obj, form, change):
