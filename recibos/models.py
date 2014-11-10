@@ -319,6 +319,7 @@ class Requisa(models.Model):
     
     tipo_requisa = models.CharField(max_length=2,choices=TIPO_CHOICES)
     fecha = models.DateField()
+    periodo = models.ForeignKey(Periodo,null=True,blank=True)
     area = models.ForeignKey(Area,null=True,blank=True)
     recibido = models.CharField(max_length=300,null=True,blank=True)
     entregado = models.CharField(max_length=300,null=True,blank=True)
@@ -356,6 +357,8 @@ class Requisa(models.Model):
             return 'SALIDA'
     def numero_requisa(self):
         return 'requisa # ' +   str(self.id).zfill(6)
+    def get_periodo(self):
+        return Periodo.objects.get(fecha_inicial__lte=self.fecha, fecha_final__gte=self.fecha)
     
 class EntradaArticuloManager(models.Manager):
     def get_queryset(self):
