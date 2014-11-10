@@ -109,7 +109,7 @@ class Periodo(models.Model):
         total = 0.0
         if self.recibos():
             for r in self.recibos():
-                total += r.total_costos
+                total += r.total_costos()
         return round(total,2)
     def iva(self):
         return round((self.total_dolares() * 0.15),2)
@@ -198,7 +198,7 @@ class Recibo(models.Model):
     def total_dolares(self):
         return round((self.total_copias() * self.precio_copia),2)
     def total_costos(self):
-        return self.costo_papel + self.costo_partes + self.costo_administrativo + self.depreciacion_activo
+        return round(self.costo_papel + self.costo_partes + self.costo_administrativo + self.depreciacion_activo,2)
     def utilidad(self):
         return self.total_dolares() - self.total_costos()
     
