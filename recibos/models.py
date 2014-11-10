@@ -38,7 +38,7 @@ class Equipo(models.Model):
     vida_util = models.PositiveIntegerField(null=True,blank=True,help_text="vida util en cantidad de copias")
 
     def __unicode__(self):
-        return self.fecha_final.strftime("%B %Y")
+        return self.modelo + ' - ' + self.serie
     def nombre_completo(self):
         return str(self.modelo) + '  -  ' + str(self.ubicacion)
     def area(self):
@@ -90,7 +90,7 @@ class Periodo(models.Model):
     class Meta:
         ordering = ('-fecha_inicial',)
     def __unicode__(self):
-        return 'Desde ' + str(self.fecha_inicial) + ' hasta ' + str(self.fecha_final)
+        return self.fecha_final.strftime("%B %Y")
     def recibos(self):
         return Recibo.objects.filter(periodo=self)
     def total_copias(self):
