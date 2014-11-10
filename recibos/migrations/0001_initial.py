@@ -35,6 +35,8 @@ class Migration(migrations.Migration):
                 ('caracteristicas', models.TextField(null=True, blank=True)),
             ],
             options={
+                'verbose_name': 'articulo',
+                'verbose_name_plural': 'inventario',
             },
             bases=(models.Model,),
         ),
@@ -120,6 +122,8 @@ class Migration(migrations.Migration):
                 ('meta', models.FloatField(null=True, verbose_name='meta proyectada', blank=True)),
                 ('costo_partes', models.FloatField(default=0.0, help_text='suma de los costos de consumibles y partes usadas', null=True, verbose_name='costos de partes', blank=True)),
                 ('costo_papel', models.FloatField(default=0.0, null=True, verbose_name='costos de papel', blank=True)),
+                ('costo_administrativo', models.FloatField(default=0.0, null=True, verbose_name='costos administrativos', blank=True)),
+                ('depreciacion_activo', models.FloatField(default=0.0, null=True, verbose_name='costos de depreciasion de activos', blank=True)),
                 ('tasa_cambio', models.FloatField(null=True, verbose_name='tasa de cambio', blank=True)),
                 ('equipo', models.ForeignKey(to='recibos.Equipo')),
                 ('periodo', models.ForeignKey(to='recibos.Periodo')),
@@ -132,7 +136,7 @@ class Migration(migrations.Migration):
             name='Requisa',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('tipo_requisa', models.CharField(max_length=2, choices=[('EN', 'ENTRADA'), ('SA', 'SALIDA')])),
+                ('tipo_requisa', models.CharField(max_length=2, choices=[('EN', 'REQUISA DE ENTRADA'), ('SA', 'REQUISA DE SALIDA'), ('CO', 'REQUISA DE CONSUMO')])),
                 ('fecha', models.DateField()),
                 ('recibido', models.CharField(max_length=300, null=True, blank=True)),
                 ('entregado', models.CharField(max_length=300, null=True, blank=True)),
@@ -171,6 +175,18 @@ class Migration(migrations.Migration):
             model_name='site',
             name='ubicacion',
             field=models.ForeignKey(blank=True, to='recibos.Ubicacion', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='requisa',
+            name='site_destino',
+            field=models.ForeignKey(related_name='requisa_site_destino', blank=True, to='recibos.Site', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='requisa',
+            name='site_origen',
+            field=models.ForeignKey(related_name='requisa_site_origen', blank=True, to='recibos.Site', null=True),
             preserve_default=True,
         ),
         migrations.AddField(

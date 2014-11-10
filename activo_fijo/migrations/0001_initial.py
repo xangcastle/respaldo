@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='site_equipo',
+            name='equipo',
             fields=[
             ],
             options={
@@ -21,30 +21,12 @@ class Migration(migrations.Migration):
             bases=('recibos.equipo',),
         ),
         migrations.CreateModel(
-            name='site_inventario',
+            name='marca',
             fields=[
             ],
             options={
                 'proxy': True,
             },
-            bases=('recibos.articulo',),
-        ),
-        migrations.CreateModel(
-            name='site_requisa',
-            fields=[
-            ],
-            options={
-                'proxy': True,
-            },
-            bases=('recibos.requisa',),
-        ),
-        migrations.CreateModel(
-            name='site_site',
-            fields=[
-            ],
-            options={
-                'proxy': True,
-            },
-            bases=('recibos.site',),
+            bases=('recibos.marca',),
         ),
     ]

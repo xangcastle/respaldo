@@ -1,0 +1,36 @@
+﻿--drop view estadisticas_equipo;
+create or replace view estadisticas_equipo
+as
+select to_char(p.fecha_final,'TMmon') mes,
+	to_char(p.fecha_final,'YYYY') periodo,
+	e.modelo,e.serie,e.costo costo_activo,
+	(r.contador_final - r.contador_inicial) total_copias,
+	r.precio_copia,
+	((r.contador_final - r.contador_inicial) * (r.precio_copia)) facturado,
+	r.costo_partes, r.costo_papel, 
+	r.depreciacion_activo, r.costo_administrativo,
+	(r.costo_partes + r.costo_papel + r.depreciacion_activo + r.costo_administrativo) total_costos,
+	((r.contador_final - r.contador_inicial) * (e.precio_copia)) - 
+	(r.costo_partes + r.costo_papel + r.depreciacion_activo + r.costo_administrativo) utilidad
+from recibos_recibo r join recibos_equipo e on r.equipo_id = e.id
+join recibos_periodo p on r.periodo_id = p.id
+where p.cerrado = true
+order by p.fecha_final desc;
+
+--drop view module_activo_fijo
+create or replace view module_activo_fijo
+as
+select modelo,serie,costo_activo,
+	sum(depreciacion_activo) valor_depreciado,
+	costo_activo - sum(depreciacion_activo) valor_actual 
+from estadisticas_equipo
+group by modelo,serie,costo_activo;
+
+
+--drop view total_activo_fijo;
+create or replace view total_activo_fijo
+as
+select sum(costo_activo) costos_activos,
+	sum(valor_depreciado) monto_total_depreciado,
+	sum(valor_actual) valor_actual 
+from module_activo_fijo;
