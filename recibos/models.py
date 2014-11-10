@@ -154,6 +154,8 @@ class Recibo(models.Model):
     meta            =   models.FloatField(null=True,blank=True,verbose_name="meta proyectada")
     costo_partes    =   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos de partes", help_text="suma de los costos de consumibles y partes usadas")
     costo_papel     =   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos de papel")
+    costo_administrativo=   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos de partes", help_text="suma de los costos de consumibles y partes usadas")
+    depreciacion_activo =   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos de papel")
     tasa_cambio     =   models.FloatField(null=True,blank=True,verbose_name="tasa de cambio")
     
     def __unicode__(self):

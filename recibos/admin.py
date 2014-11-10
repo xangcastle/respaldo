@@ -39,11 +39,11 @@ class UbicacionAdmin(admin.ModelAdmin):
     #inlines = [Areainline]
     
 class ReciboAdmin(admin.ModelAdmin):
-    list_display = ('area','equipo','contador_inicial','contador_final','total_copias','costo_partes','costo_papel','meta','cumplimiento')
+    list_display = ('area','equipo','contador_inicial','contador_final','total_copias','costo_partes','costo_papel','costo_administrativo','depreciacion_activo','meta','cumplimiento')
     list_filter = ('periodo','equipo')
     ordering = ('-periodo',)
     inlines = [DetalleInline]
-    list_editable = ('contador_inicial','contador_final','costo_partes','costo_papel','meta')
+    list_editable = ('contador_inicial','contador_final','costo_partes','costo_papel','costo_administrativo','depreciacion_activo','meta')
     fields = (('periodo','equipo'),('contador_inicial','contador_final'),('costo_partes','costo_papel'),('precio_copia','meta'))
     actions = ['generar_imprimir']
     
