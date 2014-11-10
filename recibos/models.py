@@ -7,6 +7,7 @@ import time
 from django.contrib.auth.models import User
 
 
+
 class Marca(models.Model):
     OPCIONES_TIPO = (
                      ('OR','FABRICANTE ORIGINAL'),
@@ -37,7 +38,7 @@ class Equipo(models.Model):
     vida_util = models.PositiveIntegerField(null=True,blank=True,help_text="vida util en cantidad de copias")
 
     def __unicode__(self):
-        return self.modelo + ' - ' + self.serie
+        return self.fecha_final.strftime("%B %Y")
     def nombre_completo(self):
         return str(self.modelo) + '  -  ' + str(self.ubicacion)
     def area(self):
