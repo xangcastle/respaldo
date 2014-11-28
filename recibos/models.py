@@ -197,7 +197,10 @@ class Recibo(models.Model):
         else:
             return self.copia_contador()
     def cumplimiento(self):
-        return str(round((self.total_copias() * 100) / self.meta,2)) + '%'
+        if self.meta and self.meta > 0:
+            return str(round((self.total_copias() * 100) / self.meta,2)) + '%'
+        else:
+            return '0%'
 
     def total_dolares(self):
         return round((self.total_copias() * self.precio_copia),2)
