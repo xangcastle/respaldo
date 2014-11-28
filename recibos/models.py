@@ -21,6 +21,7 @@ class Marca(models.Model):
 class Equipo(models.Model):
     #datos del equipo
     ubicacion   =   models.ForeignKey('Ubicacion',verbose_name="Ubicacion del Equipo",null=True,blank=True)
+    areas       =   models.ManyToManyField('Area',verbose_name="areas atendidas", null=True,blank=True,related_name="equipo_areas_manytomany")
     marca       =   models.ForeignKey(Marca)
     modelo      =   models.CharField(max_length=50)
     serie       =   models.CharField(max_length=50)
@@ -41,13 +42,10 @@ class Equipo(models.Model):
         return self.modelo + ' - ' + self.serie
     def nombre_completo(self):
         return str(self.modelo) + '  -  ' + str(self.ubicacion)
-    def area(self):
+    def nombre_area(self):
         a = ''
-        if Area.objects.filter(equipo=self):
-            if Area.objects.filter(equipo=self).count()==1:
-                a = Area.objects.filter(equipo=self)[0].nombre
-            else:
-                a = self.ubicacion
+        if self.areas.count() == 1:
+            a = self.areas[0]
         else:
             a = self.ubicacion
         return a
@@ -218,7 +216,7 @@ class Recibo(models.Model):
     def ubicacion(self):
         return self.equipo.ubicacion
     def area(self):
-        return self.equipo.area()
+        return self.equipo.nombre_area()
     def fecha(self):
         return str(1000*time.mktime(self.periodo.fecha_final.timetuple()))
     
