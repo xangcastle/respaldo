@@ -39,12 +39,26 @@ class UbicacionAdmin(admin.ModelAdmin):
     #inlines = [Areainline]
     
 class ReciboAdmin(admin.ModelAdmin):
-    list_display = ('equipo','periodo','area','contador_inicial','contador_final','total_copias','costo_partes','costo_papel','costo_administrativo','depreciacion_activo','meta','cumplimiento')
+    fieldsets = (
+        ('Datos Generales', {
+            'fields': (('periodo', 'equipo'),)
+        }),
+        ('Contadores y Meta', {
+            'fields': (('contador_inicial', 'contador_final','meta'),)
+        }),
+        ('Datos de Facturacion', {
+            'fields': (('precio_copia', 'tasa_cambio'),)
+        }),
+        ('Costos de Produccion', {
+            'fields': (('costo_papel','costo_partes','costo_administrativo','depreciacion_activo'),)
+        }),
+    )
+    list_display = ('area','equipo','contador_inicial','contador_final','total_copias','costo_partes','costo_papel','costo_administrativo','depreciacion_activo','meta','cumplimiento')
     list_filter = ('periodo','equipo')
     ordering = ('-periodo',)
     inlines = [DetalleInline]
     list_editable = ('contador_inicial','contador_final','costo_partes','costo_papel','costo_administrativo','depreciacion_activo','meta')
-    fields = (('periodo','equipo'),('contador_inicial','contador_final'),('costo_partes','costo_papel'),('precio_copia','meta'))
+    
     actions = ['generar_imprimir']
     
     def generar_imprimir(self, request, queryset):

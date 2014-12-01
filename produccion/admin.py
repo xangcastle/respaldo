@@ -10,7 +10,7 @@ class produccion_equipo_admin(ReciboAdmin):
     list_editable = ('contador_final',)
     actions = ['generar_imprimir']
     list_filter = ()
-    fields = ('contador_inicial','contador_final')
+    #fields = ('contador_inicial','contador_final')
     readonly_fields = ('contador_inicial',)
     inlines = []
 admin.site.register(produccion_equipo, produccion_equipo_admin)
