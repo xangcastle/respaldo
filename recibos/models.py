@@ -45,7 +45,7 @@ class Equipo(models.Model):
     def nombre_area(self):
         a = ''
         if self.areas.count() == 1:
-            a = ''
+            a = self.areas.all()[0].nombre
         else:
             a = self.ubicacion
         return a
