@@ -133,6 +133,12 @@ class Periodo(models.Model):
             r.contador_final = equipo.contador
             r.precio_copia = equipo.precio_copia
             r.save()
+            for a in equipo.areas.all():
+                dd = Detalle()
+                dd.recibo = r
+                dd.area = a
+                dd.cantidad = 0
+                dd.save()
 
     def generar_recibos(self):
         for e in self.equipos_activos_sin_recibo():
