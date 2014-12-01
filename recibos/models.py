@@ -196,7 +196,7 @@ class Recibo(models.Model):
     copia_diferencia.short_description = "Inconsitencias en el contador"
 
     def total_copias(self):
-        if self.detalles():
+        if self.detalles().count()>1 or self.copia_detalles()>0:
             return self.copia_detalles()
         else:
             return self.copia_contador()
