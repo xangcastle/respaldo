@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import site
 from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Requisa,DetalleRequisa,\
-    Articulo,Site
+    Articulo,Site,Refaccion,Servicio,cambio_partes
 from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
@@ -124,3 +124,26 @@ admin.site.register(Marca,MarcaAdmin)
 admin.site.register(Requisa,RequisaAdmin)
 admin.site.register(Articulo, ArticuloAdmin)
 admin.site.register(Site,SiteAdmin)
+
+
+
+
+## aplicacion de servicio tecnico
+
+class cambio_partes_tabular(admin.TabularInline):
+    model = cambio_partes
+    extra = 0
+class servicio_admin(admin.ModelAdmin):
+    inlines = [cambio_partes_tabular]
+
+admin.site.register(Refaccion)
+admin.site.register(Servicio,servicio_admin)
+
+
+
+
+
+
+
+
+
