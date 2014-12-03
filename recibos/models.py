@@ -393,3 +393,40 @@ class DetalleRequisa(models.Model):
         return self.cantidad * self.costo
     class Meta:
         verbose_name = 'articulo'
+        
+        
+        
+class Refaccion(models.Model):
+    codigo = models.CharField(max_length=20,null=True,blank=True)
+    descripcion = models.CharField(max_length=20,null=True,blank=True)
+    costo = models.FloatField(null=True,blank=True)
+    duracion = models.IntegerField(null=True,blank=True)
+    def __unicode__(self):
+        return self.descripcion
+    
+    
+class Servicio(models.Model):
+    fecha = models.DateField()
+    numero = models.IntegerField(null=True,blank=True)
+    obserbaciones = models.TextField(max_length=500,null=True,blank=True)
+    equipo = models.ForeignKey(Equipo,null=True,blank=True)
+    def __unicode__(self):
+        return str(self.numero)
+    
+class cambio_partes(models.Model):
+    servicio = models.ForeignKey(Servicio)
+    refaccion = models.ForeignKey(Refaccion)
+    cantidad = models.FloatField(default=0)
+    costo = models.FloatField(default=0)
+    def __unicode__(self):
+        return ''
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
