@@ -402,8 +402,9 @@ class Refaccion(models.Model):
     descripcion = models.CharField(max_length=200,null=True,blank=True)
     costo = models.FloatField(null=True,blank=True)
     duracion = models.IntegerField(null=True,blank=True)
+    minimo = models.FloatField(null=True,blank=True,verbose_name="existencia minima requerida")
     class Meta:
-        verbose_name_plural = "refacciones"
+        verbose_name_plural = "refacciones y consumibles"
     def __unicode__(self):
         return self.descripcion
     
@@ -427,9 +428,37 @@ class cambio_partes(models.Model):
     
     
     
+class Provedor(models.Model):
+    codigo = models.CharField(max_length=20,null=True,blank=True)
+    nombre = models.CharField(max_length=20,null=True,blank=True,verbose_name="nombre o razon social")
+    direccion = models.CharField(max_length=200,null=True,blank=True)
+    def __unicode__(self):
+        return self.nombre
     
+class contacto(models.Model):
+    provedor = models.ForeignKey(Provedor,null=True,blank=True)
+    nombre = models.CharField(max_length=100,null=True,blank=True)
+    cargo = models.CharField(max_length=100,null=True,blank=True)
+    telefono = models.CharField(max_length=100,null=True,blank=True)
+    email = models.EmailField(null=True,blank=True)
+    def __unicode__(self):
+        return self.nombre
     
+class Moneda(models.Model):
+    simbolo = models.CharField(max_length=3)
+    nombre = models.CharField(max_length=50,null=True)
+    def __unicode__(self):
+        return self.simbolo
+class FCompra(models.Model):
+    fecha = models.DateField()
+    numero = models.IntegerField()
+    provedor = models.ForeignKey(Provedor)
     
+class dtCompra(models.Model):
+    factura = models.ForeignKey(FCompra)
+    item = models.ForeignKey(Refaccion)
+    cantidad = models.FloatField()
+    precio = models.FloatField()
     
     
     
