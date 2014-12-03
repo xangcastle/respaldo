@@ -173,6 +173,9 @@ class Recibo(models.Model):
     depreciacion_activo =   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos de depreciasion de activos")
     tasa_cambio     =   models.FloatField(null=True,blank=True,verbose_name="tasa de cambio")
     
+    class Meta:
+        db_table = "view_recibos_recibo"
+    
     def __unicode__(self):
         return self.equipo.modelo + ' fecha : ' + str(self.periodo.fecha_final)
 
