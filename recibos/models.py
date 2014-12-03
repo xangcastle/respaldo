@@ -398,7 +398,7 @@ class DetalleRequisa(models.Model):
         
 class Refaccion(models.Model):
     codigo = models.CharField(max_length=20,null=True,blank=True)
-    descripcion = models.CharField(max_length=20,null=True,blank=True)
+    descripcion = models.CharField(max_length=200,null=True,blank=True)
     costo = models.FloatField(null=True,blank=True)
     duracion = models.IntegerField(null=True,blank=True)
     def __unicode__(self):
