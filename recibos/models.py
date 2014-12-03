@@ -402,12 +402,15 @@ class Refaccion(models.Model):
     descripcion = models.CharField(max_length=200,null=True,blank=True)
     costo = models.FloatField(null=True,blank=True)
     duracion = models.IntegerField(null=True,blank=True)
+    class Meta:
+        verbose_name_plural = "refacciones"
     def __unicode__(self):
         return self.descripcion
     
     
 class Servicio(models.Model):
     fecha = models.DateField()
+    periodo = models.ForeignKey(Periodo,null=True,blank=True)
     numero = models.IntegerField(null=True,blank=True)
     obserbaciones = models.TextField(max_length=500,null=True,blank=True)
     equipo = models.ForeignKey(Equipo,null=True,blank=True)
