@@ -1,6 +1,6 @@
 from django.contrib import admin
 from recibos.models import Site
-from models import site_equipo,site_inventario,site_requisa
+from models import Equipo,Articulo,Requisa
 
 class site_equipo_admin(admin.ModelAdmin):
     def get_queryset(self, request):
@@ -9,11 +9,11 @@ class site_equipo_admin(admin.ModelAdmin):
         if sds:
             for s in sds:
                 le += s.equipos.values_list('id',flat=True)
-        ids = site_equipo.objects.filter(id__in=le).values_list('id',flat=True)
+        ids = Equipo.objects.filter(id__in=le).values_list('id',flat=True)
         qs = super(site_equipo_admin, self).get_queryset(request)
         
         return qs.filter(id__in=ids)
 
-admin.site.register(site_equipo,site_equipo_admin)
-admin.site.register(site_inventario)
-admin.site.register(site_requisa)
+admin.site.register(Equipo,site_equipo_admin)
+admin.site.register(Articulo)
+admin.site.register(Requisa)

@@ -328,6 +328,7 @@ class Requisa(models.Model):
     fecha = models.DateField()
     periodo = models.ForeignKey(Periodo,null=True,blank=True)
     area = models.ForeignKey(Area,null=True,blank=True)
+    equipo = models.ForeignKey(Equipo,null=True,blank=True)
     recibido = models.CharField(max_length=300,null=True,blank=True)
     entregado = models.CharField(max_length=300,null=True,blank=True)
     site_origen = models.ForeignKey(Site,null=True,blank=True,related_name="requisa_site_origen")
