@@ -452,6 +452,7 @@ class Moneda(models.Model):
 class FCompra(models.Model):
     fecha = models.DateField()
     numero = models.IntegerField()
+    moneda = models.ForeignKey(Moneda,null=True)
     provedor = models.ForeignKey(Provedor)
     
 class dtCompra(models.Model):
