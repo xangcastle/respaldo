@@ -448,7 +448,7 @@ class Moneda(models.Model):
     simbolo = models.CharField(max_length=3)
     nombre = models.CharField(max_length=50,null=True)
     def __unicode__(self):
-        return self.simbolo
+        return self.nombre + ' ' + self.simbolo
 class FCompra(models.Model):
     fecha = models.DateField()
     numero = models.IntegerField()
