@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import site
 from recibos.models import Area,Equipo,Periodo,Recibo,Detalle,Ubicacion,Marca,Requisa,DetalleRequisa,\
-    Articulo,Site,Refaccion,Servicio,cambio_partes,Provedor,contacto,Moneda,FCompra,dtCompra
+    Articulo,Site,Refaccion,Servicio,cambio_partes,Provedor,contacto,Moneda,FCompra,dtCompra,Categoria
 from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
@@ -156,6 +156,7 @@ class factura_compra_admin(admin.ModelAdmin):
 
 admin.site.register(Provedor,provedor_admin)
 admin.site.register(Moneda)
+admin.site.register(Categoria)
 admin.site.register(FCompra,factura_compra_admin)
 
 

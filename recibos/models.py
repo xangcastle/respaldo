@@ -396,9 +396,18 @@ class DetalleRequisa(models.Model):
         
         
         
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=100)
+    comprar = models.BooleanField(default=True)
+    vender = models.BooleanField(default=True)
+    almacenar = models.BooleanField(default=True)
+    def __unicode__(self):
+        return self.nombre
+    
 class Refaccion(models.Model):
     codigo = models.CharField(max_length=20,null=True,blank=True)
     oem = models.CharField(max_length=20,null=True,blank=True)
+    categoria = models.ForeignKey(Categoria,null=True)
     descripcion = models.CharField(max_length=200,null=True,blank=True)
     costo = models.FloatField(null=True,blank=True)
     duracion = models.IntegerField(null=True,blank=True)
@@ -430,7 +439,7 @@ class cambio_partes(models.Model):
     
 class Provedor(models.Model):
     codigo = models.CharField(max_length=20,null=True,blank=True)
-    nombre = models.CharField(max_length=20,null=True,blank=True,verbose_name="nombre o razon social")
+    nombre = models.CharField(max_length=100,null=True,blank=True,verbose_name="nombre o razon social")
     direccion = models.CharField(max_length=200,null=True,blank=True)
     def __unicode__(self):
         return self.nombre
