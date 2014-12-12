@@ -12,9 +12,10 @@ import adminactions.actions as actions
 # register all adminactions
 actions.add_to_site(site)
 
-class DetalleInline(admin.TabularInline):
+class DetalleInlines(admin.TabularInline):
     model = Detalle
     extra = 0
+    classes = ('grp-collapse grp-closed',)
 class Equipoinline(admin.TabularInline):
     model = Equipo
 class Areainline(admin.TabularInline):
@@ -41,22 +42,26 @@ class UbicacionAdmin(admin.ModelAdmin):
 class ReciboAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Datos Generales', {
+            'classes': ('grp-collapse grp-open',),
             'fields': (('periodo', 'equipo'),)
         }),
         ('Contadores y Meta', {
             'fields': (('contador_inicial', 'contador_final','meta'),)
         }),
+        ("Detalle Inlines", {"classes": ("placeholder detalle-recibo",), "fields" : ()}),
         ('Datos de Facturacion', {
+            'classes': ('grp-collapse grp-closed',),
             'fields': (('precio_copia', 'tasa_cambio'),)
         }),
         ('Costos de Produccion', {
-            'fields': (('costo_papel','costo_partes','costo_administrativo','depreciacion_activo'),)
+            'classes': ('grp-collapse grp-closed',),
+            'fields': (('costo_papel','costo_partes'),('costo_administrativo','depreciacion_activo'),)
         }),
     )
     list_display = ('area','equipo','contador_inicial','contador_final','total_copias','costo_partes','costo_papel','costo_administrativo','depreciacion_activo','meta','cumplimiento')
     list_filter = ('periodo','equipo')
     ordering = ('-periodo',)
-    inlines = [DetalleInline]
+    inlines = [DetalleInlines]
     list_editable = ('contador_inicial','contador_final','costo_partes','costo_papel','costo_administrativo','depreciacion_activo','meta')
     
     actions = ['generar_imprimir']
@@ -91,9 +96,11 @@ class Item_admin(ImportExportModelAdmin,admin.ModelAdmin):
     list_display = ('no_parte','nombre','duracion','costo')
     search_fields = ('no_parte','nombre')
 
-class detalle_requisa_tabular(admin.TabularInline):
+class detalle_requisa_tabular(admin.StackedInline):
     model = DetalleRequisa
-    extra = 1
+    extra = 0
+    classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-open',)
 class RequisaAdmin(admin.ModelAdmin):
     date_hierarchy = 'fecha'
     list_display = ('numero_requisa','fecha','site_origen','site_destino','tipo_requisa','str_detalle','costo_total')

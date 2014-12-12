@@ -40,6 +40,11 @@ class Equipo(models.Model):
 
     def __unicode__(self):
         return self.modelo + ' - ' + self.serie
+    
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("serie__iexact", "modelo__icontains",)
+    
     def nombre_completo(self):
         return str(self.modelo) + '  -  ' + str(self.ubicacion)
     def nombre_area(self):
@@ -245,6 +250,11 @@ class Area(models.Model):
     equipo = models.ForeignKey(Equipo,verbose_name="Impresora por Defecto",null=True,blank=True)
     def __unicode__(self):
         return self.nombre + ' ' + self.responsable
+    
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("id__iexact","codigo__iexact", "nombre__icontains", "responsable__icontains",)
+    
     def get_direccion(self):
         u = self.ubicacion.direccion
         return u

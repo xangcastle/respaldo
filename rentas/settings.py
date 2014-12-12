@@ -143,3 +143,5 @@ CUSTOM_PROCESSORS = ('recibos.processors.easy_processors.applist',)
 TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + CUSTOM_PROCESSORS
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+
