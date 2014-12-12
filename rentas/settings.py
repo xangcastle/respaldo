@@ -62,6 +62,7 @@ SECRET_KEY = 'bq7!d7y__xli6w&a-atxf^799bmx-xfyqo3wyyn2*mhs_(bq43'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
+    'apptemplates.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
 
@@ -88,6 +89,8 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+                  'navbar',
+    #'grappelli_extensions',
     'grappelli',
     'import_export',
     'django.contrib.admin',
@@ -100,7 +103,7 @@ INSTALLED_APPS = (
     #'objects-tools',
     'adminactions',
     'recibos',
-    'sites',
+    #'sites',
     'produccion',
     'activo_fijo',
 )
@@ -138,10 +141,21 @@ LOGGING = {
 #DATABASES['default'] = dj_database_url.config()
 import django.conf.global_settings as DEFAULT_SETTINGS
 
-CUSTOM_PROCESSORS = ('recibos.processors.easy_processors.applist',)
+CUSTOM_PROCESSORS = ('django.core.context_processors.request','recibos.processors.easy_processors.applist',)
 
 TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + CUSTOM_PROCESSORS
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+
+GRAPPELLI_EXTENSIONS_NAVBAR = 'navbar.test_navbar.Navbar'
+
+
+
+
+
+
+
+
 
 

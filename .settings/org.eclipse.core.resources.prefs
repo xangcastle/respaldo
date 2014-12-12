@@ -1,2 +1,5 @@
 eclipse.preferences.version=1
+encoding//navbar/navbar.py=utf-8
+encoding//navbar/templatetags/grappelli_navbar.py=utf-8
+encoding//navbar/test_navbar.py=utf-8
 encoding//recibos/management/commands/fix_permissions.py=utf-8
