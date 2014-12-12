@@ -141,14 +141,11 @@ LOGGING = {
 #DATABASES['default'] = dj_database_url.config()
 import django.conf.global_settings as DEFAULT_SETTINGS
 
-CUSTOM_PROCESSORS = ('django.core.context_processors.request','recibos.processors.easy_processors.applist',)
+CUSTOM_PROCESSORS = ('django.core.context_processors.request',)
 
 TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + CUSTOM_PROCESSORS
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
-
-
-GRAPPELLI_EXTENSIONS_NAVBAR = 'navbar.test_navbar.Navbar'
 
 
 
