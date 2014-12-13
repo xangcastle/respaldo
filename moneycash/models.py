@@ -16,10 +16,12 @@ class base(models.Model):
     class Meta:
         abstract = True
         
-class Periodo(base):
+class Periodo(models.Model):
     fecha_inicial = models.DateField()
     fecha_final = models.DateField()
-    cerrado = models.BooleanField(default=True) 
+    cerrado = models.BooleanField(default=True)
+    def __unicode__(self):
+        return self.fecha_inicial.strftime("%B %Y")
 class Serie(base):
     numero_inicial = models.DateField()
 class Caja(base):
