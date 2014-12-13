@@ -23,11 +23,12 @@ class Periodo(models.Model):
     def __unicode__(self):
         return self.fecha_inicial.strftime("%B %Y")
 class Serie(base):
-    numero_inicial = models.DateField()
+    numero_inicial = models.PositiveIntegerField()
 class Caja(base):
     series = models.ManyToManyField(Serie)
 class Sucursal(base):
-    pass
+    class Meta:
+        verbose_name_plural = "sucursales"
 class Bodega(base):
     pass
 class Cliente(base):

@@ -5,6 +5,7 @@ from moneycash.models import Item, Marca, Categoria, Cliente, Factura,\
 class base_admin(admin.ModelAdmin):
     list_display = ('code','name')
     actions = ['activar','inactivar']
+    ordering = ('code',)
     def inactivar(self, request, queryset):
         queryset.update(activo=False)
     inactivar.short_description = "Deactivate selected objects"
