@@ -1,6 +1,6 @@
 from django.contrib import admin
 from moneycash.models import Item, Marca, Categoria, Cliente, Factura,\
-    factura_detalle, Periodo, Serie, Sucursal, Caja
+    factura_detalle, Periodo, Serie, Sucursal, Caja, Bodega
 
 class base_admin(admin.ModelAdmin):
     list_display = ('code','name')
@@ -23,6 +23,7 @@ admin.site.register(Periodo)
 admin.site.register(Serie,base_admin)
 admin.site.register(Sucursal,base_admin)
 admin.site.register(Caja,base_admin)
+admin.site.register(Bodega,base_admin)
 
 
 
