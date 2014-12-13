@@ -78,7 +78,7 @@ class Factura(models.Model):
     periodo = models.ForeignKey(Periodo)
     serie = models.ForeignKey(Serie)
     cliente = models.ForeignKey(Cliente)
-    sucursal = models.FloatField(Sucursal)
+    sucursal = models.ForeignKey(Sucursal)
     
     
     
