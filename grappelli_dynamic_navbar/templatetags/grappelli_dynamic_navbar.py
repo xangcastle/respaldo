@@ -1,7 +1,6 @@
  #-*- coding:utf-8 -*-
 
 from django import template
-from classytags.core import Tag, Options
 from classytags.helpers import InclusionTag
 from django.contrib import admin
 from django.utils.safestring import mark_safe
@@ -41,8 +40,8 @@ def applist(request):
     app_list.sort(lambda x, y: cmp(x['name'], y['name']))
     return app_list
 
-class GrappelliNavbar(InclusionTag):
-    name = 'grappelli_navbar'
+class GrappelliDynamicNavbar(InclusionTag):
+    name = 'grappelli_dynamic_navbar'
     template = 'grappelli/navbar.html'
 
     def get_context(self, context):
@@ -50,4 +49,4 @@ class GrappelliNavbar(InclusionTag):
         return {'apps':menu}
 
 register = template.Library()
-register.tag(GrappelliNavbar)
+register.tag(GrappelliDynamicNavbar)

@@ -89,7 +89,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-                  'navbar',
+                  'grappelli_dynamic_navbar',
     #'grappelli_extensions',
     'grappelli',
     'import_export',
@@ -104,8 +104,8 @@ INSTALLED_APPS = (
     'adminactions',
     'recibos',
     #'sites',
-    'produccion',
-    'activo_fijo',
+    #'produccion',
+    'moneycash',
 )
 
 # A sample logging configuration. The only tangible logging
