@@ -7,17 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('moneycash', '0002_auto_20141213_1702'),
+        ('moneycash', '0003_auto_20141213_1713'),
     ]
 
     operations = [
-        migrations.AlterModelOptions(
-            name='sucursal',
-            options={'verbose_name_plural': 'sucursales'},
-        ),
-        migrations.AlterField(
+        migrations.AddField(
             model_name='serie',
             name='numero_inicial',
-            field=models.PositiveIntegerField(),
+            field=models.PositiveIntegerField(default=1),
+            preserve_default=False,
         ),
     ]
