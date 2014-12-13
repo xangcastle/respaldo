@@ -74,7 +74,7 @@ class Factura(models.Model):
     contabilizada = models.BooleanField(default=True)
     autorizada = models.BooleanField(default=True)
     
-    vendedor = models.FloatField(User)
+    vendedor = models.ForeignKey(User)
     periodo = models.ForeignKey(Periodo)
     serie = models.ForeignKey(Serie)
     cliente = models.ForeignKey(Cliente)
