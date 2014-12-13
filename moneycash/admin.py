@@ -2,17 +2,26 @@ from django.contrib import admin
 from moneycash.models import Item, Marca, Categoria, Cliente, Factura,\
     factura_detalle, Periodo, Serie, Sucursal, Caja
 
+class base_admin(admin.ModelAdmin):
+    list_display = ('code','name')
+    actions = ['activar','inactivar']
+    def inactivar(self, request, queryset):
+        queryset.update(activo=False)
+    inactivar.short_description = "Deactivate selected objects"
 
-admin.site.register(Item)
-admin.site.register(Marca)
-admin.site.register(Categoria)
-admin.site.register(Cliente)
+    def activar(self, request, queryset):
+        queryset.update(activo=True)
+    activar.short_description = "Activate selected objects"
+
+admin.site.register(Item,base_admin)
+admin.site.register(Marca,base_admin)
+admin.site.register(Categoria,base_admin)
+admin.site.register(Cliente,base_admin)
 admin.site.register(Factura)
-admin.site.register(factura_detalle)
-admin.site.register(Periodo)
-admin.site.register(Serie)
-admin.site.register(Sucursal)
-admin.site.register(Caja)
+admin.site.register(Periodo,base_admin)
+admin.site.register(Serie,base_admin)
+admin.site.register(Sucursal,base_admin)
+admin.site.register(Caja,base_admin)
 
 
 
