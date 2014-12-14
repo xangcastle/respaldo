@@ -48,7 +48,7 @@ class ReciboAdmin(admin.ModelAdmin):
         ('Contadores y Meta', {
             'fields': (('contador_inicial', 'contador_final','meta'),)
         }),
-        ("Detalle Inlines", {"classes": ("placeholder detalle-recibo",), "fields" : ()}),
+        
         ('Datos de Facturacion', {
             'classes': ('grp-collapse grp-closed',),
             'fields': (('precio_copia', 'tasa_cambio'),)
