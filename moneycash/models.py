@@ -23,6 +23,7 @@ class documento(models.Model):
     numero = models.PositiveIntegerField(null=True,blank=True)
     periodo = models.ForeignKey('Periodo',null=True,blank=True,related_name="%(app_label)s_%(class)s_periodo")
     user = models.ForeignKey(User,null=True,blank=True,related_name="%(app_label)s_%(class)s_user")
+    sucursal = models.ForeignKey(User,null=True,blank=True,related_name="%(app_label)s_%(class)s_sucursal")
     class Meta:
         abstract = True
         
@@ -32,6 +33,7 @@ class documento(models.Model):
         super(documento,self).save()
         
 class documento_caja(documento):
+    caja = models.ForeignKey('Caja',null=True,blank=True,related_name="%(app_label)s_%(class)s_caja")
     cierre_caja = models.ForeignKey('CierreCaja',null=True,blank=True,related_name="%(app_label)s_%(class)s_cierre_caja")
     class Meta:
         abstract = True
@@ -142,10 +144,7 @@ class Recibo(documento_caja):
     impreso = models.BooleanField(default=False)
     contabilizado = models.BooleanField(default=False)
     
-    cajero = models.ForeignKey(User,null=True,blank=True)
     cliente = models.ForeignKey(Cliente,null=True,blank=True)
-    sucursal = models.ForeignKey(Sucursal,null=True,blank=True)
-    caja = models.ForeignKey(Caja,null=True,blank=True)
     
     def __unicode__(self):
         if self.numero:

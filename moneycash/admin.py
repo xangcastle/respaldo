@@ -103,7 +103,6 @@ admin.site.register(Item,entidad_admin)
 admin.site.register(Marca,entidad_admin)
 admin.site.register(Categoria,entidad_admin)
 admin.site.register(Cliente,entidad_admin)
-admin.site.register(Factura)
 admin.site.register(Periodo)
 admin.site.register(Serie,entidad_admin)
 admin.site.register(Sucursal,entidad_admin)
@@ -112,7 +111,6 @@ admin.site.register(Bodega,entidad_admin)
 admin.site.register(Pago,entidad_admin)
 admin.site.register(Banco,entidad_admin)
 admin.site.register(Moneda,entidad_admin)
-admin.site.register(Recibo,recibo_admin)
 
 
 
