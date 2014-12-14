@@ -82,7 +82,7 @@ class Equipo(models.Model):
 class Periodo(models.Model):
 
     def cuadro(self):
-        return '<a href="/rentas/cuadro/%s">%s</a>' % (self.id,self.total())
+        return '<a href="/deltacopiers/cuadro/%s">%s</a>' % (self.id,self.total())
     cuadro.allow_tags = True
     cuadro.short_description = "total a facturar"
 
