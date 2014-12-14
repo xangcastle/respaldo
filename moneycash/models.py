@@ -33,9 +33,9 @@ class Caja(base):
 class Bodega(base):
     sucursal = models.ForeignKey(Sucursal)
 class Cliente(base):
-    telefono = models.CharField(max_length=100)
-    direccion = models.CharField(max_length=100)
-    bodegas = models.ManyToManyField(Bodega)
+    telefono = models.CharField(max_length=100,null=True,blank=True)
+    direccion = models.CharField(max_length=100,null=True,blank=True)
+    bodegas = models.ManyToManyField(Bodega,null=True,blank=True)
 class Marca(base):
     pass
 class Categoria(base):
