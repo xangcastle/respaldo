@@ -148,7 +148,34 @@ TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + CUS
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 
+###########################################################################
 
+# DEFINE THE SEARCH CHANNELS:
+
+AJAX_LOOKUP_CHANNELS = {
+    # simplest way, automatically construct a search channel by passing a dict
+    'label': {'model': 'music.label', 'search_field': 'name'},
+
+    # Custom channels are specified with a tuple
+    # channel: ( module.where_lookup_is, ClassNameOfLookup )
+    'person': ('music.lookups', 'PersonLookup'),
+    'group': ('music.lookups', 'GroupLookup'),
+    'song': ('music.lookups', 'SongLookup'),
+    'cliche': ('music.lookups', 'ClicheLookup')
+}
+
+
+# By default will use window.jQuery
+# or Django Admin's jQuery
+# or load one from google ajax apis
+# then load jquery-ui and a default css
+# Set this to False if for some reason you want to supply your own
+# window.jQuery and jQuery UI
+
+# AJAX_SELECT_BOOTSTRAP = False
+
+
+###########################################################################
 
 
 

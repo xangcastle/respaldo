@@ -1,8 +1,8 @@
 
-from example.music import Q
-from example.music import escape
-from example.music import *
-from example.music import LookupChannel
+from django.db.models import Q
+from django.utils.html import escape
+from models import *
+from ajax_select import LookupChannel
 
 
 class PersonLookup(LookupChannel):

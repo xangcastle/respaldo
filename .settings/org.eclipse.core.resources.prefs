@@ -1,3 +1,5 @@
 eclipse.preferences.version=1
 encoding//grappelli_dynamic_navbar/templatetags/grappelli_dynamic_navbar.py=utf-8
+encoding//music/forms.py=utf-8
+encoding//music/models.py=utf8
 encoding//recibos/management/commands/fix_permissions.py=utf-8

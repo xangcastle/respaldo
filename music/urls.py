@@ -1,11 +1,11 @@
 try:
-    from example.music import *
+    from django.conf.urls import *
 except:
-    from example.music import *
-from example.music import static
-from example.music import admin
-from example.music import settings
-from example.music import urls as ajax_select_urls
+    from django.conf.urls.defaults import *
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.conf import settings
+from ajax_select import urls as ajax_select_urls
 
 
 admin.autodiscover()
