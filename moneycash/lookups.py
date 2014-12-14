@@ -23,5 +23,5 @@ class ClienteLookup(LookupChannel):
 
     def format_item_display(self, obj):
         """ (HTML) formatted item for displaying item in the selected deck area """
-        return u"<a href=""/admin/moneycash/cliente/%s""onclick=""return showAddAnotherPopup(this);"">%s</a><div><i>%s</i></div><div><i>%s</i></div>" % (escape(obj.id), escape(obj.name), escape(obj.telefono), escape(obj.direccion))
+        return u"<a href=""/admin/moneycash/cliente/%s"" onclick=""return showAddAnotherPopup(this);"">%s</a><div><i>%s</i></div><div><i>%s</i></div>" % (escape(obj.id), escape(obj.name), escape(obj.telefono), escape(obj.direccion))
 
