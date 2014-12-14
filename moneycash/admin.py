@@ -1,7 +1,8 @@
 from django.contrib import admin
 from moneycash.models import Item, Marca, Categoria, Cliente, Factura,\
     factura_detalle, Periodo, Serie, Sucursal, Caja, Bodega, Pago, Banco, Moneda,\
-    Recibo, detalle_pago
+    Recibo, detalle_pago, pago_efectivo, pago_cheque, pago_tarjeta, pago_credito,\
+    pago_transferencia
 
 class base_admin(admin.ModelAdmin):
     list_display = ('code','name')
@@ -45,8 +46,39 @@ class detalle_pago_tabular(admin.TabularInline):
     extra = 1
     classes = ('grp-collapse grp-open',)
     
+class efectivo_tabular(admin.TabularInline):
+    model = pago_efectivo
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    fields = ('monto','moneda')
+    
+class cheque_tabular(admin.TabularInline):
+    model = pago_cheque
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    fields = ('monto','moneda','banco','numero_cheque')
+    
+class tarjeta_tabular(admin.TabularInline):
+    model = pago_tarjeta
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    fields = ('monto','moneda','banco')
+    
+class credito_tabular(admin.TabularInline):
+    model = pago_credito
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    fields = ('monto','moneda','banco','cuenta')
+    
+class transferencia_tabular(admin.TabularInline):
+    model = pago_transferencia
+    extra = 1
+    classes = ('grp-collapse grp-open',)
+    fields = ('monto','moneda','banco','numero_transferencia')
+    
 class recibo_admin(admin.ModelAdmin):
-    inlines = [detalle_pago_tabular]
+    inlines = [efectivo_tabular,cheque_tabular,tarjeta_tabular,credito_tabular,transferencia_tabular]
+    
 
 
 admin.site.register(Item,base_admin)
