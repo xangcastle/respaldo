@@ -1,4 +1,4 @@
-from moneycash.apps.facturacion.models import models, factura_manager, Factura as base_factura
+from moneycash.facturacion.models import models, factura_manager, Factura as base_factura
 from moneycash.models import Recibo as base_recibo, CierreCaja as base_cierre_caja,\
     Deposito as base_deposito, detalle_pago
 

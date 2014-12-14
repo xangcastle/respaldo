@@ -88,7 +88,9 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    ##INCLUIR LAS SIGUIENTES APLICACIONES DENTRO DE LOS REQUERIMIENTOS
     'grappelli_dynamic_navbar',
+    'ajax_select',
     'grappelli',
     'import_export',
     'django.contrib.admin',
@@ -97,14 +99,19 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'geoposition',
     'adminactions',
-    'recibos',
+    
+    'recibos', ## SISTEMA DE CONTROL DE COPIADORAS DE DELTACOPIERS NO TOCAR!
+    
+    
+    ##APLICACIONES DEL SISTEMA INTEGRADO MONEYCASH##
     'moneycash',
-    'moneycash.apps.facturacion',
-    'moneycash.apps.caja',
-    'moneycash.apps.bodega',
-    'ajax_select',
+    'moneycash.bodega',
+    'moneycash.caja',
+    'moneycash.facturacion',
+    
+    
+    
     'music',
 )
 
@@ -154,14 +161,15 @@ TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 AJAX_LOOKUP_CHANNELS = {
     # simplest way, automatically construct a search channel by passing a dict
-    'label': {'model': 'music.label', 'search_field': 'name'},
+    'label': {'model': 'music.label', 'search_field': 'url'},
 
     # Custom channels are specified with a tuple
     # channel: ( module.where_lookup_is, ClassNameOfLookup )
     'person': ('music.lookups', 'PersonLookup'),
     'group': ('music.lookups', 'GroupLookup'),
     'song': ('music.lookups', 'SongLookup'),
-    'cliche': ('music.lookups', 'ClicheLookup')
+    'cliche': ('music.lookups', 'ClicheLookup'),
+    'cliente': ('moneycash.lookups', 'ClienteLookup'),
 }
 
 

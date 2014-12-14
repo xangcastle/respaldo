@@ -1,4 +1,4 @@
-from moneycash.apps.caja.models import models,impresa_manager, Factura as base_factura
+from moneycash.caja.models import models,impresa_manager, Factura as base_factura
 
 class entregada_manager(impresa_manager):
     def get_queryset(self):

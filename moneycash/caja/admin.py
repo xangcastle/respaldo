@@ -1,7 +1,9 @@
-from moneycash.apps.facturacion.admin import admin,factura_admin,documento_admin
-from moneycash.apps.caja.models import Factura,no_impresas, Recibo, CierreCaja,\
+from moneycash.facturacion.admin import admin,factura_admin,documento_admin
+from moneycash.caja.models import Factura,no_impresas, Recibo, CierreCaja,\
     Deposito, pago_efectivo, pago_cheque, pago_tarjeta, pago_credito,\
     pago_transferencia, abonos_factura
+from ajax_select import make_ajax_form
+from ajax_select.admin import AjaxSelectAdmin, AjaxSelectAdminTabularInline
    
 class deposito_tabular(admin.TabularInline):
     model = Deposito
@@ -62,9 +64,10 @@ class recibo_admin(documento_admin):
     inlines = [efectivo_tabular,cheque_tabular,tarjeta_tabular,transferencia_tabular,abonos_factura]
     
     
-class no_impresas_admin(admin.ModelAdmin):
-    list_display = ('nombre','subtotal','descuento','iva','total')
-    fields = (('numero','nombre'),('alcaldia','retencion_ir'),'subtotal','descuento','iva','total')
+class no_impresas_admin(AjaxSelectAdmin):
+    list_display = ('cliente','subtotal','descuento','iva','total')
+    fields = (('numero','cliente'),('alcaldia','retencion_ir'),'subtotal','descuento','iva','total')
+    form = make_ajax_form(Factura, {'cliente': 'cliente'})
     inlines = [efectivo_tabular,tarjeta_tabular,credito_tabular]
     
 class cierre_caja_admin(documento_admin):

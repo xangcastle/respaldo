@@ -102,11 +102,7 @@ class Periodo(models.Model):
         return self.fecha_inicial.strftime("%B %Y")
     
 class Factura(documento_caja):
-    nombre = models.CharField(max_length=100,null=True,blank=True)
-    telefono = models.CharField(max_length=100,null=True,blank=True)
-    direccion = models.CharField(max_length=100,null=True,blank=True)
-    comentarios = models.CharField(max_length=200,null=True,blank=True)
-    
+    cliente = models.ForeignKey(Cliente,null=True,blank=True,help_text="BUSCAR CLIENTE")
     exento_iva = models.BooleanField(default=False)
     exento_iva_monto = models.FloatField(null=True,blank=True,verbose_name="porcentaje autorizado por la dgi")
     alcaldia = models.BooleanField(default=False)
@@ -126,7 +122,7 @@ class Factura(documento_caja):
     entregada = models.BooleanField(default=False)
     
     serie = models.ForeignKey(Serie,null=True,blank=True)
-    cliente = models.ForeignKey(Cliente,null=True,blank=True)
+    
     
     def __unicode__(self):
         if self.numero:

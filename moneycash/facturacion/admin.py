@@ -1,6 +1,8 @@
 from moneycash.admin import admin, documento_admin
+from ajax_select import make_ajax_form
+from ajax_select.admin import AjaxSelectAdmin, AjaxSelectAdminTabularInline
 from moneycash.models import factura_detalle
-from moneycash.apps.facturacion.models import Factura,Proforma
+from moneycash.facturacion.models import Factura,Proforma
 
 class detalle_factura_tabular(admin.TabularInline):
     model = factura_detalle
@@ -9,7 +11,7 @@ class detalle_factura_tabular(admin.TabularInline):
     fields = ('item','descripcion','cantidad','costo_unitario','precio_unitario','total','descuento_unitario','precio_descontado','precio_descontado_total')
 
 
-class factura_admin(documento_admin):
+class factura_admin(AjaxSelectAdmin):
     fieldsets = (
         ('Datos Principales', {
         'classes': ('grp-collapse grp-open',),
@@ -18,7 +20,7 @@ class factura_admin(documento_admin):
                          
         ('Datos del Cliente', {
         'classes': ('grp-collapse grp-open',),
-        'fields': ('cliente',('nombre', 'telefono'),'direccion','comentarios')
+        'fields': ('cliente',)
         }),
         ("Detalle Inlines", {"classes": ("placeholder factura_detalle_set-group",), "fields" : ()}),      
         ('Datos calculados y Totales', {
@@ -26,8 +28,9 @@ class factura_admin(documento_admin):
         'fields': (('subtotal','descuento', 'iva','total'),('retencion','costos','utilidad'),)
         }),
     )
-    list_display = ('numero','fecha','nombre','subtotal','descuento','total')
+    list_display = ('numero','fecha','cliente','subtotal','descuento','total')
     inlines = [detalle_factura_tabular]
+    form = make_ajax_form(Factura, {'cliente': 'cliente'})
 
 admin.site.register(Factura, factura_admin)
 admin.site.register(Proforma, factura_admin)
