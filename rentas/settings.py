@@ -106,6 +106,7 @@ INSTALLED_APPS = (
     #'sites',
     #'produccion',
     'moneycash',
+    'moneycash.apps.facturacion',
 )
 
 # A sample logging configuration. The only tangible logging
