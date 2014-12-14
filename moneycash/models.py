@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class base_entidad(models.Model):
+class entidad(models.Model):
     code = models.CharField(max_length=25)
     name = models.CharField(max_length=100)
     activo = models.BooleanField(default=True)
@@ -17,26 +17,44 @@ class base_entidad(models.Model):
             return ''
     class Meta:
         abstract = True
+        
+class documento(models.Model):
+    fecha = models.DateField()
+    numero = models.PositiveIntegerField(null=True,blank=True)
+    periodo = models.ForeignKey('Periodo',null=True,blank=True,related_name="%(app_label)s_%(class)s_periodo")
+    user = models.ForeignKey(User,null=True,blank=True,related_name="%(app_label)s_%(class)s_user")
+    class Meta:
+        abstract = True
+        
+    def save(self):
+        if not self.periodo:
+            self.periodo = Periodo.objects.get(fecha_inicial__lte=self.fecha,fecha_final__gte=self.fecha)
+        super(documento,self).save()
+        
+class documento_caja(documento):
+    cierre_caja = models.ForeignKey('CierreCaja',null=True,blank=True,related_name="%(app_label)s_%(class)s_cierre_caja")
+    class Meta:
+        abstract = True
     
-class Pago(base_entidad):
+class Pago(entidad):
     pass
 
-class Banco(base_entidad):
+class Banco(entidad):
     pass
 
-class Moneda(base_entidad):
+class Moneda(entidad):
     pass
 
-class Serie(base_entidad):
+class Serie(entidad):
     numero_inicial = models.PositiveIntegerField()
     
-class Marca(base_entidad):
+class Marca(entidad):
     pass
 
-class Categoria(base_entidad):
+class Categoria(entidad):
     pass
 
-class Item(base_entidad):
+class Item(entidad):
     marca = models.ForeignKey(Marca)
     categoria = models.ForeignKey(Categoria)
     existencias = models.FloatField(default=0)
@@ -44,23 +62,29 @@ class Item(base_entidad):
     precio = models.FloatField(default=0)
     costo = models.FloatField(default=0)
     
-class Sucursal(base_entidad):
+class Sucursal(entidad):
     class Meta:
         verbose_name_plural = "sucursales"
         
-class Caja(base_entidad):
+class Caja(entidad):
     sucursal = models.ForeignKey(Sucursal)
     series = models.ManyToManyField(Serie)
     
-class Bodega(base_entidad):
+class CierreCaja(documento):
+    caja = models.ForeignKey(Caja)
+    apertura = models.DateTimeField(null=True,blank=True)
+    cierre = models.DateTimeField(null=True,blank=True)
+    cerrado = models.BooleanField(default=False)
+    
+class Bodega(entidad):
     sucursal = models.ForeignKey(Sucursal)
     
-class Cliente(base_entidad):
+class Cliente(entidad):
     telefono = models.CharField(max_length=100,null=True,blank=True)
     direccion = models.CharField(max_length=100,null=True,blank=True)
     bodegas = models.ManyToManyField(Bodega,null=True,blank=True)
     
-class Cuenta(base_entidad):
+class Cuenta(entidad):
     cliente = models.ForeignKey(Cliente)
     limite_credito = models.FloatField()
     plazo = models.PositiveIntegerField()
@@ -73,19 +97,7 @@ class Periodo(models.Model):
     def __unicode__(self):
         return self.fecha_inicial.strftime("%B %Y")
     
-class base_documento(models.Model):
-    periodo = models.ForeignKey(Periodo,null=True,blank=True,related_name="%(app_label)s_%(class)s_cliente")
-    class Meta:
-        abstract = True
-        
-    def save(self):
-        if not self.periodo:
-            self.periodo = Periodo.objects.get(fecha_inicial__lte=self.fecha,fecha_final__gte=self.fecha)
-        super(base_documento,self).save()
-    
-class Factura(base_documento):
-    fecha = models.DateField()
-    numero = models.PositiveIntegerField(null=True,blank=True)
+class Factura(documento_caja):
     nombre = models.CharField(max_length=100,null=True,blank=True)
     telefono = models.CharField(max_length=100,null=True,blank=True)
     direccion = models.CharField(max_length=100,null=True,blank=True)
@@ -109,7 +121,6 @@ class Factura(base_documento):
     autorizada = models.BooleanField(default=False)
     entregada = models.BooleanField(default=False)
     
-    vendedor = models.ForeignKey(User,null=True,blank=True)
     serie = models.ForeignKey(Serie,null=True,blank=True)
     cliente = models.ForeignKey(Cliente,null=True,blank=True)
     sucursal = models.ForeignKey(Sucursal,null=True,blank=True)
@@ -122,9 +133,7 @@ class Factura(base_documento):
         else:
             return ''
 
-class Recibo(base_documento):
-    fecha = models.DateField()
-    numero = models.PositiveIntegerField(null=True,blank=True)
+class Recibo(documento_caja):
     nombre = models.CharField(max_length=100,null=True,blank=True)
     concepto = models.CharField(max_length=200,null=True,blank=True)
     
@@ -177,6 +186,8 @@ class detalle_pago(models.Model):
     recibo = models.ForeignKey(Recibo,null=True,blank=True)
     pago = models.ForeignKey(Pago) 
     monto = models.FloatField(default=0)
+    total = models.FloatField(default=0)
+    saldo = models.FloatField(default=0)
     moneda = models.ForeignKey(Moneda) 
     banco = models.ForeignKey(Banco,null=True,blank=True)
     numero_cheque = models.CharField(max_length=25,null=True,blank=True)
@@ -204,6 +215,10 @@ class credito_manager(models.Manager):
 class transferencia_manager(models.Manager):
     def get_queryset(self):
         return super(transferencia_manager,self).get_queryset().filter(pago__code=5)
+    
+class abonos_manager(models.Manager):
+    def get_queryset(self):
+        return super(abonos_manager,self).get_queryset().exclude(factura__isnull=True)
     
 class pago_efectivo(detalle_pago):
     objects = models.Manager()
@@ -245,3 +260,10 @@ class pago_transferencia(detalle_pago):
         verbose_name = 'transaccion'
         verbose_name_plural = 'pagos via transferencia bancaria'
     
+class abonos_factura(detalle_pago):
+    objects = models.Manager()
+    objects = abonos_manager()
+    class Meta:
+        proxy = True
+        verbose_name = 'factura'
+        verbose_name_plural = 'detalle de facturas canceladas'

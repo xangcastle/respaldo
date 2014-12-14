@@ -2,12 +2,13 @@ from django.contrib import admin
 from moneycash.models import Item, Marca, Categoria, Cliente, Factura,\
     factura_detalle, Periodo, Serie, Sucursal, Caja, Bodega, Pago, Banco, Moneda,\
     Recibo, detalle_pago, pago_efectivo, pago_cheque, pago_tarjeta, pago_credito,\
-    pago_transferencia
+    pago_transferencia, abonos_factura
 
-class base_admin(admin.ModelAdmin):
+class entidad_admin(admin.ModelAdmin):
     list_display = ('code','name')
     actions = ['activar','inactivar']
     ordering = ('code',)
+    
     def inactivar(self, request, queryset):
         queryset.update(activo=False)
     inactivar.short_description = "Deactivate selected objects"
@@ -15,13 +16,19 @@ class base_admin(admin.ModelAdmin):
     def activar(self, request, queryset):
         queryset.update(activo=True)
     activar.short_description = "Activate selected objects"
+    
+class documento_admin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        obj.save()
+        
 class detalle_factura_tabular(admin.TabularInline):
     model = factura_detalle
     extra = 1
     classes = ('grp-collapse grp-open',)
     fields = ('item','codigo','descripcion','cantidad','costo_unitario','precio_unitario','total','descuento_unitario','precio_descontado','precio_descontado_total')
     
-class factura_admin(admin.ModelAdmin):
+class factura_admin(documento_admin):
     fieldsets = (
         ('Datos Principales', {
         'classes': ('grp-collapse grp-open',),
@@ -55,45 +62,56 @@ class efectivo_tabular(admin.TabularInline):
 class cheque_tabular(admin.TabularInline):
     model = pago_cheque
     extra = 1
-    classes = ('grp-collapse grp-open',)
+    classes = ('grp-collapse grp-closed',)
     fields = ('monto','moneda','banco','numero_cheque')
     
 class tarjeta_tabular(admin.TabularInline):
     model = pago_tarjeta
     extra = 1
-    classes = ('grp-collapse grp-open',)
+    classes = ('grp-collapse grp-closed',)
     fields = ('monto','moneda','banco')
     
 class credito_tabular(admin.TabularInline):
     model = pago_credito
     extra = 1
-    classes = ('grp-collapse grp-open',)
+    classes = ('grp-collapse grp-closed',)
     fields = ('monto','moneda','banco','cuenta')
     
 class transferencia_tabular(admin.TabularInline):
     model = pago_transferencia
     extra = 1
-    classes = ('grp-collapse grp-open',)
+    classes = ('grp-collapse grp-closed',)
     fields = ('monto','moneda','banco','numero_transferencia')
     
-class recibo_admin(admin.ModelAdmin):
-    inlines = [efectivo_tabular,cheque_tabular,tarjeta_tabular,credito_tabular,transferencia_tabular]
+class abonos_factura(admin.TabularInline):
+    model = abonos_factura
+    extra = 1
+    classes = ('grp-collapse grp-closed',)
+    fields = ('factura','total','monto','saldo')
     
-
-
-admin.site.register(Item,base_admin)
-admin.site.register(Marca,base_admin)
-admin.site.register(Categoria,base_admin)
-admin.site.register(Cliente,base_admin)
+class recibo_admin(documento_admin):
+    fieldsets = (
+        ('Datos Principales', {
+        'classes': ('grp-collapse grp-open',),
+        'fields': (('fecha', 'numero'),('cliente','nombre'),'concepto','monto')
+        }),
+        
+    )
+    inlines = [efectivo_tabular,cheque_tabular,tarjeta_tabular,transferencia_tabular,abonos_factura]
+    
+admin.site.register(Item,entidad_admin)
+admin.site.register(Marca,entidad_admin)
+admin.site.register(Categoria,entidad_admin)
+admin.site.register(Cliente,entidad_admin)
 admin.site.register(Factura)
 admin.site.register(Periodo)
-admin.site.register(Serie,base_admin)
-admin.site.register(Sucursal,base_admin)
-admin.site.register(Caja,base_admin)
-admin.site.register(Bodega,base_admin)
-admin.site.register(Pago,base_admin)
-admin.site.register(Banco,base_admin)
-admin.site.register(Moneda,base_admin)
+admin.site.register(Serie,entidad_admin)
+admin.site.register(Sucursal,entidad_admin)
+admin.site.register(Caja,entidad_admin)
+admin.site.register(Bodega,entidad_admin)
+admin.site.register(Pago,entidad_admin)
+admin.site.register(Banco,entidad_admin)
+admin.site.register(Moneda,entidad_admin)
 admin.site.register(Recibo,recibo_admin)
 
 
