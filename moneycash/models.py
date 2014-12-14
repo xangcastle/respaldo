@@ -23,7 +23,7 @@ class documento(models.Model):
     numero = models.PositiveIntegerField(null=True,blank=True)
     periodo = models.ForeignKey('Periodo',null=True,blank=True,related_name="%(app_label)s_%(class)s_periodo")
     user = models.ForeignKey(User,null=True,blank=True,related_name="%(app_label)s_%(class)s_user")
-    sucursal = models.ForeignKey(User,null=True,blank=True,related_name="%(app_label)s_%(class)s_sucursal")
+    sucursal = models.ForeignKey('Sucursal',null=True,blank=True,related_name="%(app_label)s_%(class)s_sucursal")
     class Meta:
         abstract = True
         
@@ -39,7 +39,7 @@ class documento_caja(documento):
         abstract = True
     
 class Pago(entidad):
-    pass
+    capitalizable = models.BooleanField(default=True,help_text="indica si este tipo de pago aplica en el cierre de caja")
 
 class Banco(entidad):
     pass
@@ -75,7 +75,9 @@ class Caja(entidad):
 class CierreCaja(documento):
     caja = models.ForeignKey(Caja)
     apertura = models.DateTimeField(null=True,blank=True)
+    saldo_inicial = models.FloatField(default=0)
     cierre = models.DateTimeField(null=True,blank=True)
+    saldo_final = models.FloatField(default=0)
     cerrado = models.BooleanField(default=False)
     
 class Bodega(entidad):
@@ -153,6 +155,9 @@ class Recibo(documento_caja):
         else:
             return ''
         
+class Deposito(documento_caja):
+    banco = models.ForeignKey(Banco)
+    monto = models.FloatField()
         
 class factura_detalle(models.Model):
     factura = models.ForeignKey(Factura)
@@ -193,75 +198,3 @@ class detalle_pago(models.Model):
     cuenta = models.ForeignKey(Cuenta,null=True,blank=True)
     def __unicode__(self):
         return ''
-    
-class efectivo_manager(models.Manager):
-    def get_queryset(self):
-        return super(efectivo_manager,self).get_queryset().filter(pago__code=1)
-    
-class cheque_manager(models.Manager):
-    def get_queryset(self):
-        return super(cheque_manager,self).get_queryset().filter(pago__code=2)
-    
-class tarjeta_manager(models.Manager):
-    def get_queryset(self):
-        return super(tarjeta_manager,self).get_queryset().filter(pago__code=3)
-    
-class credito_manager(models.Manager):
-    def get_queryset(self):
-        return super(credito_manager,self).get_queryset().filter(pago__code=4)
-    
-class transferencia_manager(models.Manager):
-    def get_queryset(self):
-        return super(transferencia_manager,self).get_queryset().filter(pago__code=5)
-    
-class abonos_manager(models.Manager):
-    def get_queryset(self):
-        return super(abonos_manager,self).get_queryset().exclude(factura__isnull=True)
-    
-class pago_efectivo(detalle_pago):
-    objects = models.Manager()
-    objects = efectivo_manager()
-    class Meta:
-        proxy = True
-        verbose_name = 'monto'
-        verbose_name_plural = 'pagos en efectivo'
-        
-class pago_cheque(detalle_pago):
-    objects = models.Manager()
-    objects = efectivo_manager()
-    class Meta:
-        proxy = True
-        verbose_name = 'cheque'
-        verbose_name_plural = 'pagos con cheque'
-        
-class pago_tarjeta(detalle_pago):
-    objects = models.Manager()
-    objects = efectivo_manager()
-    class Meta:
-        proxy = True
-        verbose_name = 'transaccion'
-        verbose_name_plural = 'pagos con tarjeta de credito'
-        
-class pago_credito(detalle_pago):
-    objects = models.Manager()
-    objects = efectivo_manager()
-    class Meta:
-        proxy = True
-        verbose_name = 'cuenta'
-        verbose_name_plural = 'cargos a cuentas de credito'
-    
-class pago_transferencia(detalle_pago):
-    objects = models.Manager()
-    objects = transferencia_manager()
-    class Meta:
-        proxy = True
-        verbose_name = 'transaccion'
-        verbose_name_plural = 'pagos via transferencia bancaria'
-    
-class abonos_factura(detalle_pago):
-    objects = models.Manager()
-    objects = abonos_manager()
-    class Meta:
-        proxy = True
-        verbose_name = 'factura'
-        verbose_name_plural = 'detalle de facturas canceladas'

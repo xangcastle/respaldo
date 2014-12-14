@@ -1,8 +1,18 @@
-from moneycash.models import models, Factura as base_factura
+from moneycash.apps.caja.models import models,impresa_manager, Factura as base_factura
 
-class no_entregada_manager(models.Manager):
+class entregada_manager(impresa_manager):
     def get_queryset(self):
-        return super(no_entregada_manager,self).get_queryset().filter(autorizada=True,impresa=True,entregada=False)
+        return super(entregada_manager,self).get_queryset().filter(entregada=True)
+
+class no_entregada_manager(impresa_manager):
+    def get_queryset(self):
+        return super(no_entregada_manager,self).get_queryset().filter(entregada=False)
+    
+class Factura(base_factura):
+    objects = models.Manager()
+    objects = entregada_manager()
+    class Meta:
+        proxy = True
 
 class no_entregada(base_factura):
     objects = models.Manager()
