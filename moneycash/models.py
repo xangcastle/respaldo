@@ -125,7 +125,6 @@ class Factura(documento_caja):
     
     serie = models.ForeignKey(Serie,null=True,blank=True)
     cliente = models.ForeignKey(Cliente,null=True,blank=True)
-    sucursal = models.ForeignKey(Sucursal,null=True,blank=True)
     
     def __unicode__(self):
         if self.numero:

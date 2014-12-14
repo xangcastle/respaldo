@@ -32,7 +32,7 @@ class factura_admin(documento_admin):
     fieldsets = (
         ('Datos Principales', {
         'classes': ('grp-collapse grp-open',),
-        'fields': (('serie','fecha', 'numero','vendedor'),('exento_iva','exento_iva_monto'),'alcaldia','retencion_ir')
+        'fields': (('serie','fecha', 'numero','user'),('exento_iva','exento_iva_monto'),'alcaldia','retencion_ir')
         }),
                          
         ('Datos del Cliente', {
