@@ -1,8 +1,8 @@
-from moneycash.admin import admin, documento_admin
+from moneycash.admin import admin, documento_admin, entidad_admin
 from ajax_select import make_ajax_form
 from ajax_select.admin import AjaxSelectAdmin, AjaxSelectAdminTabularInline
 from moneycash.models import factura_detalle
-from moneycash.facturacion.models import Factura,Proforma
+from moneycash.facturacion.models import Factura,Proforma, Cliente
 
 class detalle_factura_tabular(admin.TabularInline):
     model = factura_detalle
@@ -34,5 +34,6 @@ class factura_admin(documento_admin,AjaxSelectAdmin):
 
 admin.site.register(Factura, factura_admin)
 admin.site.register(Proforma, factura_admin)
+admin.site.register(Cliente, entidad_admin)
 
 

@@ -47,11 +47,19 @@ class Bodega(entidad):
     sucursal = models.ForeignKey(Sucursal)
     
 class Cliente(entidad):
+    identificacion = models.CharField(max_length=25,null=True,blank=True)
     telefono = models.CharField(max_length=100,null=True,blank=True)
     direccion = models.CharField(max_length=100,null=True,blank=True)
     bodegas = models.ManyToManyField(Bodega,null=True,blank=True)
     
+class Contacto(entidad):
+    cliente = models.ForeignKey(Cliente)
+    cargo = models.CharField(max_length=100,null=True,blank=True,verbose_name="cargo que ocupa")
+    telefono = models.CharField(max_length=50,null=True,blank=True)
+    email = models.EmailField(null=True,blank=True)
+    
 class Cuenta(entidad):
+    numero_cuenta = models.CharField(max_length=25)
     cliente = models.ForeignKey(Cliente)
     limite_credito = models.FloatField()
     plazo = models.PositiveIntegerField()

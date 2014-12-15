@@ -88,31 +88,30 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    ##INCLUIR LAS SIGUIENTES APLICACIONES DENTRO DE LOS REQUERIMIENTOS
-    'grappelli_dynamic_navbar',
-    'ajax_select',
-    'grappelli',
-    'import_export',
+    ##APLICACIONES BASICAS DEL ADMIN
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    ##INCLUIR LAS SIGUIENTES APLICACIONES DENTRO DE LOS REQUERIMIENTOS
     'adminactions',
+    'grappelli_dynamic_navbar',
+    'ajax_select',
+    'grappelli',
+    'import_export',
     
     'recibos', ## SISTEMA DE CONTROL DE COPIADORAS DE DELTACOPIERS NO TOCAR!
-    
     
     ##APLICACIONES DEL SISTEMA INTEGRADO MONEYCASH##
     'moneycash',
     'moneycash.bodega',
     'moneycash.caja',
     'moneycash.facturacion',
-    
-    
-    
-    'music',
+    'moneycash.compras',
+    'moneycash.cartera',
+    'moneycash.contabilidad',
 )
 
 # A sample logging configuration. The only tangible logging
