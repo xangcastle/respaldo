@@ -1,6 +1,5 @@
 {% extends "grappelli:admin/base_site.html" %}
 
-
 <!-- LOADING -->
 {% load i18n grp_tags log %}
 
@@ -23,16 +22,6 @@
     {% if title %}
         <header><h1>{{ title }}</h1></header>
     {% endif %}
-{% endblock %}
-{% block extrahead %}
-{{ block.super }}
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript">
-	var ancho_pantalla = screen.width;
-	var alto_pantalla = screen.height;
-</script>
-
 {% endblock %}
 
 <!-- CONTENT -->
@@ -79,6 +68,8 @@
             </div>
         </div>
     </div>
+    {% load modulo %}
+    {% get_estadisticas as recibos %}
 	<div class="module" id="d3js-dashboard">
 		<style>
 			path {  stroke: #fff; }
@@ -111,8 +102,12 @@
 			    width:50px;
 			}
 		</style>
-		<div id='dashboard'></div>
-	
+		<div id='dashboard' 
+		style="	position: absolute;
+    			left: 0;
+    			top: 0;
+    			margin-left: 250px;">
+    	</div>
 		<script>
 			function dashboard(id, fData){
 			    var barColor = 'rgb(23, 92, 156)';
@@ -325,5 +320,18 @@
 	
 	</div>
 {% endblock %}
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin1/css/dashboard.css" %}" />{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript">
+	var ancho_pantalla = screen.width;
+	var alto_pantalla = screen.height;
+</script>
+
+{% endblock %}
+
+
+
 
