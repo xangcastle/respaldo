@@ -153,6 +153,7 @@ class Recibo(documento_caja):
         
 class Deposito(documento_caja):
     banco = models.ForeignKey(Banco)
+    moneda = models.ForeignKey(Moneda)
     monto = models.FloatField()
         
 class factura_detalle(models.Model):

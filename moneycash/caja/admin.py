@@ -75,7 +75,12 @@ class cierre_caja_admin(documento_admin):
     fields =  (('numero','fecha','user'),('saldo_inicial','saldo_final'),('caja','sucursal'),)
     inlines = [deposito_tabular,factura_tabular]
     
+class deposito_admin(documento_admin):
+    fields = ('fecha','banco','monto','numero','moneda')
+    list_display = ('fecha','banco','monto','numero','moneda')
+    
 admin.site.register(Factura,factura_admin)
 admin.site.register(no_impresas,no_impresas_admin)
 admin.site.register(Recibo,recibo_admin)
 admin.site.register(CierreCaja,cierre_caja_admin)
+admin.site.register(Deposito,deposito_admin)
