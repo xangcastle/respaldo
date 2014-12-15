@@ -1,4 +1,5 @@
-from moneycash.facturacion.admin import admin,factura_admin,documento_admin
+from moneycash.admin import admin,documento_admin
+from moneycash.facturacion.admin import factura_admin
 from moneycash.caja.models import Factura,no_impresas, Recibo, CierreCaja,\
     Deposito, pago_efectivo, pago_cheque, pago_tarjeta, pago_credito,\
     pago_transferencia, abonos_factura
@@ -64,7 +65,7 @@ class recibo_admin(documento_admin):
     inlines = [efectivo_tabular,cheque_tabular,tarjeta_tabular,transferencia_tabular,abonos_factura]
     
     
-class no_impresas_admin(AjaxSelectAdmin):
+class no_impresas_admin(documento_admin,AjaxSelectAdmin):
     list_display = ('cliente','subtotal','descuento','iva','total')
     fields = (('numero','cliente'),('alcaldia','retencion_ir'),'subtotal','descuento','iva','total')
     form = make_ajax_form(Factura, {'cliente': 'cliente'})

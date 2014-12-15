@@ -11,7 +11,7 @@ class detalle_factura_tabular(admin.TabularInline):
     fields = ('item','descripcion','cantidad','costo_unitario','precio_unitario','total','descuento_unitario','precio_descontado','precio_descontado_total')
 
 
-class factura_admin(AjaxSelectAdmin):
+class factura_admin(documento_admin,AjaxSelectAdmin):
     fieldsets = (
         ('Datos Principales', {
         'classes': ('grp-collapse grp-open',),

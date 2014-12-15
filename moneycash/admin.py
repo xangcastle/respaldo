@@ -1,6 +1,7 @@
 from django.contrib import admin
 from moneycash.models import Item, Marca, Categoria, Cliente,\
-    Periodo, Serie, Sucursal, Caja, Bodega, Pago, Banco, Moneda
+    Periodo, Serie, Sucursal, Caja, Bodega, Pago, Banco, Moneda, \
+    Factura, CierreCaja
 
 class entidad_admin(admin.ModelAdmin):
     list_display = ('code','name')
@@ -16,9 +17,20 @@ class entidad_admin(admin.ModelAdmin):
     activar.short_description = "Activate selected objects"
     
 class documento_admin(admin.ModelAdmin):
+    list_display = ('numero','fecha','user','sucursal','impreso','entregado','contabilizado')
+    list_filter = ('user','sucursal','impreso','entregado','contabilizado')
+    search_fields = ('numero',)
     def save_model(self, request, obj, form, change):
-        obj.periodo = Periodo.objects.get(fecha_inicial__lte=self.fecha,fecha_final__gte=self.fecha)
+        super(documento_admin,self).save_model()
         obj.user = request.user
+        obj.sucursal = request.sucursal
+        obj.periodo = Periodo.objects.get(fecha_inicial__lte=self.fecha,fecha_final__gte=self.fecha)
+        obj.save()
+        
+class documento_caja_admin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        super(documento_admin,self).save_model()
+        obj.cierre_caja = CierreCaja.objects.get(fecha_inicial__lte=self.fecha,fecha_final__gte=self.fecha)
         obj.save()
     
 admin.site.register(Item,entidad_admin)
@@ -26,6 +38,7 @@ admin.site.register(Marca,entidad_admin)
 admin.site.register(Categoria,entidad_admin)
 admin.site.register(Cliente,entidad_admin)
 admin.site.register(Periodo)
+admin.site.register(Factura)
 admin.site.register(Serie,entidad_admin)
 admin.site.register(Sucursal,entidad_admin)
 admin.site.register(Caja,entidad_admin)
