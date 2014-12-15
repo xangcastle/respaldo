@@ -17,6 +17,7 @@ class entidad_admin(admin.ModelAdmin):
     
 class documento_admin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
+        obj.periodo = Periodo.objects.get(fecha_inicial__lte=self.fecha,fecha_final__gte=self.fecha)
         obj.user = request.user
         obj.save()
     

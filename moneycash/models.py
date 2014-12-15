@@ -1,42 +1,5 @@
-from django.db import models
-from django.contrib.auth.models import User
+from moneycash.base import models, entidad, documento, documento_caja,transaccion_monetaria
 
-
-class entidad(models.Model):
-    code = models.CharField(max_length=25)
-    name = models.CharField(max_length=100)
-    activo = models.BooleanField(default=True)
-    def __unicode__(self):
-        if self.name:
-            return self.name
-        elif self.code:
-            return str(self.code)
-        elif self.code and self.name:
-            return str(self.code) + ' ' + self.name
-        else:
-            return ''
-    class Meta:
-        abstract = True
-        
-class documento(models.Model):
-    fecha = models.DateField()
-    numero = models.PositiveIntegerField(null=True,blank=True)
-    periodo = models.ForeignKey('Periodo',null=True,blank=True,related_name="%(app_label)s_%(class)s_periodo")
-    user = models.ForeignKey(User,null=True,blank=True,related_name="%(app_label)s_%(class)s_user")
-    sucursal = models.ForeignKey('Sucursal',null=True,blank=True,related_name="%(app_label)s_%(class)s_sucursal")
-    class Meta:
-        abstract = True
-        
-    def save(self):
-        if not self.periodo:
-            self.periodo = Periodo.objects.get(fecha_inicial__lte=self.fecha,fecha_final__gte=self.fecha)
-        super(documento,self).save()
-        
-class documento_caja(documento):
-    caja = models.ForeignKey('Caja',null=True,blank=True,related_name="%(app_label)s_%(class)s_caja")
-    cierre_caja = models.ForeignKey('CierreCaja',null=True,blank=True,related_name="%(app_label)s_%(class)s_cierre_caja")
-    class Meta:
-        abstract = True
     
 class Pago(entidad):
     capitalizable = models.BooleanField(default=True,help_text="indica si este tipo de pago aplica en el cierre de caja")
@@ -107,7 +70,6 @@ class Factura(documento_caja):
     exento_iva_monto = models.FloatField(null=True,blank=True,verbose_name="porcentaje autorizado por la dgi")
     alcaldia = models.BooleanField(default=False)
     retencion_ir = models.BooleanField(default=False)
-    
     subtotal = models.FloatField(default=0)
     descuento = models.FloatField(default=0)   
     iva = models.FloatField(default=0)
@@ -115,12 +77,7 @@ class Factura(documento_caja):
     retencion = models.FloatField(default=0)
     costos = models.FloatField(default=0)
     utilidad = models.FloatField(default=0)
-    
-    impresa = models.BooleanField(default=False)
-    contabilizada = models.BooleanField(default=False)
-    autorizada = models.BooleanField(default=False)
-    entregada = models.BooleanField(default=False)
-    
+        
     serie = models.ForeignKey(Serie,null=True,blank=True)
     
     
@@ -135,12 +92,7 @@ class Factura(documento_caja):
 class Recibo(documento_caja):
     nombre = models.CharField(max_length=100,null=True,blank=True)
     concepto = models.CharField(max_length=200,null=True,blank=True)
-    
-    monto = models.FloatField(default=0)
-    
-    impreso = models.BooleanField(default=False)
-    contabilizado = models.BooleanField(default=False)
-    
+    monto = models.FloatField(default=0)   
     cliente = models.ForeignKey(Cliente,null=True,blank=True)
     
     def __unicode__(self):
@@ -151,10 +103,8 @@ class Recibo(documento_caja):
         else:
             return ''
         
-class Deposito(documento_caja):
+class Deposito(transaccion_monetaria):
     banco = models.ForeignKey(Banco)
-    moneda = models.ForeignKey(Moneda)
-    monto = models.FloatField()
         
 class factura_detalle(models.Model):
     factura = models.ForeignKey(Factura)

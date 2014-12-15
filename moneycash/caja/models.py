@@ -1,18 +1,10 @@
-from moneycash.facturacion.models import models, factura_manager, Factura as base_factura
-from moneycash.models import Recibo as base_recibo, CierreCaja as base_cierre_caja,\
-    Deposito as base_deposito, detalle_pago
-
-class impresa_manager(factura_manager):
-    def get_queryset(self):
-        return super(impresa_manager,self).get_queryset().filter(impresa=True)
-    
-class no_impresa_manager(factura_manager):
-    def get_queryset(self):
-        return super(no_impresa_manager,self).get_queryset().filter(impresa=False)
+from moneycash.models import models, Recibo as base_recibo, CierreCaja as base_cierre_caja,\
+    Deposito as base_deposito, detalle_pago, Factura as base_factura
+from moneycash.manager import documento_impreso, documento_no_impreso
 
 class Factura(base_factura):
     objects = models.Manager()
-    objects = impresa_manager()
+    objects = documento_impreso()
     class Meta:
         proxy = True
         verbose_name = "factura"
@@ -20,7 +12,7 @@ class Factura(base_factura):
         
 class no_impresas(base_factura):
     objects = models.Manager()
-    objects = no_impresa_manager()
+    objects = documento_no_impreso()
     class Meta:
         proxy = True
         verbose_name = "factura"
