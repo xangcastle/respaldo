@@ -7,12 +7,30 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('moneycash', '0010_auto_20141213_1806'),
+        ('moneycash', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
+            name='Cliente',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('moneycash.cliente',),
+        ),
+        migrations.CreateModel(
             name='Factura',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('moneycash.factura',),
+        ),
+        migrations.CreateModel(
+            name='Proforma',
             fields=[
             ],
             options={

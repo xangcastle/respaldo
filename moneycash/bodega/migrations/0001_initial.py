@@ -7,10 +7,19 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('moneycash', '0014_auto_20141213_1941'),
+        ('moneycash', '0001_initial'),
     ]
 
     operations = [
+        migrations.CreateModel(
+            name='Factura',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('moneycash.factura',),
+        ),
         migrations.CreateModel(
             name='no_entregada',
             fields=[
