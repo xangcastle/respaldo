@@ -9,6 +9,7 @@ class compra_detalle(AjaxSelectAdminTabularInline):
     extra = 1
     fields = ('item', 'cantidad', 'precio')
     form = make_ajax_form(Detalle, {'item': 'item'})
+    classes = ('grp-collapse grp-closed',)
 
 
 class compra_admin(documento_admin, AjaxSelectAdmin):
