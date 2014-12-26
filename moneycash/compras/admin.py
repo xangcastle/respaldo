@@ -20,6 +20,8 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
             'fields': (('numero', 'fecha', 'moneda'), 'provedor')}),
         ("Detalle Inlines", {"classes":
             ("placeholder detalle_set-group",), "fields": ()}),
+        ('Impuestos y totales', {'classes': ('grp-collapse grp-open',),
+            'fields': (('iva', 'ir', 'al', 'total'),)}),
                 )
     form = make_ajax_form(Compra, {'provedor': 'provedor'})
     inlines = [compra_detalle]

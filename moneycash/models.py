@@ -50,6 +50,10 @@ class TipoCosto(entidad):
 class Compra(documento):
     provedor = models.ForeignKey(Provedor)
     moneda = models.ForeignKey(Moneda, default=1)
+    iva = models.FloatField(default=0.0)
+    ir = models.FloatField(default=0.0, verbose_name="retencion del ir")
+    al = models.FloatField(default=0.0, verbose_name="retencion de la alcaldia")
+    total = models.FloatField(default=0.0)
 
 
 class BaseDetalleCompra(models.Model):

@@ -16,3 +16,5 @@ class Compra(base_compra):
 class Detalle(base_detalle):
     class Meta:
         proxy = True
+        verbose_name = "producto"
+        verbose_name_plural = "detalle de productos"
