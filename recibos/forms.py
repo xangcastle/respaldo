@@ -1,6 +1,6 @@
 from django import forms
-from models import InsToner,Mantenimiento
-from django.db.models.base import Model
+from .models import InsToner, Mantenimiento
+
 
 class ReciboForm(forms.Form):
     marca = forms.CharField(widget=forms.TextInput())
@@ -11,10 +11,12 @@ class ReciboForm(forms.Form):
     contador_inicial = forms.CharField(widget=forms.TextInput())
     contador_final = forms.CharField(widget=forms.TextInput())
 
+
 class InsTonerForm(forms.ModelForm):
     class Meta:
         model = InsToner
-        
+
+
 class MantenimientoForm(forms.ModelForm):
     class Meta:
         model = Mantenimiento

@@ -8,8 +8,12 @@ except ImportError:
 _thread_locals = local()
 
 from new import instancemethod
+
+
 def _do_set_current_user(user_fun):
-    setattr(_thread_locals, USER_ATTR_NAME, instancemethod(user_fun, _thread_locals, type(_thread_locals)))
+    setattr(_thread_locals, USER_ATTR_NAME, instancemethod(user_fun,
+    _thread_locals, type(_thread_locals)))
+
 
 def _set_current_user(user=None):
     '''
@@ -20,11 +24,13 @@ def _set_current_user(user=None):
     '''
     _do_set_current_user(lambda self: user)
 
+
 class LocalUserMiddleware(object):
     def process_request(self, request):
         # request.user closure; asserts laziness; memoization is implemented in
         # request.user (non-data descriptor)
         _do_set_current_user(lambda self: getattr(request, 'user', None))
+
 
 def get_current_user():
     current_user = getattr(_thread_locals, USER_ATTR_NAME, None)

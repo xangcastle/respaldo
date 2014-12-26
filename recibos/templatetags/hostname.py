@@ -3,6 +3,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.simple_tag
 def get_hostname():
     current_site = Site.objects.get_current()

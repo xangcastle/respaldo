@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.db import models
 from django.db.models import Sum
 from datetime import timedelta
@@ -7,46 +5,54 @@ import time
 from django.contrib.auth.models import User
 
 
-
 class Marca(models.Model):
     OPCIONES_TIPO = (
-                     ('OR','FABRICANTE ORIGINAL'),
-                     ('GE','REMPLAZO GENERICO'),
+                     ('OR', 'FABRICANTE ORIGINAL'),
+                     ('GE', 'REMPLAZO GENERICO'),
                      )
-    nombre = models.CharField(max_length=50,verbose_name="Marca")
-    tipo = models.CharField(max_length=2,choices=OPCIONES_TIPO)
+
+    nombre = models.CharField(max_length=50, verbose_name="Marca")
+    tipo = models.CharField(max_length=2, choices=OPCIONES_TIPO)
+
     def __unicode__(self):
         return self.nombre
 
+
 class Equipo(models.Model):
     #datos del equipo
-    ubicacion   =   models.ForeignKey('Ubicacion',verbose_name="Ubicacion del Equipo",null=True,blank=True)
-    areas       =   models.ManyToManyField('Area',verbose_name="areas atendidas", null=True,blank=True,related_name="equipo_areas_manytomany")
-    marca       =   models.ForeignKey(Marca)
-    modelo      =   models.CharField(max_length=50)
-    serie       =   models.CharField(max_length=50)
-    contador    =   models.IntegerField(default=0)
-    minimo      =   models.IntegerField(default=0)
-    velocidad   =   models.IntegerField(verbose_name="Copias x Minuto")
+    ubicacion = models.ForeignKey('Ubicacion',
+        verbose_name="Ubicacion del Equipo", null=True, blank=True)
+    areas = models.ManyToManyField('Area',
+        verbose_name="areas atendidas", null=True, blank=True,
+        related_name="equipo_areas_manytomany")
+    marca = models.ForeignKey(Marca)
+    modelo = models.CharField(max_length=50)
+    serie = models.CharField(max_length=50)
+    contador = models.IntegerField(default=0)
+    minimo = models.IntegerField(default=0)
+    velocidad = models.IntegerField(verbose_name="Copias x Minuto")
     #datos de facturacion
-    papel       =   models.BooleanField(default=False,verbose_name="Incluye Papel")
-    operador    =   models.BooleanField(default=False,verbose_name="Incluye Operador")
-    precio_copia =  models.FloatField(verbose_name="Precio x Copias")
-    comentarios =   models.CharField(max_length=400,null=True,blank=True)
-    activo      =   models.BooleanField(default=True)
+    papel = models.BooleanField(default=False, verbose_name="Incluye Papel")
+    operador = models.BooleanField(default=False,
+        verbose_name="Incluye Operador")
+    precio_copia = models.FloatField(verbose_name="Precio x Copias")
+    comentarios = models.CharField(max_length=400, null=True, blank=True)
+    activo = models.BooleanField(default=True)
     #datos contables
-    costo = models.FloatField(null=True,blank=True)
-    vida_util = models.PositiveIntegerField(null=True,blank=True,help_text="vida util en cantidad de copias")
+    costo = models.FloatField(null=True, blank=True)
+    vida_util = models.PositiveIntegerField(null=True, blank=True,
+        help_text="vida util en cantidad de copias")
 
     def __unicode__(self):
         return self.modelo + ' - ' + self.serie
-    
+
     @staticmethod
     def autocomplete_search_fields():
         return ("serie__iexact", "modelo__icontains",)
-    
+
     def nombre_completo(self):
         return str(self.modelo) + '  -  ' + str(self.ubicacion)
+
     def nombre_area(self):
         a = ''
         if self.areas.count() == 1:
@@ -54,82 +60,102 @@ class Equipo(models.Model):
         else:
             a = self.ubicacion
         return a
+
     def recibe(self):
         a = ''
         if Area.objects.filter(equipo=self):
-            if Area.objects.filter(equipo=self).count()==1:
+            if Area.objects.filter(equipo=self).count() == 1:
                 a = Area.objects.filter(equipo=self)[0].responsable
             else:
                 a = self.ubicacion
         return a
+
     def valor_de_depreciacion(self):
         if not self.costo or not self.vida_util:
             return 0
         else:
-            return round(self.costo / (self.vida_util),4)
+            return round(self.costo / (self.vida_util), 4)
+
     valor_de_depreciacion.allow_tags = True
+
     def valor_actual(self):
         if not self.costo or not self.vida_util:
             return 0
         else:
-            return round((self.vida_util - self.contador) * self.valor_de_depreciacion(),4)
+            return round(
+                (self.vida_util - self.contador) * self.valor_de_depreciacion(),
+                4)
 
     valor_actual.allowtags = True
 
     class Meta:
         ordering = ('modelo',)
 
-class Periodo(models.Model):
 
+class Periodo(models.Model):
     def cuadro(self):
-        return '<a href="/deltacopiers/cuadro/%s">%s</a>' % (self.id,self.total())
+        return '<a href="/deltacopiers/cuadro/%s">%s</a>'\
+        % (self.id, self.total())
+
     cuadro.allow_tags = True
+
     cuadro.short_description = "total a facturar"
 
-    fecha_inicial   =   models.DateField()
-    fecha_final     =   models.DateField()
-    cerrado         =   models.BooleanField(default=False)
+    fecha_inicial = models.DateField()
+    fecha_final = models.DateField()
+    cerrado = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('-fecha_inicial',)
+
     def __unicode__(self):
         return self.fecha_final.strftime("%B %Y")
+
     def recibos(self):
         return Recibo.objects.filter(periodo=self)
+
     def total_copias(self):
         total = 0
         if self.recibos():
             for r in self.recibos():
                 total += r.total_copias()
         return total
+
     def total_dolares(self):
         total = 0.0
         if self.recibos():
             for r in self.recibos():
                 total += r.total_copias() * r.precio_copia
-        return round(total,2)
+        return round(total, 2)
+
     total_dolares.short_description = "producion bruta"
+
     def total_costos(self):
         total = 0.0
         if self.recibos():
             for r in self.recibos():
                 total += r.total_costos()
-        return round(total,2)
+        return round(total, 2)
+
     def utilidad_total(self):
         return self.total_dolares() - self.total_costos()
+
     utilidad_total.short_description = "utilidad o perdida"
+
     def iva(self):
-        return round((self.total_dolares() * 0.15),2)
+        return round((self.total_dolares() * 0.15), 2)
+
     def total(self):
-        return round((self.total_dolares() + self.iva()),2)
+        return round((self.total_dolares() + self.iva()), 2)
 
     def equipos_activos(self):
         return Equipo.objects.filter(activo=True)
 
     def equipos_activos_sin_recibo(self):
-        return self.equipos_activos().exclude(id__in=self.recibos().values_list('equipo',flat=True))
+        return self.equipos_activos().exclude(id__in=self.recibos(
+            ).values_list('equipo', flat=True))
 
-    def crear_recibo(self,equipo):
+    def crear_recibo(self, equipo):
         if equipo:
             r = Recibo()
             r.periodo = self
@@ -164,35 +190,44 @@ class Periodo(models.Model):
             e.save()
         self.abrir_periodo_siguiente()
 
-class Recibo(models.Model):
 
-    periodo         =   models.ForeignKey(Periodo)
-    equipo          =   models.ForeignKey(Equipo)
-    contador_inicial=   models.IntegerField()
-    contador_final  =   models.IntegerField(null=True)
-    precio_copia    =   models.FloatField(verbose_name="precio por copia")
-    meta            =   models.FloatField(null=True,blank=True,verbose_name="meta proyectada")
-    costo_partes    =   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos de partes", help_text="suma de los costos de consumibles y partes usadas")
-    costo_papel     =   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos de papel")
-    costo_administrativo=   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos administrativos")
-    depreciacion_activo =   models.FloatField(default=0.0,null=True,blank=True,verbose_name="costos de depreciasion de activos")
-    tasa_cambio     =   models.FloatField(null=True,blank=True,verbose_name="tasa de cambio")
-    
+class Recibo(models.Model):
+    periodo = models.ForeignKey(Periodo)
+    equipo = models.ForeignKey(Equipo)
+    contador_inicial = models.IntegerField()
+    contador_final = models.IntegerField(null=True)
+    precio_copia = models.FloatField(verbose_name="precio por copia")
+    meta = models.FloatField(null=True, blank=True,
+        verbose_name="meta proyectada")
+    costo_partes = models.FloatField(default=0.0, null=True, blank=True,
+        verbose_name="costos de partes",
+        help_text="suma de los costos de consumibles y partes usadas")
+    costo_papel = models.FloatField(default=0.0, null=True, blank=True,
+        verbose_name="costos de papel")
+    costo_administrativo = models.FloatField(default=0.0, null=True,
+        blank=True, verbose_name="costos administrativos")
+    depreciacion_activo = models.FloatField(default=0.0, blank=True,
+        verbose_name="costos de depreciasion de activos")
+    tasa_cambio = models.FloatField(null=True, blank=True,
+        verbose_name="tasa de cambio")
+
     class Meta:
         db_table = "view_recibos_recibo"
-    
+
     def __unicode__(self):
         return self.equipo.modelo + ' fecha : ' + str(self.periodo.fecha_final)
 
     def detalles(self):
         d = Detalle.objects.filter(recibo=self)
         return d
+
     def copia_detalles(self):
         total = 0
         if self.detalles():
             for d in self.detalles():
                 total += d.cantidad
         return total
+
     def copia_contador(self):
         return self.contador_final - self.contador_inicial
 
@@ -204,158 +239,190 @@ class Recibo(models.Model):
     copia_diferencia.short_description = "Inconsitencias en el contador"
 
     def total_copias(self):
-        if self.detalles().count()>1 and self.copia_detalles()>0:
+        if self.detalles().count() > 1 and self.copia_detalles() > 0:
             return self.copia_detalles()
         else:
             return self.copia_contador()
+
     def cumplimiento(self):
         if self.meta and self.meta > 0:
-            return str(round((self.total_copias() * 100) / self.meta,2)) + '%'
+            return str(round((self.total_copias() * 100) / self.meta, 2)) + '%'
         else:
             return '0%'
 
     def total_dolares(self):
-        return round((self.total_copias() * self.precio_copia),2)
+        return round((self.total_copias() * self.precio_copia), 2)
+
     def total_costos(self):
-        return round(self.costo_papel + self.costo_partes + self.costo_administrativo + self.depreciacion_activo,2)
+        return round(
+            self.costo_papel + self.costo_partes
+            + self.costo_administrativo + self.depreciacion_activo, 2)
+
     def utilidad(self):
         return self.total_dolares() - self.total_costos()
-    
+
     def serie(self):
         return self.equipo.serie
+
     def fecha_inicial(self):
         return self.periodo.fecha_inicial
+
     def fecha_final(self):
         return self.periodo.fecha_final
+
     def ubicacion(self):
         return self.equipo.ubicacion
+
     def area(self):
         return self.equipo.nombre_area()
+
     def fecha(self):
-        return str(1000*time.mktime(self.periodo.fecha_final.timetuple()))
-    
+        return str(1000 * time.mktime(self.periodo.fecha_final.timetuple()))
+
+
 class Ubicacion(models.Model):
-    nombre      =   models.CharField(max_length=50)
-    direccion   =   models.CharField(max_length=400)
+    nombre = models.CharField(max_length=50)
+    direccion = models.CharField(max_length=400)
+
     def __unicode__(self):
         return self.nombre
+
     class Meta:
         verbose_name_plural = "Ubicaciones"
 
+
 class Area(models.Model):
     ubicacion = models.ForeignKey(Ubicacion)
-    nombre = models.CharField(max_length=50,verbose_name="Area")
-    responsable = models.CharField(max_length=50,verbose_name="Responsable de Area")
+    nombre = models.CharField(max_length=50, verbose_name="Area")
+    responsable = models.CharField(max_length=50,
+        verbose_name="Responsable de Area")
     codigo = models.IntegerField(verbose_name='Unidad Ejecutora')
-    equipo = models.ForeignKey(Equipo,verbose_name="Impresora por Defecto",null=True,blank=True)
+    equipo = models.ForeignKey(Equipo, verbose_name="Impresora por Defecto",
+        null=True, blank=True)
+
     def __unicode__(self):
         return self.nombre + ' ' + self.responsable
-    
+
     @staticmethod
     def autocomplete_search_fields():
-        return ("id__iexact","codigo__iexact", "nombre__icontains", "responsable__icontains",)
-    
+        return ("id__iexact", "codigo__iexact", "nombre__icontains",
+        "responsable__icontains",)
+
     def get_direccion(self):
         u = self.ubicacion.direccion
         return u
     direccion = property(get_direccion)
 
     class Meta:
-        ordering = ('nombre','responsable')
+        ordering = ('nombre', 'responsable')
+
 
 class Detalle(models.Model):
     recibo = models.ForeignKey(Recibo)
     area = models.ForeignKey(Area)
-    cantidad =  models.IntegerField()
+    cantidad = models.IntegerField()
 
     class Meta:
         verbose_name = "Area"
         verbose_name_plural = "Detalles por Area"
-        
-        
+
+
 #### MODULO DE SITE
 class Site(models.Model):
-    name = models.CharField(max_length=255,null=True,blank=True,verbose_name="nombre del site")
-    encargado = models.ForeignKey(User,null=True,blank=True)
-    ubicacion = models.ForeignKey(Ubicacion,null=True,blank=True)
-    equipos = models.ManyToManyField(Equipo,null=True,blank=True)
-    areas = models.ManyToManyField(Area,null=True,blank=True)
-    
+    name = models.CharField(max_length=255, null=True, blank=True,
+        verbose_name="nombre del site")
+    encargado = models.ForeignKey(User, null=True, blank=True)
+    ubicacion = models.ForeignKey(Ubicacion, null=True, blank=True)
+    equipos = models.ManyToManyField(Equipo, null=True, blank=True)
+    areas = models.ManyToManyField(Area, null=True, blank=True)
+
     def __unicode__(self):
         return self.name
+
 ## MODULO DE BODEGA
 
+
 class Articulo(models.Model):
-    codigo = models.CharField(max_length=30,null=True,blank=True)
+    codigo = models.CharField(max_length=30, null=True, blank=True)
     descripcion = models.CharField(max_length=300)
-    marca = models.ForeignKey(Marca,null=True)
+    marca = models.ForeignKey(Marca, null=True)
     costo = models.FloatField()
-    caracteristicas = models.TextField(null=True,blank=True)
-    
+    caracteristicas = models.TextField(null=True, blank=True)
+
     class Meta:
         verbose_name = 'articulo'
         verbose_name_plural = "inventario"
-       
+
     def __unicode__(self):
         return self.descripcion
-    
+
     def entradas(self):
         return DetalleRequisa.entradas.filter(articulo=self)
+
     def total_entradas(self):
         if self.entradas():
             return self.entradas().aggregate(Sum('cantidad'))['cantidad__sum']
         else:
             return 0
-    
+
     def salidas(self):
         return DetalleRequisa.salidas.filter(articulo=self)
+
     def total_salidas(self):
         if self.salidas():
             return self.salidas().aggregate(Sum('cantidad'))['cantidad__sum']
         else:
             return 0
-    
+
     def existencias(self):
         return self.total_entradas() - self.total_salidas()
     existencias.allow_tags = True
-    
+
     def inventario(self):
         return self.existencias() * self.costo
     inventario.allow_tags = True
-    
+
+
 class EntradaManager(models.Manager):
     def get_queryset(self):
-        return super(EntradaManager,self).get_query_set().filter(tipo_requisa='EN')
+        return super(EntradaManager, self).get_query_set(
+            ).filter(tipo_requisa='EN')
+
+
 class SalidaManager(models.Manager):
     def get_queryset(self):
-        return super(SalidaManager,self).get_query_set().filter(tipo_requisa__in=('SA','CO'))
-    
+        return super(SalidaManager, self).get_query_set(
+            ).filter(tipo_requisa__in=('SA', 'CO'))
+
+
 class Requisa(models.Model):
     TIPO_CHOICES = (
-                    ('EN','REQUISA DE ENTRADA'),
-                    ('SA','REQUISA DE SALIDA'),
-                    ('CO','REQUISA DE CONSUMO'),
+                    ('EN', 'REQUISA DE ENTRADA'),
+                    ('SA', 'REQUISA DE SALIDA'),
+                    ('CO', 'REQUISA DE CONSUMO'),
                     )
-    
-    tipo_requisa = models.CharField(max_length=2,choices=TIPO_CHOICES)
+
+    tipo_requisa = models.CharField(max_length=2, choices=TIPO_CHOICES)
     fecha = models.DateField()
-    periodo = models.ForeignKey(Periodo,null=True,blank=True)
-    area = models.ForeignKey(Area,null=True,blank=True)
-    equipo = models.ForeignKey(Equipo,null=True,blank=True)
-    recibido = models.CharField(max_length=300,null=True,blank=True)
-    entregado = models.CharField(max_length=300,null=True,blank=True)
-    site_origen = models.ForeignKey(Site,null=True,blank=True,related_name="requisa_site_origen")
-    site_destino = models.ForeignKey(Site,null=True,blank=True,related_name="requisa_site_destino")
+    periodo = models.ForeignKey(Periodo, null=True, blank=True)
+    area = models.ForeignKey(Area, null=True, blank=True)
+    equipo = models.ForeignKey(Equipo, null=True, blank=True)
+    recibido = models.CharField(max_length=300, null=True, blank=True)
+    entregado = models.CharField(max_length=300, null=True, blank=True)
+    site_origen = models.ForeignKey(Site, null=True, blank=True,
+        related_name="requisa_site_origen")
+    site_destino = models.ForeignKey(Site, null=True, blank=True,
+        related_name="requisa_site_destino")
     objects = models.Manager()
     entradas = EntradaManager()
     salidas = SalidaManager()
-    
+
     def __unicode__(self):
         return self.numero_requisa()
-    
+
     def detalles(self):
         return DetalleRequisa.objects.filter(requisa=self)
-    
+
     def str_detalle(self):
         texto = []
         if self.detalles():
@@ -364,122 +431,149 @@ class Requisa(models.Model):
                 texto.append(item)
         return ', '.join(texto)
     str_detalle.short_description = "articulos"
-    
+
     def costo_total(self):
         t = 0.0
         if self.detalles():
             for d in self.detalles():
                 t += d.total()
         return t
+
     def print_tipo_requisa(self):
         if self.tipo_requisa == 'EN':
             return 'ENTRADA'
         else:
             return 'SALIDA'
+
     def numero_requisa(self):
-        return 'requisa # ' +   str(self.id).zfill(6)
+        return 'requisa # ' + str(self.id).zfill(6)
+
     def get_periodo(self):
-        return Periodo.objects.get(fecha_inicial__lte=self.fecha, fecha_final__gte=self.fecha)
-    
+        return Periodo.objects.get(fecha_inicial__lte=self.fecha,
+            fecha_final__gte=self.fecha)
+
+
 class EntradaArticuloManager(models.Manager):
     def get_queryset(self):
-        return super(EntradaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.entradas.all())
+        return super(EntradaArticuloManager, self).get_query_set(
+            ).filter(requisa__in=Requisa.entradas.all())
+
+
 class SalidaArticuloManager(models.Manager):
     def get_queryset(self):
-        return super(SalidaArticuloManager,self).get_query_set().filter(requisa__in=Requisa.salidas.all())    
+        return super(SalidaArticuloManager, self).get_query_set(
+            ).filter(requisa__in=Requisa.salidas.all())
+
+
 class DetalleRequisa(models.Model):
     requisa = models.ForeignKey(Requisa)
-    articulo =models.ForeignKey(Articulo)
+    articulo = models.ForeignKey(Articulo)
     cantidad = models.FloatField()
     costo = models.FloatField()
-    
+
     objects = models.Manager()
     entradas = EntradaArticuloManager()
     salidas = SalidaArticuloManager()
-    
+
     def __unicode__(self):
         return ''
+
     def total(self):
         return self.cantidad * self.costo
+
     class Meta:
         verbose_name = 'articulo'
-        
-        
-        
+
+
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100)
     comprar = models.BooleanField(default=True)
     vender = models.BooleanField(default=True)
     almacenar = models.BooleanField(default=True)
+
     def __unicode__(self):
         return self.nombre
-    
+
+
 class Refaccion(models.Model):
-    codigo = models.CharField(max_length=20,null=True,blank=True)
-    oem = models.CharField(max_length=20,null=True,blank=True)
-    categoria = models.ForeignKey(Categoria,null=True)
-    descripcion = models.CharField(max_length=200,null=True,blank=True)
-    costo = models.FloatField(null=True,blank=True)
-    duracion = models.IntegerField(null=True,blank=True)
-    minimo = models.FloatField(null=True,blank=True,verbose_name="existencia minima requerida")
+    codigo = models.CharField(max_length=20, null=True, blank=True)
+    oem = models.CharField(max_length=20, null=True, blank=True)
+    categoria = models.ForeignKey(Categoria, null=True)
+    descripcion = models.CharField(max_length=200, null=True, blank=True)
+    costo = models.FloatField(null=True, blank=True)
+    duracion = models.IntegerField(null=True, blank=True)
+    minimo = models.FloatField(null=True, blank=True,
+        verbose_name="existencia minima requerida")
+
     class Meta:
         verbose_name_plural = "refacciones y consumibles"
+
     def __unicode__(self):
         return self.descripcion
-    
-    
+
+
 class Servicio(models.Model):
     fecha = models.DateField()
-    periodo = models.ForeignKey(Periodo,null=True,blank=True)
-    numero = models.IntegerField(null=True,blank=True)
-    obserbaciones = models.TextField(max_length=500,null=True,blank=True)
-    equipo = models.ForeignKey(Equipo,null=True,blank=True)
+    periodo = models.ForeignKey(Periodo, null=True, blank=True)
+    numero = models.IntegerField(null=True, blank=True)
+    obserbaciones = models.TextField(max_length=500, null=True, blank=True)
+    equipo = models.ForeignKey(Equipo, null=True, blank=True)
+
     def __unicode__(self):
         return str(self.numero)
-    
+
+
 class cambio_partes(models.Model):
     servicio = models.ForeignKey(Servicio)
     refaccion = models.ForeignKey(Refaccion)
     cantidad = models.FloatField(default=0)
     costo = models.FloatField(default=0)
+
     def __unicode__(self):
         return ''
-    
-    
-    
+
+
 class Provedor(models.Model):
-    codigo = models.CharField(max_length=20,null=True,blank=True)
-    nombre = models.CharField(max_length=100,null=True,blank=True,verbose_name="nombre o razon social")
-    direccion = models.CharField(max_length=200,null=True,blank=True)
+    codigo = models.CharField(max_length=20, null=True, blank=True)
+    nombre = models.CharField(max_length=100, null=True, blank=True,
+        verbose_name="nombre o razon social")
+    direccion = models.CharField(max_length=200, null=True, blank=True)
+
     def __unicode__(self):
         return self.nombre
-    
+
+
 class contacto(models.Model):
-    provedor = models.ForeignKey(Provedor,null=True,blank=True)
-    nombre = models.CharField(max_length=100,null=True,blank=True)
-    cargo = models.CharField(max_length=100,null=True,blank=True)
-    telefono = models.CharField(max_length=100,null=True,blank=True)
-    email = models.EmailField(null=True,blank=True)
+    provedor = models.ForeignKey(Provedor, null=True, blank=True)
+    nombre = models.CharField(max_length=100, null=True, blank=True)
+    cargo = models.CharField(max_length=100, null=True, blank=True)
+    telefono = models.CharField(max_length=100, null=True, blank=True)
+    email = models.EmailField(null=True, blank=True)
+
     def __unicode__(self):
         return self.nombre
-    
+
+
 class Moneda(models.Model):
     simbolo = models.CharField(max_length=3)
-    nombre = models.CharField(max_length=50,null=True)
+    nombre = models.CharField(max_length=50, null=True)
+
     def __unicode__(self):
         return self.nombre + ' ' + self.simbolo
+
+
 class FCompra(models.Model):
     fecha = models.DateField()
     numero = models.IntegerField()
-    moneda = models.ForeignKey(Moneda,null=True)
+    moneda = models.ForeignKey(Moneda, null=True)
     provedor = models.ForeignKey(Provedor)
-    
+
+
 class dtCompra(models.Model):
     factura = models.ForeignKey(FCompra)
     item = models.ForeignKey(Refaccion)
     cantidad = models.FloatField()
     precio = models.FloatField()
-    
-    
-    
-    
+
+
+

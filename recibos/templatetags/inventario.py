@@ -3,6 +3,7 @@ from django import template
 
 register = template.Library()
 
+
 class estadisticasNode(template.Node):
     def __init__(self, varname):
         self.varname = varname
@@ -14,6 +15,7 @@ class estadisticasNode(template.Node):
             context[self.varname] = Articulo.objects.all()
             return ''
 
+
 @register.tag
 def get_inventario(parser, token):
     """
@@ -22,12 +24,14 @@ def get_inventario(parser, token):
     """
     tokens = token.contents.split()
     args = len(tokens)
-    
+
     if not len(tokens) == 3:
         raise template.TemplateSyntaxError(
-            "'get_estadisticas' requiere de dos argumentos y se dieron %s" % (args))
-    if not tokens[1]=='as':
+            "'get_estadisticas' requiere de dos argumentos y se dieron %s"
+            % (args))
+
+    if not tokens[1] == 'as':
         raise template.TemplateSyntaxError(
             "'get_estadisticas' requiere que el primer argumento sea 'as'")
-        
+
     return estadisticasNode(varname=tokens[2])
