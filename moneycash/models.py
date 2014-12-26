@@ -55,6 +55,23 @@ class Compra(documento):
     al = models.FloatField(default=0.0, verbose_name="retencion de la alcaldia")
     total = models.FloatField(default=0.0)
 
+    def detalles(self):
+        return DetalleCompra.objects.filter(compra=self)
+
+    def subtotal(self):
+        st = 0.0
+        if self.detalles():
+            for d in self.detalles():
+                st += (d.cantidad * d.precio)
+        return st
+
+    def save(self):
+        self.total = self.subtotal() + self.iva
+        super(Compra, self).save()
+
+    class Meta:
+        unique_together = ("provedor", "numero")
+
 
 class BaseDetalleCompra(models.Model):
     compra = models.ForeignKey(Compra, null=True, blank=True)

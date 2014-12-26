@@ -25,6 +25,7 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
                 )
     form = make_ajax_form(Compra, {'provedor': 'provedor'})
     inlines = [compra_detalle]
+    readonly_fields = ('total',)
 
 
 class provedor_admin(entidad_admin):
