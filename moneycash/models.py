@@ -49,6 +49,7 @@ class TipoCosto(entidad):
 
 class Compra(documento):
     provedor = models.ForeignKey(Provedor)
+    moneda = models.ForeignKey(Moneda, default=1)
 
 
 class BaseDetalleCompra(models.Model):

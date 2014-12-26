@@ -16,7 +16,7 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
     list_filter = ('user', 'provedor')
     fieldsets = (
         ('Datos de La compra', {'classes': ('grp-collapse grp-open',),
-            'fields': (('numero', 'fecha'), 'provedor')}),
+            'fields': (('numero', 'fecha', 'moneda'), 'provedor')}),
         ("Detalle Inlines", {"classes":
             ("placeholder detalle_set-group",), "fields": ()}),
                 )
