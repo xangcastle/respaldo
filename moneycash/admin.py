@@ -8,6 +8,7 @@ class entidad_admin(admin.ModelAdmin):
     list_display = ('code', 'name')
     actions = ['activar', 'inactivar']
     ordering = ('code',)
+    search_fields = ('code', 'name')
 
     def inactivar(self, request, queryset):
         queryset.update(activo=False)
@@ -22,7 +23,8 @@ class documento_admin(admin.ModelAdmin):
     date_hierarchy = 'fecha'
     list_display = ('numero', 'fecha', 'user', 'sucursal',
         'impreso', 'entregado', 'contabilizado')
-    list_filter = ('user', 'sucursal', 'impreso', 'entregado', 'contabilizado')
+    list_filter = ('periodo', 'user', 'sucursal', 'impreso',
+        'entregado', 'contabilizado')
     search_fields = ('numero',)
 
     def save_model(self, request, obj, form, change):
@@ -40,11 +42,16 @@ class documento_caja_admin(admin.ModelAdmin):
             fecha_final__gte=self.fecha)
         obj.save()
 
+
+class periodo_admin(admin.ModelAdmin):
+    list_display = ('fecha_inicial', 'fecha_final', 'iva_pagado', 'ir_cobrado', 'cerrado')
+
+
 admin.site.register(Item, entidad_admin)
 admin.site.register(Marca, entidad_admin)
 admin.site.register(Categoria, entidad_admin)
 admin.site.register(Cliente, entidad_admin)
-admin.site.register(Periodo)
+admin.site.register(Periodo, periodo_admin)
 admin.site.register(Factura)
 admin.site.register(Serie, entidad_admin)
 admin.site.register(Sucursal, entidad_admin)

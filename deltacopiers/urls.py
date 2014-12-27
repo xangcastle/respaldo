@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
 from ajax_select import urls as ajax_select_urls
 from django.contrib import admin
+import autocomplete_light
+autocomplete_light.autodiscover()
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -11,4 +13,5 @@ urlpatterns = patterns('',
     url(r'^admin/lookups/', include(ajax_select_urls)),
     url(r'^deltacopiers/', include('recibos.urls')),
     url(r'^adminactions/', include('adminactions.urls')),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
 )

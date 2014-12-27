@@ -1,3 +1,4 @@
+from django.db.models import Sum, Min, Max
 from moneycash.base import models, entidad, documento, documento_caja,\
 transaccion_monetaria, datos_generales
 
@@ -50,27 +51,21 @@ class TipoCosto(entidad):
 class Compra(documento):
     provedor = models.ForeignKey(Provedor)
     moneda = models.ForeignKey(Moneda, default=1)
+    subtotal = models.FloatField(default=0.0)
     iva = models.FloatField(default=0.0)
+    exento_iva = models.BooleanField(default=False)
+    x_iva = models.FloatField(default=0, blank=True)
     ir = models.FloatField(default=0.0, verbose_name="retencion del ir")
+    exento_ir = models.BooleanField(default=False)
+    x_ir = models.FloatField(default=0, blank=True)
     al = models.FloatField(default=0.0, verbose_name="retencion de la alcaldia")
+    exento_al = models.BooleanField(default=False)
+    x_al = models.FloatField(default=0, blank=True)
     total = models.FloatField(default=0.0)
-
-    def detalles(self):
-        return DetalleCompra.objects.filter(compra=self)
-
-    def subtotal(self):
-        st = 0.0
-        if self.detalles():
-            for d in self.detalles():
-                st += (d.cantidad * d.precio)
-        return st
-
-    def save(self):
-        self.total = self.subtotal() + self.iva
-        super(Compra, self).save()
 
     class Meta:
         unique_together = ("provedor", "numero")
+        #db_table = "moneycash_compras_compra"
 
 
 class BaseDetalleCompra(models.Model):
@@ -119,6 +114,26 @@ class Item(entidad):
     precio = models.FloatField(default=0)
     costo = models.FloatField(default=0)
 
+    def compras(self):
+        return DetalleCompra.objects.filter(item=self)
+
+    def total_compras(self):
+        if self.compras():
+            return self.compras().aggregate(Sum('cantidad'))['cantidad__sum']
+        else:
+            return 0.0
+
+    def precio_min(self):
+        if self.compras():
+            return self.compras().aggregate(Min('precio'))['precio__min']
+        else:
+            return 0.0
+
+    def precio_max(self):
+        if self.compras():
+            return self.compras().aggregate(Max('precio'))['precio__max']
+        else:
+            return 0.0
 
 class Sucursal(entidad):
     class Meta:
@@ -166,10 +181,28 @@ class Cuenta(entidad):
 class Periodo(models.Model):
     fecha_inicial = models.DateField()
     fecha_final = models.DateField()
-    cerrado = models.BooleanField(default=True)
+    cerrado = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.fecha_inicial.strftime("%B %Y")
+
+    class Meta:
+        ordering = ['-fecha_final']
+
+    def compras(self):
+        return Compra.objects.filter(periodo=self)
+
+    def iva_pagado(self):
+        if self.compras():
+            return self.compras().aggregate(Sum('iva'))['iva__sum']
+        else:
+            return 0.0
+
+    def ir_cobrado(self):
+        if self.compras():
+            return self.compras().aggregate(Sum('ir'))['ir__sum']
+        else:
+            return 0.0
 
 
 class Factura(documento_caja):

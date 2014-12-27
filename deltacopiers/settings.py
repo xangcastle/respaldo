@@ -97,7 +97,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'autocomplete_light',
     'recibos', ## SISTEMA DE CONTROL DE COPIADORAS DE DELTACOPIERS NO TOCAR!
 
     ##APLICACIONES DEL SISTEMA INTEGRADO MONEYCASH##
