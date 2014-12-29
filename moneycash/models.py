@@ -54,14 +54,22 @@ class Compra(documento):
     subtotal = models.FloatField(default=0.0)
     iva = models.FloatField(default=0.0)
     exento_iva = models.BooleanField(default=False)
-    x_iva = models.FloatField(default=0, blank=True)
+    x_iva = models.FloatField(default=100, blank=True)
     ir = models.FloatField(default=0.0, verbose_name="retencion del ir")
     exento_ir = models.BooleanField(default=False)
-    x_ir = models.FloatField(default=0, blank=True)
+    x_ir = models.FloatField(default=100, blank=True)
     al = models.FloatField(default=0.0, verbose_name="retencion de la alcaldia")
-    exento_al = models.BooleanField(default=False)
-    x_al = models.FloatField(default=0, blank=True)
+    exento_al = models.BooleanField(default=False,
+        verbose_name="exento alcaldia")
+    x_al = models.FloatField(default=100, blank=True)
     total = models.FloatField(default=0.0)
+
+    def calcular(self):
+        self.total = self.subtotal + self.iva
+
+    def save(self):
+        self.calcular()
+        super(Compra, self).save()
 
     class Meta:
         unique_together = ("provedor", "numero")
@@ -81,8 +89,12 @@ class BaseDetalleCompra(models.Model):
     costo_internacion = models.FloatField(default=0)
     recibido = models.FloatField(null=True, blank=True)
 
+    def __unicode__(self):
+        return str(self.item)
+
     class Meta:
         abstract = True
+        verbose_name = "producto"
 
 
 class DetalleCompra(BaseDetalleCompra):

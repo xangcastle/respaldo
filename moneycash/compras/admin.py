@@ -21,11 +21,12 @@ class compra_detalle(admin.TabularInline):
 
 class compra_admin(documento_admin, AjaxSelectAdmin):
     list_display = ('numero', 'fecha', 'provedor',
-        'iva', 'ir', 'al', 'total')
+        'subtotal', 'iva', 'total', 'ir', 'al',)
     list_filter = ('periodo', 'user', 'provedor')
     fieldsets = (
         ('Datos de La compra', {'classes': ('grp-collapse grp-open',),
-            'fields': (('numero', 'fecha', 'moneda'), 'provedor')}),
+            'fields': (('numero', 'fecha', 'moneda'), 'provedor',
+                ('exento_iva', 'exento_ir', 'exento_al'))}),
         ("Detalle Inlines", {"classes":
             ("placeholder detalle_set-group",), "fields": ()}),
         ('Impuestos y totales', {'classes': ('grp-collapse grp-open',),
