@@ -73,7 +73,7 @@ class Compra(documento):
 
     class Meta:
         unique_together = ("provedor", "numero")
-        #db_table = "moneycash_compras_compra"
+        db_table = "moneycash_compras_compra"
 
 
 class BaseDetalleCompra(models.Model):
