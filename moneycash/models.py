@@ -64,16 +64,9 @@ class Compra(documento):
     x_al = models.FloatField(default=100, blank=True)
     total = models.FloatField(default=0.0)
 
-    def calcular(self):
-        self.total = self.subtotal + self.iva
-
-    def save(self):
-        self.calcular()
-        super(Compra, self).save()
-
     class Meta:
         unique_together = ("provedor", "numero")
-        db_table = "moneycash_compras_compra"
+        #db_table = "moneycash_compras_compra"
 
 
 class BaseDetalleCompra(models.Model):
