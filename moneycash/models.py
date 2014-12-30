@@ -70,11 +70,11 @@ class Compra(documento):
     def save(self):
         if self.id:
             self.calcular()
-            super(Compra, self).save()
+            self.save()
         else:
             self.save()
             self.calcular()
-            super(Compra, self).save()
+            self.save()
 
     class Meta:
         unique_together = ("provedor", "numero")
