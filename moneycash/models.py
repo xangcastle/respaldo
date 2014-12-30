@@ -68,8 +68,13 @@ class Compra(documento):
         self.total = self.subtotal + self.iva
 
     def save(self):
-        self.calcular()
-        super(Compra, self).save()
+        if self.id:
+            self.calcular()
+            super(Compra, self).save()
+        else:
+            self.save()
+            self.calcular()
+            super(Compra, self).save()
 
     class Meta:
         unique_together = ("provedor", "numero")
