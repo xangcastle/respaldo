@@ -16,6 +16,8 @@ django-import-export==0.2.6
 django-measurement==1.4
 django-object-tools==1.0.1
 django-toolbelt==0.0.1
+docutils==0.12
+grappelli-dynamic-navbar==0.1.0
 gunicorn==19.1.1
 measurement==1.7.2
 psycopg2==2.5.4
