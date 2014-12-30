@@ -192,13 +192,18 @@ class Periodo(models.Model):
 
 
 class Recibo(models.Model):
+    """
+    Un recibo por cada equipo activo en el periodo actual.
+    Prueba con un segundo parrafo
+    """
     periodo = models.ForeignKey(Periodo)
     equipo = models.ForeignKey(Equipo)
     contador_inicial = models.IntegerField()
     contador_final = models.IntegerField(null=True)
     precio_copia = models.FloatField(verbose_name="precio por copia")
     meta = models.FloatField(null=True, blank=True,
-        verbose_name="meta proyectada")
+        verbose_name="meta proyectada",
+        help_text="meta asignada al inicio del periodo")
     costo_partes = models.FloatField(default=0.0, null=True, blank=True,
         verbose_name="costos de partes",
         help_text="suma de los costos de consumibles y partes usadas")

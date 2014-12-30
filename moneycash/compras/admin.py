@@ -1,5 +1,6 @@
 from moneycash.admin import documento_admin, entidad_admin, admin
-from moneycash.compras.models import Compra, Provedor, Detalle, Producto
+from moneycash.compras.models import Compra, Provedor, Detalle, Producto,\
+ComprasCategoria
 from ajax_select.admin import AjaxSelectAdmin
 from ajax_select import make_ajax_form
 import autocomplete_light
@@ -37,9 +38,17 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
     readonly_fields = ('iva', 'ir', 'al', 'total')
 
 
+class compras_por_categoria(admin.TabularInline):
+    model = ComprasCategoria
+    fields = ('categoria', 'total')
+    readonly_fields = ('categoria', 'total')
+    extra = 0
+
+
 class provedor_admin(entidad_admin):
     fields = ('name', ('code', 'identificacion'), 'telefono', 'direccion',
         ('limite_credito', 'saldo'))
+    inlines = [compras_por_categoria]
 
 admin.site.register(Provedor, provedor_admin)
 admin.site.register(Compra, compra_admin)

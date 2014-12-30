@@ -72,7 +72,7 @@ class Compra(documento):
 class BaseDetalleCompra(models.Model):
     compra = models.ForeignKey(Compra, null=True, blank=True)
     item = models.ForeignKey('Item')
-    cantidad = models.FloatField(default=0)
+    cantidad = models.FloatField(default=1)
     precio = models.FloatField(default=0)
     descuento = models.FloatField(default=0)
     costo = models.FloatField(default=0)

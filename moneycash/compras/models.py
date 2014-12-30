@@ -1,4 +1,4 @@
-from moneycash.models import Provedor as base_provedor, Compra as base_compra,\
+from moneycash.models import models, Provedor as base_provedor, Compra as base_compra,\
 DetalleCompra as base_detalle,\
 Item as base_producto
 
@@ -24,3 +24,13 @@ class Detalle(base_detalle):
         proxy = True
         verbose_name = "producto"
         verbose_name_plural = "detalle de productos"
+
+
+class ComprasCategoria(models.Model):
+    provedor = models.ForeignKey(Provedor, blank=True, null=True)
+    categoria = models.CharField(max_length=100, blank=True)
+    total = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'compras_categoria'
