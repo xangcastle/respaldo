@@ -397,7 +397,7 @@ class EntradaManager(models.Manager):
 class SalidaManager(models.Manager):
     def get_queryset(self):
         return super(SalidaManager, self).get_query_set(
-            ).filter(tipo_requisa__in=('SA', 'CO'))
+            ).filter(tipo_requisa='CO')
 
 
 class Requisa(models.Model):
