@@ -123,7 +123,7 @@
 			    // calcular el total de produccion de cada equipo, esto deja agregado el total en cada fila...interesante!!.
                 // creo que el dicionario pasa a tener la siguiente estructura.
                 // {equipo,total,costos:{utilidad,partes,papel,depreciacion,administrativo}}.
-			    datosProduccion.forEach(function(d){d.total=Math.round(d.costos.utilidad+d.costos.partes+d.costos.papel,d.costos.depreciacion,d.costos.administrativo);});
+			    datosProduccion.forEach(function(d){d.total=Math.round(d.costos.utilidad+d.costos.partes+d.costos.papel+d.costos.depreciacion+d.costos.administrativo);});
 
 			    // function to handle histogram.
 			    function histoGram(fD){
