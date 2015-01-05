@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('moneycash', '0004_auto_20141218_2158'),
+        ('moneycash', '0001_initial'),
     ]
 
     operations = [
@@ -25,9 +25,20 @@ class Migration(migrations.Migration):
             fields=[
             ],
             options={
+                'verbose_name': 'producto',
                 'proxy': True,
+                'verbose_name_plural': 'detalle de productos',
             },
             bases=('moneycash.detallecompra',),
+        ),
+        migrations.CreateModel(
+            name='Producto',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('moneycash.item',),
         ),
         migrations.CreateModel(
             name='Provedor',
@@ -35,7 +46,18 @@ class Migration(migrations.Migration):
             ],
             options={
                 'proxy': True,
+                'verbose_name_plural': 'provedores',
             },
             bases=('moneycash.provedor',),
+        ),
+        migrations.CreateModel(
+            name='ComprasCategoria',
+            fields=[
+            ],
+            options={
+                'db_table': 'compras_categoria',
+                'managed': False,
+            },
+            bases=(models.Model,),
         ),
     ]

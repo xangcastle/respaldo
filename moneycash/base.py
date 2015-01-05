@@ -49,7 +49,7 @@ class documento(models.Model):
 
     def __unicode__(self):
         if self.numero:
-            return type(self).__name__ + " " +str(self.numero)
+            return type(self).__name__ + " " + str(self.numero)
         else:
             return type(self).__name__
 
