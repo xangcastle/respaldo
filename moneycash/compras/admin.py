@@ -23,10 +23,11 @@ class compra_detalle(admin.TabularInline):
 class compra_admin(documento_admin, AjaxSelectAdmin):
     list_display = ('numero', 'fecha', 'provedor',
         'subtotal', 'iva', 'total', 'ir', 'al',)
-    list_filter = ('periodo', 'user', 'provedor')
+    list_filter = ('periodo', 'user', 'provedor', 'tipo')
     fieldsets = (
         ('Datos de La compra', {'classes': ('grp-collapse grp-open',),
-            'fields': (('numero', 'fecha', 'moneda'), 'provedor',
+            'fields': (('numero', 'fecha', 'moneda'),
+                ('tipo', 'fecha_vence'), 'provedor',
                 ('exento_iva', 'exento_ir', 'exento_al'))}),
         ("Detalle Inlines", {"classes":
             ("placeholder detalle_set-group",), "fields": ()}),
@@ -46,8 +47,10 @@ class compras_por_categoria(admin.TabularInline):
 
 
 class provedor_admin(entidad_admin):
+    list_display = ('code', 'name', 'identificacion', 'telefono',
+        'total_compras', 'get_saldo')
     fields = ('name', ('code', 'identificacion'), 'telefono', 'direccion',
-        ('limite_credito', 'saldo'))
+        ('limite_credito', 'saldo', 'plazo'))
     inlines = [compras_por_categoria]
 
 admin.site.register(Provedor, provedor_admin)

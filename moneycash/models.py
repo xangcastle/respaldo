@@ -1,6 +1,7 @@
 from django.db.models import Sum, Min, Max
 from moneycash.base import models, entidad, documento, documento_caja,\
 transaccion_monetaria, datos_generales
+from datetime import timedelta
 
 
 class Pago(entidad):
@@ -39,9 +40,30 @@ class Provedor(entidad, datos_generales):
         verbose_name="tiempo de entrega", default=0)
     limite_credito = models.FloatField(null=True, blank=True)
     saldo = models.FloatField(null=True, blank=True)
+    plazo = models.PositiveIntegerField(
+        help_text="plazo de credito expresado en cantidad de dias")
 
     class Meta:
         verbose_name_plural = "provedores"
+
+    def compras(self):
+        return Compra.objects.filter(provedor=self)
+
+    def total_compras(self):
+        if self.compras():
+            return round(self.compras().aggregate(Sum('total'))['total__sum'],
+                 2)
+        else:
+            return 0
+
+    def get_saldo(self):
+        if self.compras() and self.compras().filter(tipo="CR"):
+            return round(self.compras().filter(tipo="CR").aggregate(
+                Sum('total'))['total__sum'], 2)
+        else:
+            return 0
+
+    get_saldo.short_description = "saldo"
 
 
 class TipoCosto(entidad):
@@ -49,7 +71,13 @@ class TipoCosto(entidad):
 
 
 class Compra(documento):
+    TIPO_COMPRA = (('CO', 'CONTADO'), ('CR', 'CREDITO'))
+    fecha_vence = models.DateField(null=True, blank=True,
+        verbose_name="fecha de vencimiento",
+        help_text="si se deja en blanco se aplica el plazo del provedor")
     provedor = models.ForeignKey(Provedor)
+    tipo = models.CharField(max_length=2, default="CR",
+        verbose_name="tipo de pago de la compra", choices=TIPO_COMPRA)
     moneda = models.ForeignKey(Moneda, default=1)
     subtotal = models.FloatField(default=0.0)
     iva = models.FloatField(default=0.0)
@@ -63,6 +91,18 @@ class Compra(documento):
         verbose_name="exento alcaldia")
     x_al = models.FloatField(default=100, blank=True)
     total = models.FloatField(default=0.0)
+
+    def get_fecha_vence(self):
+        if self.tipo == "CO":
+            return None
+        if self.tipo == "CR" and self.fecha_vence:
+            return self.fecha_vence
+        if self.tipo == "CR" and not self.fecha_vence:
+            return self.fecha + timedelta(days=self.provedor.plazo)
+
+    def save(self):
+        self.fecha_vence = self.get_fecha_vence()
+        super(Compra, self).save()
 
     class Meta:
         unique_together = ("provedor", "numero")

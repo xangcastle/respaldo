@@ -40,14 +40,19 @@ class LookupChannel(object):
         return escape(force_text(obj))
 
     def format_item_display(self, obj):
-        """ (HTML) formatted item for displaying item in the selected deck area """
+        """
+        (HTML) formatted item for displaying item in the selected deck area
+        """
         return escape(force_text(obj))
 
     def get_objects(self, ids):
-        """ Get the currently selected objects when editing an existing model """
+        """
+        Get the currently selected objects when editing an existing model
+        """
         # return in the same order as passed in here
         # this will be however the related objects Manager returns them
-        # which is not guaranteed to be the same order they were in when you last edited
+        # which is not guaranteed to be the same order
+        #they were in when you last edited
         # see OrdredManyToMany.md
         pk_type = self.model._meta.pk.to_python
         ids = [pk_type(id) for id in ids]
@@ -63,27 +68,33 @@ class LookupChannel(object):
         return user.has_perm("%s.add_%s" % (ctype.app_label, ctype.model))
 
     def check_auth(self, request):
-        """ to ensure that nobody can get your data via json simply by knowing the URL.
-            public facing forms should write a custom LookupChannel to implement as you wish.
-            also you could choose to return HttpResponseForbidden("who are you?")
+        """ to ensure that nobody can get your data via json
+            simply by knowing the URL.
+            public facing forms should write a custom LookupChannel
+            to implement as you wish.
+            also you could choose
+            to return HttpResponseForbidden("who are you?")
             instead of raising PermissionDenied (401 response)
          """
         if not request.user.is_staff:
             raise PermissionDenied
 
 
-def make_ajax_form(model, fieldlist, superclass=ModelForm, show_help_text=False, **kwargs):
+def make_ajax_form(model, fieldlist, superclass=ModelForm,
+    show_help_text=False, **kwargs):
     """ Creates a ModelForm subclass with autocomplete fields
 
         usage:
             class YourModelAdmin(Admin):
                 ...
-                form = make_ajax_form(YourModel,{'contacts':'contact','author':'contact'})
-
+                form = make_ajax_form(YourModel,{'contacts':'contact',
+                    'author':'contact'})
         where
-            'contacts' is a ManyToManyField specifying to use the lookup channel 'contact'
+            'contacts' is a ManyToManyField specifying
+             to use the lookup channel 'contact'
         and
-            'author' is a ForeignKeyField specifying here to also use the lookup channel 'contact'
+            'author' is a ForeignKeyField specifying
+            here to also use the lookup channel 'contact'
     """
     # will support previous arg name for several versions before deprecating
     if 'show_m2m_help' in kwargs:
@@ -95,10 +106,6 @@ def make_ajax_form(model, fieldlist, superclass=ModelForm, show_help_text=False,
             pass
         setattr(Meta, 'model', model)
         if hasattr(superclass, 'Meta'):
-            if hasattr(superclass.Meta, 'fields'):
-                setattr(Meta, 'fields', superclass.Meta.fields)
-            if hasattr(superclass.Meta, 'exclude'):
-                setattr(Meta, 'exclude', superclass.Meta.exclude)
             if hasattr(superclass.Meta, 'widgets'):
                 setattr(Meta, 'widgets', superclass.Meta.widgets)
 
@@ -111,7 +118,8 @@ def make_ajax_form(model, fieldlist, superclass=ModelForm, show_help_text=False,
     return TheForm
 
 
-def make_ajax_field(model, model_fieldname, channel, show_help_text=False, **kwargs):
+def make_ajax_field(model, model_fieldname, channel,
+    show_help_text=False, **kwargs):
     """ Makes a single autocomplete field for use in a Form
 
         optional args:
@@ -121,7 +129,8 @@ def make_ajax_field(model, model_fieldname, channel, show_help_text=False, **kwa
             required  - default is the model db field's (not) blank
 
             show_help_text -
-                Django will show help text below the widget, but not for ManyToMany inside of admin inlines
+                Django will show help text
+                below the widget, but not for ManyToMany inside of admin inlines
                 This setting will show the help text inside the widget itself.
     """
     # will support previous arg name for several versions before deprecating
@@ -160,10 +169,12 @@ def make_ajax_field(model, model_fieldname, channel, show_help_text=False, **kwa
     return f
 
 
-####################  private  ##################################################
+####################  private  ##############################################
 
 def get_lookup(channel):
-    """ find the lookup class for the named channel.  this is used internally """
+    """
+        find the lookup class for the named channel.  this is used internally
+    """
     try:
         lookup_label = settings.AJAX_LOOKUP_CHANNELS[channel]
     except AttributeError:
@@ -200,8 +211,9 @@ def get_lookup(channel):
 
 def make_channel(app_model, arg_search_field):
     """ used in get_lookup
-            app_model :   app_name.model_name
-            search_field :  the field to search against and to display in search results
+            app_model: app_name.model_name
+            search_field: the field to search against
+            and to display in search results
     """
     from django.db import models
     app_label, model_name = app_model.split(".")
