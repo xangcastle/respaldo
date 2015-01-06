@@ -48,7 +48,7 @@ class compras_por_categoria(admin.TabularInline):
 
 class provedor_admin(entidad_admin):
     list_display = ('code', 'name', 'identificacion', 'telefono',
-        'total_compras', 'get_saldo')
+        'limite_credito', 'total_compras', 'get_saldo')
     fields = ('name', ('code', 'identificacion'), 'telefono', 'direccion',
         ('limite_credito', 'saldo', 'plazo'))
     inlines = [compras_por_categoria]
