@@ -49,6 +49,12 @@ class Provedor(entidad, datos_generales):
     def compras(self):
         return Compra.objects.filter(provedor=self)
 
+    def compras_credito_cordobas(self):
+        return self.compras().filter(moneda=1)
+
+    def compras_credito_dolares(self):
+        return self.compras().filter(moneda=2)
+
     def total_compras(self):
         if self.compras():
             return round(self.compras().aggregate(Sum('total'))['total__sum'],
