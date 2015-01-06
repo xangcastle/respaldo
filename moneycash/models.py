@@ -92,6 +92,7 @@ class Compra(documento):
     fecha_vence = models.DateField(null=True, blank=True,
         verbose_name="fecha de vencimiento",
         help_text="si se deja en blanco se aplica el plazo del provedor")
+    comentarios = models.TextField(max_length=400, null=True, blank=True)
     provedor = models.ForeignKey(Provedor)
     tipo = models.CharField(max_length=2, default="CR",
         verbose_name="tipo de pago de la compra", choices=TIPO_COMPRA)

@@ -27,7 +27,7 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
     fieldsets = (
         ('Datos de La compra', {'classes': ('grp-collapse grp-open',),
             'fields': (('numero', 'fecha', 'moneda'),
-                ('tipo', 'fecha_vence'), 'provedor',
+                ('tipo', 'fecha_vence'), 'comentarios', 'provedor',
                 ('exento_iva', 'exento_ir', 'exento_al'))}),
         ("Detalle Inlines", {"classes":
             ("placeholder detalle_set-group",), "fields": ()}),
