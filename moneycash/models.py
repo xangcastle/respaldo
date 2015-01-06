@@ -39,7 +39,8 @@ class Provedor(entidad, datos_generales):
         help_text="tiempo de entrega en dias para la mercaderia",
         verbose_name="tiempo de entrega", default=0)
     limite_credito = models.FloatField(null=True, blank=True)
-    saldo = models.FloatField(null=True, blank=True)
+    saldo = models.FloatField(null=True, blank=True,
+        verbose_name="saldo inicial")
     plazo = models.PositiveIntegerField(
         help_text="plazo de credito expresado en cantidad de dias")
 
