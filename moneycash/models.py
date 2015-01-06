@@ -72,7 +72,7 @@ class Provedor(entidad, datos_generales):
             dolares = str(round(self.compras_credito_dolares().aggregate(
                 Sum('total'))['total__sum'], 2)) + " Cordobas"
             saldo.append(dolares)
-        if saldo.count() > 0:
+        if len(saldo) > 0:
             return " y ".join(saldo)
         else:
             return 0
