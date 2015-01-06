@@ -50,10 +50,10 @@ class Provedor(entidad, datos_generales):
         return Compra.objects.filter(provedor=self)
 
     def compras_credito_cordobas(self):
-        return self.compras().filter(moneda=1)
+        return self.compras().filter(tipo="CR", moneda=1)
 
     def compras_credito_dolares(self):
-        return self.compras().filter(moneda=2)
+        return self.compras().filter(tipo="CR", moneda=2)
 
     def total_compras(self):
         if self.compras():
