@@ -57,13 +57,20 @@ class Provedor(entidad, datos_generales):
             return 0
 
     def get_saldo(self):
-        if self.compras() and self.compras().filter(tipo="CR"):
-            return round(self.compras().filter(tipo="CR").aggregate(
-                Sum('total'))['total__sum'], 2)
-        else:
-            return 0
+        saldo = []
+        if self.compras_credito_cordobas():
+            cordobas = str(round(self.compras_credito_cordobas().aggregate(
+                Sum('total'))['total__sum'], 2)) + " Cordobas"
+            saldo.append(cordobas)
+        if self.compras_credito_dolares():
+            dolares = str(round(self.compras_credito_dolares().aggregate(
+                Sum('total'))['total__sum'], 2)) + " Cordobas"
+            saldo.append(dolares)
+        return " y ".join(saldo)
 
     get_saldo.short_description = "saldo"
+
+    get_saldo.allow_tags = True
 
 
 class TipoCosto(entidad):
@@ -95,9 +102,13 @@ class Compra(documento):
     def get_fecha_vence(self):
         if self.tipo == "CO":
             return None
-        if self.tipo == "CR" and self.fecha_vence:
+        if self.tipo == "CR" and self.fecha_vence \
+        and self.fecha_vence > self.fecha:
             return self.fecha_vence
         if self.tipo == "CR" and not self.fecha_vence:
+            return self.fecha + timedelta(days=self.provedor.plazo)
+        if self.fecha_vence and self.fecha > self.fecha_vence \
+        and self.tipo == "CR":
             return self.fecha + timedelta(days=self.provedor.plazo)
 
     def save(self):
