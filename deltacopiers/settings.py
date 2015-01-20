@@ -102,12 +102,12 @@ INSTALLED_APPS = (
 
     ##APLICACIONES DEL SISTEMA INTEGRADO MONEYCASH##
     'moneycash',
-    'moneycash.bodega',
-    'moneycash.caja',
-    'moneycash.facturacion',
+    #'moneycash.bodega',
+    #'moneycash.caja',
+    #'moneycash.facturacion',
     'moneycash.compras',
-    'moneycash.cartera',
-    'moneycash.contabilidad',
+    #'moneycash.cartera',
+    #'moneycash.contabilidad',
 )
 
 LOGGING = {

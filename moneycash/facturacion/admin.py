@@ -16,28 +16,21 @@ class detalle_factura_tabular(AjaxSelectAdminTabularInline):
 
 
 class factura_admin(documento_admin, AjaxSelectAdmin):
+    list_display = ('numero', 'fecha', 'provedor',
+        'subtotal', 'iva', 'total', 'ir', 'al',)
+    list_filter = ('periodo', 'cliente', 'tipo')
     fieldsets = (
-        ('Datos Principales', {
-        'classes': ('grp-collapse grp-open',),
-        'fields': ('fecha', 'cliente')
-        }),
+        ('Datos de La compra', {'classes': ('grp-collapse grp-open',),
+            'fields': (('numero', 'fecha', 'moneda'),
+                ('tipo', 'fecha_vence'), 'comentarios', 'provedor',
+                ('exento_iva', 'exento_ir', 'exento_al'))}),
         ("Detalle Inlines", {"classes":
-            ("placeholder factura_detalle_set-group",), "fields": ()}),
-        ('Opciones Adicionales', {'classes': ('grp-collapse grp-closed',),
-            'fields': (('exento_iva', 'exento_iva_monto'),
-                'alcaldia', 'retencion_ir')}),
-        ('Datos calculados y Totales', {
-        'classes': ('grp-collapse grp-open',),
-        'fields': (('subtotal', 'descuento', 'iva', 'total'),
-            ('retencion', 'costos', 'utilidad'),)
-        }),
-    )
-    list_display = ('numero', 'fecha', 'cliente',
-        'subtotal', 'descuento', 'total')
-    inlines = [detalle_factura_tabular]
+            ("placeholder detalle_set-group",), "fields": ()}),
+        ('Impuestos y totales', {'classes': ('grp-collapse grp-open',),
+            'fields': (('iva', 'ir', 'al', 'total'),)}),
+                )
     form = make_ajax_form(Factura, {'cliente': 'cliente'})
-    readonly_fields = ('subtotal', 'descuento', 'iva', 'total',
-        'retencion', 'costos', 'utilidad')
+    readonly_fields = ('iva', 'ir', 'al', 'total')
 
 
 class cliente_admin(entidad_admin):
