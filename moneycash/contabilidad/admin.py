@@ -1,9 +1,6 @@
 from moneycash.admin import admin, entidad_admin
-from .models import Banco
+from .models import Banco, Moneda
 
 
-class banco_admin(entidad_admin):
-    pass
-
-
-admin.site.register(Banco, banco_admin)
+admin.site.register(Banco, entidad_admin)
+admin.site.register(Moneda, entidad_admin)
