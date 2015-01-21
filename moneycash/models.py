@@ -17,6 +17,10 @@ class Moneda(entidad):
     pass
 
 
+class tipo_movimiento(entidad):
+    pass
+
+
 class Serie(entidad):
     numero_inicial = models.PositiveIntegerField()
 
