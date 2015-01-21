@@ -107,7 +107,7 @@ INSTALLED_APPS = (
     #'moneycash.facturacion',
     'moneycash.compras',
     #'moneycash.cartera',
-    #'moneycash.contabilidad',
+    'moneycash.contabilidad',
 )
 
 LOGGING = {
