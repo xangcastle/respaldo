@@ -2,11 +2,14 @@ from django.conf.urls import patterns, include, url
 from ajax_select import urls as ajax_select_urls
 from django.contrib import admin
 import autocomplete_light
+from home.views import *
 autocomplete_light.autodiscover()
 admin.autodiscover()
 
+
 urlpatterns = patterns('',
-    url(r'^$', 'recibos.views.principal', name='principal'),
+    url(r'^$', HomePageView.as_view(), name='home'),
+    #url(r'^$', 'recibos.views.principal', name='principal'),
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
