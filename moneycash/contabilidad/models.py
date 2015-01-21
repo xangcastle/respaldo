@@ -1,6 +1,6 @@
 from moneycash.models import Banco as base_banco, Moneda as base_moneda, \
 tipo_movimiento as base_tipo_movimiento, Cuenta_Banco as base_cuenta_banco, \
-tipo_cambio as base_tasa_cambio
+tasa_cambio as base_tasa_cambio
 
 
 class Banco(base_banco):
@@ -27,8 +27,8 @@ class Cuenta_Banco(base_cuenta_banco):
         verbose_name_plural = "cuentas de bancos"
 
 
-class tipo_cambio(base_tasa_cambio):
+class tasa_cambio(base_tasa_cambio):
     class Meta:
         proxy = True
-        verbose_name = "cuenta de banco"
-        verbose_name_plural = "cuentas de bancos"
+        verbose_name = "tasa de cambio"
+        verbose_name_plural = "tasas de cambio"
