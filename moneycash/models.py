@@ -21,6 +21,39 @@ class tipo_movimiento(entidad):
     pass
 
 
+class Cuenta_Banco(entidad):
+    banco = models.ForeignKey(Banco)
+    moneda = models.ForeignKey(Moneda)
+    balance_inicial = models.FloatField()
+    balance_actual = models.FloatField()
+    es_tarjeta = models.BooleanField(defaul=False)
+
+
+class tasa_cambio(models.Model):
+    fecha = models.DateField()
+    tipo_cambio = models.FloatField()
+
+    def __unicode__(self):
+        return str(self.tipo_cambio)
+
+
+#class detMovimientosBanco(
+    #IdMovBancos = models.ForeignKey(tipo_movimiento)
+    #cuenta = models.ForeignKey(Cuenta_Banco)
+	#IdCuenta integer NULL,
+	#IdDeposito character varying(10) NULL,
+	#IdRazonMovBanco integer NULL,
+	#Documento character varying(20) NULL,
+	#Descripcion character varying(200) NULL,
+	#Fecha date NULL,
+	#TipoMovimiento integer NULL,
+	#Debito double precision NULL,
+	#Credito double precision NULL,
+	#SaldoAnterior double precision NULL,
+	#SaldoActual double precision NULL,
+	#Estado boolean NULL
+
+
 class Serie(entidad):
     numero_inicial = models.PositiveIntegerField()
 
