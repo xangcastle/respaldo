@@ -26,7 +26,7 @@ class Cuenta_Banco(entidad):
     moneda = models.ForeignKey(Moneda)
     balance_inicial = models.FloatField()
     balance_actual = models.FloatField()
-    es_tarjeta = models.BooleanField(defaul=False)
+    es_tarjeta = models.BooleanField(default=False)
 
 
 class tasa_cambio(models.Model):
