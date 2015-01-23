@@ -146,6 +146,8 @@ class Compra(documento):
         verbose_name="exento alcaldia")
     x_al = models.FloatField(default=100, blank=True)
     total = models.FloatField(default=0.0)
+    abonado = models.FloatField(default=0.0)
+    saldo = models.FloatField(default=0.0)
 
     def get_fecha_vence(self):
         if self.tipo == "CO":
