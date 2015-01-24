@@ -42,6 +42,8 @@ class Equipo(models.Model):
     costo = models.FloatField(null=True, blank=True)
     vida_util = models.PositiveIntegerField(null=True, blank=True,
         help_text="vida util en cantidad de copias")
+    duracion_toner = models.PositiveIntegerField(null=True, blank=True,
+        help_text="duracion del toner copias")
 
     def __unicode__(self):
         return self.modelo + ' - ' + self.serie
