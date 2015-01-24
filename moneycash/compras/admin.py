@@ -32,11 +32,11 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
         ("Detalle Inlines", {"classes":
             ("placeholder detalle_set-group",), "fields": ()}),
         ('Impuestos y totales', {'classes': ('grp-collapse grp-open',),
-            'fields': (('iva', 'ir', 'al', 'total'),)}),
+            'fields': (('iva', 'ir', 'al', 'total'), ('abonado', 'saldo')}),
                 )
     form = make_ajax_form(Compra, {'provedor': 'provedor'})
     inlines = [compra_detalle]
-    readonly_fields = ('iva', 'ir', 'al', 'total')
+    readonly_fields = ('iva', 'ir', 'al', 'total', 'abonado', 'saldo')
 
 
 class compras_por_categoria(admin.TabularInline):
