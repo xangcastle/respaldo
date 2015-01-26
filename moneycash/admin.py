@@ -1,6 +1,16 @@
 from django.contrib import admin
-from moneycash.models import Periodo, Sucursal, Caja, Bodega, Pago, Banco,\
-Moneda, TipoCosto, CierreCaja, Empresa
+from .models import Periodo, Sucursal, Caja, Bodega, Pago, Banco,\
+Moneda, TipoCosto, CierreCaja, Empresa, User
+from django.contrib.auth.admin import UserAdmin as base_useradmin
+
+
+class user_admin(base_useradmin):
+    list_display = ('username', 'email', 'first_name', 'last_name',
+        'is_staff', 'empresa')
+    list_editable = ('empresa', )
+    list_filter = ('is_staff', 'is_superuser','is_active', 'empresa')
+
+admin.site.register(User, user_admin)
 
 
 class entidad_admin(admin.ModelAdmin):

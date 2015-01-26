@@ -71,7 +71,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'recibos.middleware.user.LocalUserMiddleware',
+    'moneycash.middlewares.LocalUserMiddleware',
 )
 
 ROOT_URLCONF = 'deltacopiers.urls'

@@ -1,4 +1,5 @@
 from django.db.models import Manager
+from .middlewares import get_current_user
 
 
 # ESTADOS DE DOCUMENTOS
@@ -48,3 +49,24 @@ class documento_no_contabilizado(documento_impreso):
     def get_queryset(self):
         return super(documento_no_contabilizado, self).get_queryset().filter(
             contabilizado=False)
+
+
+class user_manager(Manager):
+    def get_queryset(self):
+        if str(get_current_user()) == 'AnonymousUser':
+            return super(user_manager, self).get_queryset()
+        else:
+            return super(user_manager, self).get_queryset(
+                ).filter(user=get_current_user())
+
+
+class empresa_manager(Manager):
+    def get_queryset(self):
+        if str(get_current_user()) == 'AnonymousUser':
+            return super(empresa_manager, self).get_queryset()
+        else:
+            if get_current_user().empresa:
+                return super(empresa_manager, self).get_queryset(
+                    ).filter(empresa=get_current_user().empresa)
+            else:
+                return super(empresa_manager, self).get_queryset()

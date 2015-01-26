@@ -1,25 +1,34 @@
-from moneycash.models import models, Provedor as base_provedor, Compra as base_compra,\
-DetalleCompra as base_detalle,\
+from moneycash.models import models, Provedor as base_provedor,\
+Compra as base_compra, DetalleCompra as base_detalle,\
 Item as base_producto
+from moneycash.manager import Manager, empresa_manager
 
 
-class Producto(base_producto):
+class base(models.Model):
+    objects = Manager()
+    objects = empresa_manager()
+
+    class Meta:
+        abstract = True
+
+
+class Producto(base, base_producto):
     class Meta:
         proxy = True
 
 
-class Provedor(base_provedor):
+class Provedor(base, base_provedor):
     class Meta:
         proxy = True
         verbose_name_plural = "provedores"
 
 
-class Compra(base_compra):
+class Compra(base, base_compra):
     class Meta:
         proxy = True
 
 
-class Detalle(base_detalle):
+class Detalle(base, base_detalle):
     class Meta:
         proxy = True
         verbose_name = "producto"

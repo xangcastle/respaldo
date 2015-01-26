@@ -1,6 +1,7 @@
+from django.contrib.auth.models import User as base_user
 from django.db.models import Sum, Min, Max
 from moneycash.base import models, entidad, documento, documento_caja,\
-transaccion_monetaria, datos_generales, User
+transaccion_monetaria, datos_generales
 from datetime import timedelta
 
 
@@ -8,7 +9,25 @@ class Empresa(entidad, datos_generales):
     pass
 
 
-User.add_to_class('Empresa', models.ForeignKey(Empresa, null=True))
+class base_empresa_model(models.Model):
+    empresa = models.ForeignKey(Empresa,
+        related_name="%(app_label)s_%(class)s_empresa", null=True)
+
+    class Meta:
+        abstract = True
+
+
+class EmpresaModel(entidad, base_empresa_model):
+    class Meta:
+        abstract = True
+
+
+base_user.add_to_class('empresa', models.ForeignKey(Empresa, null=True))
+
+
+class User(base_user):
+    class Meta:
+        proxy = True
 
 
 class Pago(entidad):
@@ -65,15 +84,15 @@ class Serie(entidad):
     numero_inicial = models.PositiveIntegerField()
 
 
-class Marca(entidad):
+class Marca(EmpresaModel):
     pass
 
 
-class Categoria(entidad):
+class Categoria(EmpresaModel):
     parent = models.ForeignKey('self', null=True, blank=True)
 
 
-class Provedor(entidad, datos_generales):
+class Provedor(EmpresaModel, datos_generales):
     TIPO_OPTIONS = (
       ('LO', 'NACIONAL'),
       ('EX', 'EXTRAJERO'),
@@ -131,7 +150,7 @@ class TipoCosto(entidad):
     pass
 
 
-class Compra(documento):
+class Compra(documento, base_empresa_model):
     TIPO_COMPRA = (('CO', 'CONTADO'), ('CR', 'CREDITO'))
     fecha_vence = models.DateField(null=True, blank=True,
         verbose_name="fecha de vencimiento",
@@ -177,7 +196,7 @@ class Compra(documento):
         #db_table = "moneycash_compras_compra"
 
 
-class BaseDetalleCompra(models.Model):
+class BaseDetalleCompra(base_empresa_model):
     compra = models.ForeignKey(Compra, null=True, blank=True)
     item = models.ForeignKey('Item')
     cantidad = models.FloatField(default=1)
@@ -202,7 +221,7 @@ class DetalleCompra(BaseDetalleCompra):
     pass
 
 
-class Poliza(documento):
+class Poliza(documento, base_empresa_model):
     pass
 
 
@@ -213,13 +232,13 @@ class Poliza(documento):
         #managed = False
 
 
-class DetallePoliza(models.Model):
+class DetallePoliza(base_empresa_model):
     poliza = models.ForeignKey(Poliza)
     factura = models.ForeignKey(Compra)
     tipo_costo = models.ForeignKey(TipoCosto)
 
 
-class Item(entidad):
+class Item(EmpresaModel):
     marca = models.ForeignKey(Marca, null=True, blank=True)
     categoria = models.ForeignKey(Categoria, null=True, blank=True)
     existencias = models.FloatField(default=0)
@@ -248,17 +267,17 @@ class Item(entidad):
         else:
             return 0.0
 
-class Sucursal(entidad):
+class Sucursal(EmpresaModel):
     class Meta:
         verbose_name_plural = "sucursales"
 
 
-class Caja(entidad):
+class Caja(EmpresaModel):
     sucursal = models.ForeignKey(Sucursal)
     series = models.ManyToManyField(Serie)
 
 
-class CierreCaja(documento):
+class CierreCaja(documento, base_empresa_model):
     caja = models.ForeignKey(Caja)
     apertura = models.DateTimeField(null=True, blank=True)
     saldo_inicial = models.FloatField(default=0)
@@ -267,15 +286,15 @@ class CierreCaja(documento):
     cerrado = models.BooleanField(default=False)
 
 
-class Bodega(entidad):
+class Bodega(EmpresaModel):
     sucursal = models.ForeignKey(Sucursal)
 
 
-class Cliente(entidad, datos_generales):
+class Cliente(EmpresaModel, datos_generales):
     bodegas = models.ManyToManyField(Bodega, null=True, blank=True)
 
 
-class Contacto(entidad):
+class Contacto(EmpresaModel):
     cliente = models.ForeignKey(Cliente)
     cargo = models.CharField(max_length=100, null=True, blank=True,
          verbose_name="cargo que ocupa")
@@ -283,7 +302,7 @@ class Contacto(entidad):
     email = models.EmailField(null=True, blank=True)
 
 
-class Cuenta(entidad):
+class Cuenta(EmpresaModel):
     numero_cuenta = models.CharField(max_length=25)
     cliente = models.ForeignKey(Cliente)
     limite_credito = models.FloatField()
@@ -318,7 +337,7 @@ class Periodo(models.Model):
             return 0.0
 
 
-class Factura(documento_caja):
+class Factura(documento_caja, base_empresa_model):
     cliente = models.ForeignKey(Cliente, null=True, blank=True,
     help_text="BUSCAR CLIENTE")
     exento_iva = models.BooleanField(default=False)
@@ -344,7 +363,7 @@ class Factura(documento_caja):
             return ''
 
 
-class Recibo(documento_caja):
+class Recibo(documento_caja, base_empresa_model):
     nombre = models.CharField(max_length=100, null=True, blank=True)
     concepto = models.CharField(max_length=200, null=True, blank=True)
     monto = models.FloatField(default=0)
@@ -363,7 +382,7 @@ class Deposito(transaccion_monetaria):
     banco = models.ForeignKey(Banco)
 
 
-class factura_detalle(models.Model):
+class factura_detalle(base_empresa_model):
     factura = models.ForeignKey(Factura)
     item = models.ForeignKey(Item, null=True, blank=True)
     marca = models.ForeignKey(Marca, null=True, blank=True)
@@ -389,7 +408,7 @@ class factura_detalle(models.Model):
         return ''
 
 
-class detalle_pago(models.Model):
+class detalle_pago(base_empresa_model):
     factura = models.ForeignKey(Factura, null=True, blank=True)
     recibo = models.ForeignKey(Recibo, null=True, blank=True)
     pago = models.ForeignKey(Pago)
