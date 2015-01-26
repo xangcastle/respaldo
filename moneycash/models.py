@@ -1,7 +1,14 @@
 from django.db.models import Sum, Min, Max
 from moneycash.base import models, entidad, documento, documento_caja,\
-transaccion_monetaria, datos_generales
+transaccion_monetaria, datos_generales, User
 from datetime import timedelta
+
+
+class Empresa(entidad, datos_generales):
+    pass
+
+
+User.add_to_class('Empresa', models.ForeignKey(Empresa, null=True))
 
 
 class Pago(entidad):

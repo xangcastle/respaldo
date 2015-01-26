@@ -1,7 +1,6 @@
 from django.contrib import admin
-from moneycash.models import Item, Marca, Categoria, Cliente,\
-    Periodo, Serie, Sucursal, Caja, Bodega, Pago, Banco, Moneda, \
-    Factura, CierreCaja, TipoCosto
+from moneycash.models import Periodo, Sucursal, Caja, Bodega, Pago, Banco,\
+Moneda, TipoCosto, CierreCaja, Empresa
 
 
 class entidad_admin(admin.ModelAdmin):
@@ -44,16 +43,11 @@ class documento_caja_admin(admin.ModelAdmin):
 
 
 class periodo_admin(admin.ModelAdmin):
-    list_display = ('fecha_inicial', 'fecha_final', 'iva_pagado', 'ir_cobrado', 'cerrado')
+    list_display = ('fecha_inicial', 'fecha_final', 'iva_pagado',
+        'ir_cobrado', 'cerrado')
 
 
-admin.site.register(Item, entidad_admin)
-admin.site.register(Marca, entidad_admin)
-admin.site.register(Categoria, entidad_admin)
-admin.site.register(Cliente, entidad_admin)
 admin.site.register(Periodo, periodo_admin)
-admin.site.register(Factura)
-admin.site.register(Serie, entidad_admin)
 admin.site.register(Sucursal, entidad_admin)
 admin.site.register(Caja, entidad_admin)
 admin.site.register(Bodega, entidad_admin)
@@ -61,3 +55,4 @@ admin.site.register(Pago, entidad_admin)
 admin.site.register(Banco, entidad_admin)
 admin.site.register(Moneda, entidad_admin)
 admin.site.register(TipoCosto, entidad_admin)
+admin.site.register(Empresa, entidad_admin)

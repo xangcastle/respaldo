@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import site
 from recibos.models import Area, Equipo, Periodo, Recibo, Detalle, Ubicacion,\
-Marca, Requisa, DetalleRequisa, Articulo, Site, Refaccion, Servicio,\
-cambio_partes, Provedor, contacto, Moneda, FCompra, dtCompra, Categoria
+Marca, Requisa, DetalleRequisa, Articulo
 from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
@@ -160,45 +159,6 @@ admin.site.register(Ubicacion, UbicacionAdmin)
 admin.site.register(Marca, MarcaAdmin)
 admin.site.register(Requisa, RequisaAdmin)
 admin.site.register(Articulo, ArticuloAdmin)
-admin.site.register(Site, SiteAdmin)
-
-## aplicacion de servicio tecnico
+#admin.site.register(Site, SiteAdmin)
 
 
-class cambio_partes_tabular(admin.TabularInline):
-    model = cambio_partes
-    extra = 0
-
-
-class servicio_admin(admin.ModelAdmin):
-    inlines = [cambio_partes_tabular]
-
-
-admin.site.register(Refaccion)
-admin.site.register(Servicio, servicio_admin)
-
-## aplicacion de compras
-
-
-class contacto_provedor_tabular(admin.TabularInline):
-    model = contacto
-    extra = 0
-
-
-class provedor_admin(admin.ModelAdmin):
-    inlines = [contacto_provedor_tabular]
-
-
-class detalle_compra_tabular(admin.TabularInline):
-    model = dtCompra
-    extra = 0
-
-
-class factura_compra_admin(admin.ModelAdmin):
-    inlines = [detalle_compra_tabular]
-
-
-admin.site.register(Provedor, provedor_admin)
-admin.site.register(Moneda)
-admin.site.register(Categoria)
-admin.site.register(FCompra, factura_compra_admin)
