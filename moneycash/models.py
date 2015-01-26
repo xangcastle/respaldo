@@ -1,19 +1,174 @@
-from django.contrib.auth.models import User as base_user
-from moneycash.base import models, entidad, documento, documento_caja,\
-transaccion_monetaria, datos_generales, EmpresaModel, base_empresa_model
+# -*- coding: utf-8 -*-
+from django.contrib.auth.models import User
 from datetime import timedelta
-from django.db.models import Sum
+from django.db import models
+from django.db.models import Sum, Manager
+from .middlewares import get_current_user
+
+
+# ESTADOS DE DOCUMENTOS
+class documento_autorizado(Manager):
+    def get_queryset(self):
+        return super(documento_autorizado, self).get_queryset().filter(
+            autorizado=True)
+
+
+class documento_no_autorizado(Manager):
+    def get_queryset(self):
+        return super(documento_no_autorizado, self).get_queryset().filter(
+            autorizado=False)
+
+
+class documento_impreso(documento_autorizado):
+    def get_queryset(self):
+        return super(documento_impreso, self).get_queryset().filter(
+            impreso=True)
+
+
+class documento_no_impreso(documento_autorizado):
+    def get_queryset(self):
+        return super(documento_no_impreso, self).get_queryset().filter(
+            impreso=False)
+
+
+class documento_entregado(documento_impreso):
+    def get_queryset(self):
+        return super(documento_entregado, self).get_queryset().filter(
+            entregado=True)
+
+
+class documento_no_entregado(documento_impreso):
+    def get_queryset(self):
+        return super(documento_no_entregado, self).get_queryset().filter(
+            entregado=False)
+
+
+class documento_contabilizado(documento_impreso):
+    def get_queryset(self):
+        return super(documento_contabilizado, self).get_queryset().filter(
+            contabilizado=True)
+
+
+class documento_no_contabilizado(documento_impreso):
+    def get_queryset(self):
+        return super(documento_no_contabilizado, self).get_queryset().filter(
+            contabilizado=False)
+
+
+class user_manager(Manager):
+    def get_queryset(self):
+        if str(get_current_user()) == 'AnonymousUser':
+            return super(user_manager, self).get_queryset()
+        else:
+            return super(user_manager, self).get_queryset(
+                ).filter(user=get_current_user())
+
+
+class empresa_manager(Manager):
+    def get_queryset(self):
+        if str(get_current_user()) == 'AnonymousUser':
+            return super(empresa_manager, self).get_queryset()
+        else:
+            if not get_current_user().empresa:
+                return super(empresa_manager, self).get_queryset()
+            else:
+                return super(empresa_manager, self).get_queryset(
+                    ).filter(empresa=get_current_user().empresa)
+
+
+class datos_generales(models.Model):
+    identificacion = models.CharField(max_length=25, null=True, blank=True,
+        verbose_name="ruc/cedula")
+    telefono = models.CharField(max_length=100, null=True, blank=True)
+    direccion = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class entidad(models.Model):
+    code = models.CharField(max_length=25, null=True, blank=True,
+        verbose_name="codigo")
+    name = models.CharField(max_length=100, verbose_name="nombre")
+    activo = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        if self.code and self.name:
+            return str(self.code) + " " + self.name
+        elif self.name:
+            return self.name
+        elif self.code:
+            return str(self.code)
+        else:
+            return ''
+
+    class Meta:
+        abstract = True
+        ordering = ['name']
+
+
+class documento(models.Model):
+    fecha = models.DateField()
+    numero = models.PositiveIntegerField(null=True, blank=True)
+    periodo = models.ForeignKey('Periodo', null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_periodo")
+    user = models.ForeignKey(User, null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_user")
+    sucursal = models.ForeignKey('Sucursal', null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_sucursal")
+    autorizado = models.BooleanField(default=False)
+    impreso = models.BooleanField(default=False)
+    contabilizado = models.BooleanField(default=False)
+    entregado = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        if self.numero:
+            return type(self).__name__ + " " + str(self.numero)
+        else:
+            return type(self).__name__
+
+    class Meta:
+        abstract = True
+
+
+class documento_caja(documento):
+    caja = models.ForeignKey('Caja', null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_caja")
+    cierre_caja = models.ForeignKey('CierreCaja', null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_cierre_caja")
+
+    class Meta:
+        abstract = True
+
+
+class transaccion_monetaria(documento_caja):
+    moneda = models.ForeignKey('Moneda', default=1,
+        related_name="%(app_label)s_%(class)s_caja")
+    monto = models.FloatField()
+
+    class Meta:
+        abstract = True
+
+
+class base_empresa_model(models.Model):
+    empresa = models.ForeignKey('Empresa',
+        related_name="%(app_label)s_%(class)s_empresa", null=True)
+    objects = Manager()
+    objects = empresa_manager()
+
+    class Meta:
+        abstract = True
+
+
+class EmpresaModel(entidad, base_empresa_model):
+    class Meta:
+        abstract = True
 
 
 class Empresa(entidad, datos_generales):
     pass
 
-base_user.add_to_class('empresa', models.ForeignKey(Empresa, null=True))
-
-
-class User(base_user):
-    class Meta:
-        proxy = True
+User.add_to_class('empresa', models.ForeignKey(Empresa, null=True))
 
 
 class Pago(entidad):
@@ -70,20 +225,13 @@ class Serie(entidad):
     numero_inicial = models.PositiveIntegerField()
 
 
-class base_item(EmpresaModel):
+class Item(EmpresaModel):
     marca = models.ForeignKey('Marca', null=True, blank=True)
     categoria = models.ForeignKey('Categoria', null=True, blank=True)
     existencias = models.FloatField(default=0)
     descuento = models.FloatField(default=0)
     precio = models.FloatField(default=0)
     costo = models.FloatField(default=0)
-
-    class Meta:
-        abstract = True
-
-
-class Item(base_item):
-    pass
 
 
 class Marca(EmpresaModel):
@@ -94,7 +242,7 @@ class Categoria(EmpresaModel):
     parent = models.ForeignKey('self', null=True, blank=True)
 
 
-class Provedor(EmpresaModel, datos_generales):
+class Provedor(datos_generales, EmpresaModel):
     TIPO_OPTIONS = (
       ('LO', 'NACIONAL'),
       ('EX', 'EXTRAJERO'),
@@ -108,6 +256,8 @@ class Provedor(EmpresaModel, datos_generales):
         verbose_name="saldo inicial")
     plazo = models.PositiveIntegerField(default=0,
         help_text="plazo de credito expresado en cantidad de dias")
+    #objects = Manager()
+    #objects = empresa_manager()
 
     class Meta:
         verbose_name_plural = "provedores"
@@ -176,6 +326,8 @@ class Compra(documento, base_empresa_model):
     total = models.FloatField(default=0.0)
     abonado = models.FloatField(default=0.0)
     saldo = models.FloatField(default=0.0)
+    objects = Manager()
+    #objects = empresa_manager()
 
     def get_fecha_vence(self):
         if self.tipo == "CO":
@@ -210,6 +362,8 @@ class BaseDetalleCompra(base_empresa_model):
     costo_importacion = models.FloatField(default=0)
     costo_internacion = models.FloatField(default=0)
     recibido = models.FloatField(null=True, blank=True)
+    objects = Manager()
+    objects = empresa_manager()
 
     def __unicode__(self):
         return str(self.item)
@@ -240,12 +394,12 @@ class DetallePoliza(base_empresa_model):
     tipo_costo = models.ForeignKey(TipoCosto)
 
 
-class Sucursal(EmpresaModel):
+class Sucursal(entidad, base_empresa_model):
     class Meta:
         verbose_name_plural = "sucursales"
 
 
-class Caja(EmpresaModel):
+class Caja(entidad, base_empresa_model):
     sucursal = models.ForeignKey(Sucursal)
     series = models.ManyToManyField(Serie)
 
@@ -259,15 +413,15 @@ class CierreCaja(documento, base_empresa_model):
     cerrado = models.BooleanField(default=False)
 
 
-class Bodega(EmpresaModel):
+class Bodega(entidad, base_empresa_model):
     sucursal = models.ForeignKey(Sucursal)
 
 
-class Cliente(EmpresaModel, datos_generales):
+class Cliente(entidad, base_empresa_model, datos_generales):
     bodegas = models.ManyToManyField(Bodega, null=True, blank=True)
 
 
-class Contacto(EmpresaModel):
+class Contacto(entidad, base_empresa_model):
     cliente = models.ForeignKey(Cliente)
     cargo = models.CharField(max_length=100, null=True, blank=True,
          verbose_name="cargo que ocupa")
@@ -275,7 +429,7 @@ class Contacto(EmpresaModel):
     email = models.EmailField(null=True, blank=True)
 
 
-class Cuenta(EmpresaModel):
+class Cuenta(entidad, base_empresa_model):
     numero_cuenta = models.CharField(max_length=25)
     cliente = models.ForeignKey(Cliente)
     limite_credito = models.FloatField()

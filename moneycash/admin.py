@@ -10,7 +10,7 @@ class user_admin(base_useradmin):
     list_editable = ('empresa', )
     list_filter = ('is_staff', 'is_superuser','is_active', 'empresa')
 
-admin.site.register(User, user_admin)
+#admin.site.register(User, user_admin)
 
 
 class entidad_admin(admin.ModelAdmin):

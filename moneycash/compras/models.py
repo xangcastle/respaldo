@@ -1,15 +1,15 @@
 from moneycash.models import models, Provedor as base_provedor,\
-Compra as base_compra, Marca as base_marca, Categoria as base_categoria, \
-DetalleCompra as base_detalle_compra
+Marca as base_marca, Categoria as base_categoria, \
+DetalleCompra as base_detalle_compra, Item as base_item, \
+Compra as base_compra
 from moneycash.manager import Manager, empresa_manager
 from moneycash.middlewares import get_current_user
-from .base import base_item
 #from django.db.models import Sum, Min, Max
 
 
 class base(models.Model):
-    objects = Manager()
-    objects = empresa_manager()
+    #objects = Manager()
+    #objects = empresa_manager()
 
     def save(self):
         self.empresa = get_current_user().empresa
@@ -43,8 +43,7 @@ class Producto(base, base_item):
             #return 0.0
 
     class Meta:
-        managed = False
-        db_table = "moneycash_item"
+        proxy = True
 
 
 class Marca(base, base_marca):
@@ -68,10 +67,9 @@ class Compra(base, base_compra):
         proxy = True
 
 
-class Detalle(base, base_detalle_compra):
+class Detalle(base_detalle_compra):
     class Meta:
-        managed = False
-        db_table = "moneycash_detallecompra"
+        proxy = True
         verbose_name = "producto"
         verbose_name_plural = "detalle de productos"
 

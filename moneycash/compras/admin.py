@@ -12,7 +12,7 @@ class producto_admin(entidad_admin):
 
 
 class compra_detalle(admin.TabularInline):
-    form = autocomplete_light.modelform_factory(Detalle)
+    #form = autocomplete_light.modelform_factory(Detalle)
     model = Detalle
     extra = 1
     fields = ('item', 'cantidad', 'precio')
@@ -33,7 +33,7 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
         ('Impuestos y totales', {'classes': ('grp-collapse grp-open',),
             'fields': (('iva', 'ir', 'al', 'total'), ('abonado', 'saldo'),)}),
                 )
-    form = make_ajax_form(Compra, {'provedor': 'provedor'})
+    #form = make_ajax_form(Compra, {'provedor': 'provedor'})
     inlines = [compra_detalle]
     readonly_fields = ('iva', 'ir', 'al', 'total', 'abonado', 'saldo')
 
