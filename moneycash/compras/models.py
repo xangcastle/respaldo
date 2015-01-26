@@ -51,8 +51,8 @@ class Detalle(base, base_detalle):
 
 
 class ComprasCategoria(models.Model):
-    provedor = models.ForeignKey(Provedor, blank=True, null=True)
-    categoria = models.CharField(max_length=100, blank=True)
+    provedor = models.ForeignKey(Provedor, blank=True)
+    categoria = models.ForeignKey(Categoria, blank=True)
     total = models.FloatField(blank=True, null=True)
 
     class Meta:
