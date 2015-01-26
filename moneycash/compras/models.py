@@ -61,3 +61,5 @@ class ComprasCategoria(models.Model):
     class Meta:
         managed = False
         db_table = 'compras_categoria'
+        verbose_name = "categoria"
+        verbose_name_plural = "compras por categorias"

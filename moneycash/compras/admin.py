@@ -49,8 +49,10 @@ class compras_por_categoria(admin.TabularInline):
 class provedor_admin(entidad_admin):
     list_display = ('code', 'name', 'identificacion', 'telefono',
         'limite_credito', 'total_compras', 'get_saldo')
-    fields = ('name', ('code', 'identificacion'), 'telefono', 'direccion',
+    fields = ('name', ('code', 'identificacion'),
+        ('telefono', 'tipo'), 'direccion',
         ('limite_credito', 'saldo', 'plazo'))
+    list_filter = ('tipo',)
     inlines = [compras_por_categoria]
 
 admin.site.register(Provedor, provedor_admin)
