@@ -41,8 +41,8 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
 
 class compras_por_categoria(admin.TabularInline):
     model = ComprasCategoria
-    fields = ('categoria', 'total')
-    readonly_fields = ('categoria', 'total')
+    fields = ('categoria', 'este_mes', 'este_anno', 'anno_anterior', 'total')
+    readonly_fields = fields
     extra = 0
 
 

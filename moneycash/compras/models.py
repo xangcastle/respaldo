@@ -53,6 +53,9 @@ class Detalle(base, base_detalle):
 class ComprasCategoria(models.Model):
     provedor = models.ForeignKey(Provedor, blank=True)
     categoria = models.ForeignKey(Categoria, blank=True)
+    este_mes = models.FloatField(blank=True, null=True)
+    este_anno = models.FloatField(blank=True, null=True)
+    anno_anterior = models.FloatField(blank=True, null=True)
     total = models.FloatField(blank=True, null=True)
 
     class Meta:
