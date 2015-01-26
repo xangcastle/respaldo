@@ -2,7 +2,6 @@ from moneycash.models import models, Provedor as base_provedor,\
 Marca as base_marca, Categoria as base_categoria, \
 DetalleCompra as base_detalle_compra, Item as base_item, \
 Compra as base_compra
-from moneycash.manager import Manager, empresa_manager
 from moneycash.middlewares import get_current_user
 #from django.db.models import Sum, Min, Max
 
@@ -11,9 +10,9 @@ class base(models.Model):
     #objects = Manager()
     #objects = empresa_manager()
 
-    def save(self):
-        self.empresa = get_current_user().empresa
-        super(base, self).save()
+    #def save(self):
+        #self.empresa = get_current_user().empresa
+        #super(base, self).save()
 
     class Meta:
         abstract = True

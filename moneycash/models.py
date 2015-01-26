@@ -153,8 +153,13 @@ class transaccion_monetaria(documento_caja):
 class base_empresa_model(models.Model):
     empresa = models.ForeignKey('Empresa',
         related_name="%(app_label)s_%(class)s_empresa", null=True)
+
     objects = Manager()
     objects = empresa_manager()
+
+    def save(self):
+        self.empresa = get_current_user().empresa
+        super(base_empresa_model, self).save()
 
     class Meta:
         abstract = True
