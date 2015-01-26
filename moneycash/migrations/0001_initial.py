@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('auth', '0001_initial'),
     ]
 
     operations = [
@@ -35,7 +36,6 @@ class Migration(migrations.Migration):
                 ('activo', models.BooleanField(default=True)),
             ],
             options={
-                'ordering': ['name'],
                 'abstract': False,
             },
             bases=(models.Model,),
@@ -49,7 +49,6 @@ class Migration(migrations.Migration):
                 ('activo', models.BooleanField(default=True)),
             ],
             options={
-                'ordering': ['name'],
                 'abstract': False,
             },
             bases=(models.Model,),
@@ -61,10 +60,8 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(max_length=25, null=True, verbose_name=b'codigo', blank=True)),
                 ('name', models.CharField(max_length=100, verbose_name=b'nombre')),
                 ('activo', models.BooleanField(default=True)),
-                ('parent', models.ForeignKey(blank=True, to='moneycash.Categoria', null=True)),
             ],
             options={
-                'ordering': ['name'],
                 'abstract': False,
             },
             bases=(models.Model,),
@@ -104,7 +101,6 @@ class Migration(migrations.Migration):
                 ('bodegas', models.ManyToManyField(to='moneycash.Bodega', null=True, blank=True)),
             ],
             options={
-                'ordering': ['name'],
                 'abstract': False,
             },
             bases=(models.Model,),
@@ -119,6 +115,9 @@ class Migration(migrations.Migration):
                 ('impreso', models.BooleanField(default=False)),
                 ('contabilizado', models.BooleanField(default=False)),
                 ('entregado', models.BooleanField(default=False)),
+                ('fecha_vence', models.DateField(help_text=b'si se deja en blanco se aplica el plazo del provedor', null=True, verbose_name=b'fecha de vencimiento', blank=True)),
+                ('comentarios', models.TextField(max_length=400, null=True, blank=True)),
+                ('tipo', models.CharField(default=b'CR', max_length=2, verbose_name=b'tipo de pago de la compra', choices=[(b'CO', b'CONTADO'), (b'CR', b'CREDITO')])),
                 ('subtotal', models.FloatField(default=0.0)),
                 ('iva', models.FloatField(default=0.0)),
                 ('exento_iva', models.BooleanField(default=False)),
@@ -130,6 +129,8 @@ class Migration(migrations.Migration):
                 ('exento_al', models.BooleanField(default=False, verbose_name=b'exento alcaldia')),
                 ('x_al', models.FloatField(default=100, blank=True)),
                 ('total', models.FloatField(default=0.0)),
+                ('abonado', models.FloatField(default=0.0)),
+                ('saldo', models.FloatField(default=0.0)),
             ],
             options={
             },
@@ -148,7 +149,6 @@ class Migration(migrations.Migration):
                 ('cliente', models.ForeignKey(to='moneycash.Cliente')),
             ],
             options={
-                'ordering': ['name'],
                 'abstract': False,
             },
             bases=(models.Model,),
@@ -165,6 +165,23 @@ class Migration(migrations.Migration):
                 ('plazo', models.PositiveIntegerField()),
                 ('saldo', models.FloatField(null=True, blank=True)),
                 ('cliente', models.ForeignKey(to='moneycash.Cliente')),
+            ],
+            options={
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Cuenta_Banco',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(max_length=25, null=True, verbose_name=b'codigo', blank=True)),
+                ('name', models.CharField(max_length=100, verbose_name=b'nombre')),
+                ('activo', models.BooleanField(default=True)),
+                ('balance_inicial', models.FloatField()),
+                ('balance_actual', models.FloatField()),
+                ('es_tarjeta', models.BooleanField(default=False)),
+                ('banco', models.ForeignKey(to='moneycash.Banco')),
             ],
             options={
                 'ordering': ['name'],
@@ -205,6 +222,7 @@ class Migration(migrations.Migration):
                 ('cuenta', models.ForeignKey(blank=True, to='moneycash.Cuenta', null=True)),
             ],
             options={
+                'abstract': False,
             },
             bases=(models.Model,),
         ),
@@ -233,9 +251,26 @@ class Migration(migrations.Migration):
             name='DetallePoliza',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('factura', models.ForeignKey(to='moneycash.Compra')),
             ],
             options={
+                'abstract': False,
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Empresa',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('identificacion', models.CharField(max_length=25, null=True, verbose_name=b'ruc/cedula', blank=True)),
+                ('telefono', models.CharField(max_length=100, null=True, blank=True)),
+                ('direccion', models.CharField(max_length=100, null=True, blank=True)),
+                ('code', models.CharField(max_length=25, null=True, verbose_name=b'codigo', blank=True)),
+                ('name', models.CharField(max_length=100, verbose_name=b'nombre')),
+                ('activo', models.BooleanField(default=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
             },
             bases=(models.Model,),
         ),
@@ -263,6 +298,7 @@ class Migration(migrations.Migration):
                 ('caja', models.ForeignKey(related_name=b'moneycash_factura_caja', blank=True, to='moneycash.Caja', null=True)),
                 ('cierre_caja', models.ForeignKey(related_name=b'moneycash_factura_cierre_caja', blank=True, to='moneycash.CierreCaja', null=True)),
                 ('cliente', models.ForeignKey(blank=True, to='moneycash.Cliente', help_text=b'BUSCAR CLIENTE', null=True)),
+                ('empresa', models.ForeignKey(related_name=b'moneycash_factura_empresa', to='moneycash.Empresa', null=True)),
             ],
             options={
                 'abstract': False,
@@ -286,6 +322,7 @@ class Migration(migrations.Migration):
                 ('costo_total', models.FloatField(default=0)),
                 ('utilidad', models.FloatField(default=0)),
                 ('categoria', models.ForeignKey(blank=True, to='moneycash.Categoria', null=True)),
+                ('empresa', models.ForeignKey(related_name=b'moneycash_factura_detalle_empresa', to='moneycash.Empresa', null=True)),
                 ('factura', models.ForeignKey(to='moneycash.Factura')),
             ],
             options={
@@ -306,9 +343,9 @@ class Migration(migrations.Migration):
                 ('precio', models.FloatField(default=0)),
                 ('costo', models.FloatField(default=0)),
                 ('categoria', models.ForeignKey(blank=True, to='moneycash.Categoria', null=True)),
+                ('empresa', models.ForeignKey(related_name=b'moneycash_item_empresa', to='moneycash.Empresa', null=True)),
             ],
             options={
-                'ordering': ['name'],
                 'abstract': False,
             },
             bases=(models.Model,),
@@ -320,9 +357,9 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(max_length=25, null=True, verbose_name=b'codigo', blank=True)),
                 ('name', models.CharField(max_length=100, verbose_name=b'nombre')),
                 ('activo', models.BooleanField(default=True)),
+                ('empresa', models.ForeignKey(related_name=b'moneycash_marca_empresa', to='moneycash.Empresa', null=True)),
             ],
             options={
-                'ordering': ['name'],
                 'abstract': False,
             },
             bases=(models.Model,),
@@ -379,6 +416,7 @@ class Migration(migrations.Migration):
                 ('impreso', models.BooleanField(default=False)),
                 ('contabilizado', models.BooleanField(default=False)),
                 ('entregado', models.BooleanField(default=False)),
+                ('empresa', models.ForeignKey(related_name=b'moneycash_poliza_empresa', to='moneycash.Empresa', null=True)),
                 ('periodo', models.ForeignKey(related_name=b'moneycash_poliza_periodo', blank=True, to='moneycash.Periodo', null=True)),
             ],
             options={
@@ -399,7 +437,9 @@ class Migration(migrations.Migration):
                 ('tipo', models.CharField(default=b'LO', max_length=2, choices=[(b'LO', b'NACIONAL'), (b'EX', b'EXTRAJERO')])),
                 ('tiempo_entrega', models.PositiveIntegerField(default=0, help_text=b'tiempo de entrega en dias para la mercaderia', verbose_name=b'tiempo de entrega')),
                 ('limite_credito', models.FloatField(null=True, blank=True)),
-                ('saldo', models.FloatField(null=True, blank=True)),
+                ('saldo', models.FloatField(null=True, verbose_name=b'saldo inicial', blank=True)),
+                ('plazo', models.PositiveIntegerField(help_text=b'plazo de credito expresado en cantidad de dias')),
+                ('empresa', models.ForeignKey(related_name=b'moneycash_provedor_empresa', to='moneycash.Empresa', null=True)),
             ],
             options={
                 'verbose_name_plural': 'provedores',
@@ -422,6 +462,7 @@ class Migration(migrations.Migration):
                 ('caja', models.ForeignKey(related_name=b'moneycash_recibo_caja', blank=True, to='moneycash.Caja', null=True)),
                 ('cierre_caja', models.ForeignKey(related_name=b'moneycash_recibo_cierre_caja', blank=True, to='moneycash.CierreCaja', null=True)),
                 ('cliente', models.ForeignKey(blank=True, to='moneycash.Cliente', null=True)),
+                ('empresa', models.ForeignKey(related_name=b'moneycash_recibo_empresa', to='moneycash.Empresa', null=True)),
                 ('periodo', models.ForeignKey(related_name=b'moneycash_recibo_periodo', blank=True, to='moneycash.Periodo', null=True)),
             ],
             options={
@@ -451,9 +492,35 @@ class Migration(migrations.Migration):
                 ('code', models.CharField(max_length=25, null=True, verbose_name=b'codigo', blank=True)),
                 ('name', models.CharField(max_length=100, verbose_name=b'nombre')),
                 ('activo', models.BooleanField(default=True)),
+                ('empresa', models.ForeignKey(related_name=b'moneycash_sucursal_empresa', to='moneycash.Empresa', null=True)),
             ],
             options={
                 'verbose_name_plural': 'sucursales',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='tasa_cambio',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('fecha', models.DateField()),
+                ('tipo_cambio', models.FloatField()),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='tipo_movimiento',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('code', models.CharField(max_length=25, null=True, verbose_name=b'codigo', blank=True)),
+                ('name', models.CharField(max_length=100, verbose_name=b'nombre')),
+                ('activo', models.BooleanField(default=True)),
+            ],
+            options={
+                'ordering': ['name'],
+                'abstract': False,
             },
             bases=(models.Model,),
         ),
@@ -539,6 +606,18 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='detallepoliza',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_detallepoliza_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='detallepoliza',
+            name='factura',
+            field=models.ForeignKey(to='moneycash.Compra'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='detallepoliza',
             name='poliza',
             field=models.ForeignKey(to='moneycash.Poliza'),
             preserve_default=True,
@@ -551,8 +630,20 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='detallecompra',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_detallecompra_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='detallecompra',
             name='item',
             field=models.ForeignKey(to='moneycash.Item'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='detalle_pago',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_detalle_pago_empresa', to='moneycash.Empresa', null=True),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -604,6 +695,30 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
+            model_name='cuenta_banco',
+            name='moneda',
+            field=models.ForeignKey(to='moneycash.Moneda'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='cuenta',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_cuenta_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='contacto',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_contacto_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='compra',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_compra_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='compra',
             name='moneda',
             field=models.ForeignKey(default=1, to='moneycash.Moneda'),
@@ -638,6 +753,18 @@ class Migration(migrations.Migration):
             unique_together=set([('provedor', 'numero')]),
         ),
         migrations.AddField(
+            model_name='cliente',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_cliente_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='cierrecaja',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_cierrecaja_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='cierrecaja',
             name='periodo',
             field=models.ForeignKey(related_name=b'moneycash_cierrecaja_periodo', blank=True, to='moneycash.Periodo', null=True),
@@ -656,6 +783,24 @@ class Migration(migrations.Migration):
             preserve_default=True,
         ),
         migrations.AddField(
+            model_name='categoria',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_categoria_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='categoria',
+            name='parent',
+            field=models.ForeignKey(blank=True, to='moneycash.Categoria', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='caja',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_caja_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
             model_name='caja',
             name='series',
             field=models.ManyToManyField(to='moneycash.Serie'),
@@ -669,8 +814,23 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='bodega',
+            name='empresa',
+            field=models.ForeignKey(related_name=b'moneycash_bodega_empresa', to='moneycash.Empresa', null=True),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='bodega',
             name='sucursal',
             field=models.ForeignKey(to='moneycash.Sucursal'),
             preserve_default=True,
+        ),
+        migrations.CreateModel(
+            name='User',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('auth.user',),
         ),
     ]

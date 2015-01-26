@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             options={
                 'proxy': True,
             },
-            bases=('moneycash.compra',),
+            bases=('moneycash.compra', models.Model),
         ),
         migrations.CreateModel(
             name='Detalle',
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 'proxy': True,
                 'verbose_name_plural': 'detalle de productos',
             },
-            bases=('moneycash.detallecompra',),
+            bases=('moneycash.detallecompra', models.Model),
         ),
         migrations.CreateModel(
             name='Producto',
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
             options={
                 'proxy': True,
             },
-            bases=('moneycash.item',),
+            bases=('moneycash.item', models.Model),
         ),
         migrations.CreateModel(
             name='Provedor',
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 'proxy': True,
                 'verbose_name_plural': 'provedores',
             },
-            bases=('moneycash.provedor',),
+            bases=('moneycash.provedor', models.Model),
         ),
         migrations.CreateModel(
             name='ComprasCategoria',
