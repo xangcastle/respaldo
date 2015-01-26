@@ -2,6 +2,7 @@ from django.contrib.auth.models import User as base_user
 from moneycash.base import models, entidad, documento, documento_caja,\
 transaccion_monetaria, datos_generales, EmpresaModel, base_empresa_model
 from datetime import timedelta
+from django.db.models import Sum
 
 
 class Empresa(entidad, datos_generales):
