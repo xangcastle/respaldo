@@ -1,18 +1,33 @@
 from moneycash.models import models, Provedor as base_provedor,\
 Compra as base_compra, DetalleCompra as base_detalle,\
-Item as base_producto
+Item as base_producto, Marca as base_marca, Categoria as base_categoria
 from moneycash.manager import Manager, empresa_manager
+from moneycash.middlewares import get_current_user
 
 
 class base(models.Model):
     objects = Manager()
     objects = empresa_manager()
 
+    def save(self):
+        self.empresa = get_current_user().empresa
+        super(base, self).save()
+
     class Meta:
         abstract = True
 
 
 class Producto(base, base_producto):
+    class Meta:
+        proxy = True
+
+
+class Marca(base, base_marca):
+    class Meta:
+        proxy = True
+
+
+class Categoria(base, base_categoria):
     class Meta:
         proxy = True
 
