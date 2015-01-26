@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -76,14 +77,15 @@ class transaccion_monetaria(documento_caja):
         abstract = True
 
 
+class base_empresa_model(models.Model):
+    empresa = models.ForeignKey('Empresa',
+        related_name="%(app_label)s_%(class)s_empresa", null=True)
 
-#class user_model(base_model):
-    #user = models.ForeignKey(User,related_name="%(app_label)s_%(class)s_user",null=True,blank=True)
-    #class Meta:
-        #abstract = True
+    class Meta:
+        abstract = True
 
-#class user_model_managed(user_model):
-    #objects = models.Manager()
-    #objects = model_user_manager()
-    #class Meta:
-        #abstract =True
+
+class EmpresaModel(entidad, base_empresa_model):
+    class Meta:
+        abstract = True
+

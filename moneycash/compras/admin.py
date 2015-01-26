@@ -1,4 +1,4 @@
-from moneycash.admin import documento_admin, entidad_admin, admin
+from moneycash.admin import documento_admin, model_empresa_admin as entidad_admin, admin
 from moneycash.compras.models import Compra, Provedor, Detalle, Producto,\
 Marca, Categoria, ComprasCategoria
 from ajax_select.admin import AjaxSelectAdmin
@@ -8,8 +8,7 @@ import autocomplete_light
 
 class producto_admin(entidad_admin):
     list_filter = ('marca', 'categoria')
-    list_display = ('code', 'name', 'marca', 'categoria',
-        'total_compras', 'precio_min', 'precio_max')
+    list_display = ('code', 'name', 'marca', 'categoria')
 
 
 class compra_detalle(admin.TabularInline):
@@ -54,6 +53,11 @@ class provedor_admin(entidad_admin):
         ('limite_credito', 'saldo', 'plazo'))
     list_filter = ('tipo',)
     inlines = [compras_por_categoria]
+
+    def response_change(self, request, obj):
+        if '_popup' in request.REQUEST:
+            request.path += '?_popup=1'
+        return super(provedor_admin, self).response_change(request, obj)
 
 admin.site.register(Provedor, provedor_admin)
 admin.site.register(Compra, compra_admin)

@@ -1,26 +1,11 @@
 from django.contrib.auth.models import User as base_user
-from django.db.models import Sum, Min, Max
 from moneycash.base import models, entidad, documento, documento_caja,\
-transaccion_monetaria, datos_generales
+transaccion_monetaria, datos_generales, EmpresaModel, base_empresa_model
 from datetime import timedelta
 
 
 class Empresa(entidad, datos_generales):
     pass
-
-
-class base_empresa_model(models.Model):
-    empresa = models.ForeignKey(Empresa,
-        related_name="%(app_label)s_%(class)s_empresa", null=True)
-
-    class Meta:
-        abstract = True
-
-
-class EmpresaModel(entidad, base_empresa_model):
-    class Meta:
-        abstract = True
-
 
 base_user.add_to_class('empresa', models.ForeignKey(Empresa, null=True))
 
@@ -82,6 +67,22 @@ class tasa_cambio(models.Model):
 
 class Serie(entidad):
     numero_inicial = models.PositiveIntegerField()
+
+
+class base_item(EmpresaModel):
+    marca = models.ForeignKey('Marca', null=True, blank=True)
+    categoria = models.ForeignKey('Categoria', null=True, blank=True)
+    existencias = models.FloatField(default=0)
+    descuento = models.FloatField(default=0)
+    precio = models.FloatField(default=0)
+    costo = models.FloatField(default=0)
+
+    class Meta:
+        abstract = True
+
+
+class Item(base_item):
+    pass
 
 
 class Marca(EmpresaModel):
@@ -237,35 +238,6 @@ class DetallePoliza(base_empresa_model):
     factura = models.ForeignKey(Compra)
     tipo_costo = models.ForeignKey(TipoCosto)
 
-
-class Item(EmpresaModel):
-    marca = models.ForeignKey(Marca, null=True, blank=True)
-    categoria = models.ForeignKey(Categoria, null=True, blank=True)
-    existencias = models.FloatField(default=0)
-    descuento = models.FloatField(default=0)
-    precio = models.FloatField(default=0)
-    costo = models.FloatField(default=0)
-
-    def compras(self):
-        return DetalleCompra.objects.filter(item=self)
-
-    def total_compras(self):
-        if self.compras():
-            return self.compras().aggregate(Sum('cantidad'))['cantidad__sum']
-        else:
-            return 0.0
-
-    def precio_min(self):
-        if self.compras():
-            return self.compras().aggregate(Min('precio'))['precio__min']
-        else:
-            return 0.0
-
-    def precio_max(self):
-        if self.compras():
-            return self.compras().aggregate(Max('precio'))['precio__max']
-        else:
-            return 0.0
 
 class Sucursal(EmpresaModel):
     class Meta:

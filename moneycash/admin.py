@@ -28,6 +28,10 @@ class entidad_admin(admin.ModelAdmin):
     activar.short_description = "Activate selected objects"
 
 
+class model_empresa_admin(entidad_admin):
+    exclude = ('empresa',)
+
+
 class documento_admin(admin.ModelAdmin):
     date_hierarchy = 'fecha'
     list_display = ('numero', 'fecha', 'user', 'sucursal',
