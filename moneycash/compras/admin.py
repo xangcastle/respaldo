@@ -19,7 +19,7 @@ class compra_detalle(admin.TabularInline):
     classes = ('grp-collapse grp-open',)
 
 
-class compra_admin(documento_admin, AjaxSelectAdmin):
+class compra_admin(documento_admin):
     list_display = ('numero', 'fecha', 'provedor',
         'subtotal', 'iva', 'total', 'ir', 'al', 'abonado', 'saldo')
     list_filter = ('periodo', 'user', 'provedor', 'tipo')

@@ -5,9 +5,10 @@
       {% for model in app.models %}
       {% if model.admin_url %}
     <li class="">
-    	<a href="{{ model.admin_url }}">
+    	<a href="{{ model.admin_url }}" style="display:inline-block">
     	{{ model.name }}
     	</a>
+    	<a href="{{ model.add_url }}" style="display:inline">+</a>
     </li>
       {% endif %}
       {% endfor %}

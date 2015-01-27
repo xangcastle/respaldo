@@ -6,19 +6,7 @@ from moneycash.middlewares import get_current_user
 #from django.db.models import Sum, Min, Max
 
 
-class base(models.Model):
-    #objects = Manager()
-    #objects = empresa_manager()
-
-    #def save(self):
-        #self.empresa = get_current_user().empresa
-        #super(base, self).save()
-
-    class Meta:
-        abstract = True
-
-
-class Producto(base, base_item):
+class Producto(base_item):
 
     #def compras(self):
         #return Detalle.objects.filter(item=self)
@@ -45,23 +33,23 @@ class Producto(base, base_item):
         proxy = True
 
 
-class Marca(base, base_marca):
+class Marca(base_marca):
     class Meta:
         proxy = True
 
 
-class Categoria(base, base_categoria):
+class Categoria(base_categoria):
     class Meta:
         proxy = True
 
 
-class Provedor(base, base_provedor):
+class Provedor(base_provedor):
     class Meta:
         proxy = True
         verbose_name_plural = "provedores"
 
 
-class Compra(base, base_compra):
+class Compra(base_compra):
     class Meta:
         proxy = True
 

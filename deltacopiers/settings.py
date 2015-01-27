@@ -159,7 +159,7 @@ AJAX_LOOKUP_CHANNELS = {
     'cliche': ('music.lookups', 'ClicheLookup'),
     'cliente': ('moneycash.lookups', 'ClienteLookup'),
     'item': ('moneycash.lookups', 'ItemLookup'),
-    'provedor': ('moneycash.lookups', 'ProvedorLookup'),
+    'provedor': ('moneycash.compras.lookups', 'ProvedorLookup'),
 }
 
 # By default will use window.jQuery
