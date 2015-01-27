@@ -67,13 +67,7 @@ class user_manager(Manager):
 class empresa_manager(Manager):
     def get_queryset(self):
         try:
-            if str(get_current_user()) == 'AnonymousUser':
-                return super(empresa_manager, self).get_queryset()
-            else:
-                if not get_current_user().empresa:
-                    return super(empresa_manager, self).get_queryset()
-                else:
-                    return super(empresa_manager, self).get_queryset(
+            return super(empresa_manager, self).get_queryset(
                         ).filter(empresa=get_current_user().empresa)
         except:
             return super(empresa_manager, self).get_queryset()
@@ -212,23 +206,6 @@ class tasa_cambio(models.Model):
         return str(self.tipo_cambio)
 
 
-#class detMovimientosBanco(
-    #IdMovBancos = models.ForeignKey(tipo_movimiento)
-    #cuenta = models.ForeignKey(Cuenta_Banco)
-	#IdCuenta integer NULL,
-	#IdDeposito character varying(10) NULL,
-	#IdRazonMovBanco integer NULL,
-	#Documento character varying(20) NULL,
-	#Descripcion character varying(200) NULL,
-	#Fecha date NULL,
-	#TipoMovimiento integer NULL,
-	#Debito double precision NULL,
-	#Credito double precision NULL,
-	#SaldoAnterior double precision NULL,
-	#SaldoActual double precision NULL,
-	#Estado boolean NULL
-
-
 class Serie(entidad):
     numero_inicial = models.PositiveIntegerField()
 
@@ -334,8 +311,6 @@ class Compra(documento, base_empresa_model):
     total = models.FloatField(default=0.0)
     abonado = models.FloatField(default=0.0)
     saldo = models.FloatField(default=0.0)
-    objects = Manager()
-    #objects = empresa_manager()
 
     def get_fecha_vence(self):
         if self.tipo == "CO":

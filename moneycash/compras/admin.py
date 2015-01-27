@@ -1,5 +1,5 @@
 from moneycash.admin import documento_admin, model_empresa_admin as entidad_admin, admin
-from moneycash.compras.models import Compra, Provedor, Detalle, Producto,\
+from moneycash.compras.models import Compra, Provedor, Detalle, Item,\
 Marca, Categoria, ComprasCategoria
 from ajax_select.admin import AjaxSelectAdmin
 from ajax_select import make_ajax_form
@@ -61,6 +61,6 @@ class provedor_admin(entidad_admin):
 
 admin.site.register(Provedor, provedor_admin)
 admin.site.register(Compra, compra_admin)
-admin.site.register(Producto, producto_admin)
+admin.site.register(Item, producto_admin)
 admin.site.register(Marca, entidad_admin)
 admin.site.register(Categoria, entidad_admin)

@@ -6,7 +6,7 @@ from moneycash.middlewares import get_current_user
 #from django.db.models import Sum, Min, Max
 
 
-class Producto(base_item):
+class Item(base_item):
 
     #def compras(self):
         #return Detalle.objects.filter(item=self)
