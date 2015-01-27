@@ -241,8 +241,6 @@ class Provedor(datos_generales, EmpresaModel):
         verbose_name="saldo inicial")
     plazo = models.PositiveIntegerField(default=0,
         help_text="plazo de credito expresado en cantidad de dias")
-    #objects = Manager()
-    #objects = empresa_manager()
 
     class Meta:
         verbose_name_plural = "provedores"
@@ -345,8 +343,6 @@ class BaseDetalleCompra(base_empresa_model):
     costo_importacion = models.FloatField(default=0)
     costo_internacion = models.FloatField(default=0)
     recibido = models.FloatField(null=True, blank=True)
-    objects = Manager()
-    objects = empresa_manager()
 
     def __unicode__(self):
         return str(self.item)

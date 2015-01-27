@@ -2,33 +2,9 @@ from moneycash.models import models, Provedor as base_provedor,\
 Marca as base_marca, Categoria as base_categoria, \
 DetalleCompra as base_detalle_compra, Item as base_item, \
 Compra as base_compra
-from moneycash.middlewares import get_current_user
-#from django.db.models import Sum, Min, Max
 
 
 class Item(base_item):
-
-    #def compras(self):
-        #return Detalle.objects.filter(item=self)
-
-    #def total_compras(self):
-        #if self.compras():
-            #return self.compras().aggregate(Sum('cantidad'))['cantidad__sum']
-        #else:
-            #return 0.0
-
-    #def precio_min(self):
-        #if self.compras():
-            #return self.compras().aggregate(Min('precio'))['precio__min']
-        #else:
-            #return 0.0
-
-    #def precio_max(self):
-        #if self.compras():
-            #return self.compras().aggregate(Max('precio'))['precio__max']
-        #else:
-            #return 0.0
-
     class Meta:
         proxy = True
 

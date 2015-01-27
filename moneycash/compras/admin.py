@@ -1,4 +1,5 @@
-from moneycash.admin import documento_admin, model_empresa_admin as entidad_admin, admin
+from moneycash.admin import documento_admin, \
+model_empresa_admin as entidad_admin, admin
 from moneycash.compras.models import Compra, Provedor, Detalle, Item,\
 Marca, Categoria, ComprasCategoria
 from ajax_select.admin import AjaxSelectAdmin
@@ -19,7 +20,7 @@ class compra_detalle(admin.TabularInline):
     classes = ('grp-collapse grp-open',)
 
 
-class compra_admin(documento_admin):
+class compra_admin(documento_admin, AjaxSelectAdmin):
     list_display = ('numero', 'fecha', 'provedor',
         'subtotal', 'iva', 'total', 'ir', 'al', 'abonado', 'saldo')
     list_filter = ('periodo', 'user', 'provedor', 'tipo')
