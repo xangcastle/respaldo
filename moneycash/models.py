@@ -66,14 +66,17 @@ class user_manager(Manager):
 
 class empresa_manager(Manager):
     def get_queryset(self):
-        if str(get_current_user()) == 'AnonymousUser':
-            return super(empresa_manager, self).get_queryset()
-        else:
-            if not get_current_user().empresa:
+        try:
+            if str(get_current_user()) == 'AnonymousUser':
                 return super(empresa_manager, self).get_queryset()
             else:
-                return super(empresa_manager, self).get_queryset(
-                    ).filter(empresa=get_current_user().empresa)
+                if not get_current_user().empresa:
+                    return super(empresa_manager, self).get_queryset()
+                else:
+                    return super(empresa_manager, self).get_queryset(
+                        ).filter(empresa=get_current_user().empresa)
+        except:
+            return super(empresa_manager, self).get_queryset()
 
 
 class datos_generales(models.Model):

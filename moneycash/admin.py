@@ -8,7 +8,7 @@ class user_admin(base_useradmin):
     list_display = ('username', 'email', 'first_name', 'last_name',
         'is_staff', 'empresa')
     list_editable = ('empresa', )
-    list_filter = ('is_staff', 'is_superuser','is_active', 'empresa')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'empresa')
 
 #admin.site.register(User, user_admin)
 
