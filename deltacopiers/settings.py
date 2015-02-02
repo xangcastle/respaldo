@@ -43,12 +43,12 @@ USE_TZ = True
 RUTA_PROYECTO = os.path.dirname(os.path.realpath(__file__))
 MEDIA_ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), 'media/'))
 MEDIA_URL = '/media/'
-STATIC_ROOT = '/home/abel/workspace/deltacopiers/deltacopiers/static/'
+STATIC_ROOT = ''
 STATIC_URL = '/static/'
 
-#STATICFILES_DIRS = (
-    #os.path.join(RUTA_PROYECTO, 'static/'),
-#)
+STATICFILES_DIRS = (
+    os.path.join(RUTA_PROYECTO, 'static/'),
+)
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
