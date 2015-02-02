@@ -1,6 +1,6 @@
 from moneycash.admin import documento_admin, \
 model_empresa_admin as entidad_admin, admin
-from moneycash.compras.models import Compra, Provedor, Detalle, Item,\
+from moneycash.compras.models import Compra, Provedor, DetalleCompra, Item,\
 Marca, Categoria, ComprasCategoria
 from ajax_select.admin import AjaxSelectAdmin
 from ajax_select import make_ajax_form
@@ -13,8 +13,8 @@ class producto_admin(entidad_admin):
 
 
 class compra_detalle(admin.TabularInline):
-    form = autocomplete_light.modelform_factory(Detalle)
-    model = Detalle
+    form = autocomplete_light.modelform_factory(DetalleCompra)
+    model = DetalleCompra
     extra = 1
     fields = ('item', 'cantidad', 'precio')
     classes = ('grp-collapse grp-open',)

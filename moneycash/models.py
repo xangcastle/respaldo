@@ -443,32 +443,6 @@ class Periodo(models.Model):
             return 0.0
 
 
-class Factura(documento_caja, base_empresa_model):
-    cliente = models.ForeignKey(Cliente, null=True, blank=True,
-    help_text="BUSCAR CLIENTE")
-    exento_iva = models.BooleanField(default=False)
-    exento_iva_monto = models.FloatField(null=True, blank=True,
-        verbose_name="porcentaje autorizado por la dgi")
-    alcaldia = models.BooleanField(default=False)
-    retencion_ir = models.BooleanField(default=False)
-    subtotal = models.FloatField(default=0)
-    descuento = models.FloatField(default=0)
-    iva = models.FloatField(default=0)
-    total = models.FloatField(default=0)
-    retencion = models.FloatField(default=0)
-    costos = models.FloatField(default=0)
-    utilidad = models.FloatField(default=0)
-    serie = models.ForeignKey(Serie, null=True, blank=True)
-
-    def __unicode__(self):
-        if self.numero:
-            return str(self.numero)
-        elif self.nombre:
-            return self.nombre
-        else:
-            return ''
-
-
 class Recibo(documento_caja, base_empresa_model):
     nombre = models.CharField(max_length=100, null=True, blank=True)
     concepto = models.CharField(max_length=200, null=True, blank=True)
@@ -486,32 +460,6 @@ class Recibo(documento_caja, base_empresa_model):
 
 class Deposito(transaccion_monetaria):
     banco = models.ForeignKey(Banco)
-
-
-class factura_detalle(base_empresa_model):
-    factura = models.ForeignKey(Factura)
-    item = models.ForeignKey(Item, null=True, blank=True)
-    marca = models.ForeignKey(Marca, null=True, blank=True)
-    categoria = models.ForeignKey(Categoria, null=True, blank=True)
-    codigo = models.CharField(max_length=25, null=True, blank=True)
-    descripcion = models.CharField(max_length=100, null=True, blank=True)
-    cantidad = models.FloatField(default=0)
-    descuento_unitario = models.FloatField(default=0)
-    precio_unitario = models.FloatField(default=0)
-    costo_unitario = models.FloatField(default=0)
-    precio_descontado = models.FloatField(default=0)
-    total = models.FloatField(default=0)
-    descuento_total = models.FloatField(default=0)
-    precio_descontado_total = models.FloatField(default=0)
-    costo_total = models.FloatField(default=0)
-    utilidad = models.FloatField(default=0)
-
-    class Meta:
-        verbose_name = "producto"
-        verbose_name_plural = 'productos y/o servicios'
-
-    def __unicode__(self):
-        return ''
 
 
 class detalle_pago(base_empresa_model):

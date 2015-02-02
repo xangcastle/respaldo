@@ -30,7 +30,7 @@ class Compra(base_compra):
         proxy = True
 
 
-class Detalle(base_detalle_compra):
+class DetalleCompra(base_detalle_compra):
     class Meta:
         proxy = True
         verbose_name = "producto"
