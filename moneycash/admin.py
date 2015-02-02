@@ -18,6 +18,7 @@ class entidad_admin(admin.ModelAdmin):
     actions = ['activar', 'inactivar']
     ordering = ('code',)
     search_fields = ('code', 'name')
+    ordering = ('name',)
 
     def inactivar(self, request, queryset):
         queryset.update(activo=False)
