@@ -22,7 +22,8 @@ class compra_detalle(admin.TabularInline):
 
 class compra_admin(documento_admin, AjaxSelectAdmin):
     list_display = ('numero', 'fecha', 'provedor',
-        'subtotal', 'iva', 'total', 'ir', 'al', 'abonado', 'saldo')
+        'subtotal', 'iva', 'total', 'ir', 'al', 'abonado', 'saldo',
+        'fecha_vence')
     list_filter = ('periodo', 'user', 'provedor', 'tipo')
     fieldsets = (
         ('Datos de La compra', {'classes': ('grp-collapse grp-open',),
