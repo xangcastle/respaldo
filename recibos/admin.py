@@ -6,6 +6,7 @@ from import_export.admin import ImportExportModelAdmin
 from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 import adminactions.actions as actions
+from totalsum.admin import TotalsumAdmin
 
 actions.add_to_site(site)
 
@@ -49,7 +50,7 @@ class UbicacionAdmin(admin.ModelAdmin):
     #inlines = [Areainline]
 
 
-class ReciboAdmin(admin.ModelAdmin):
+class ReciboAdmin(TotalsumAdmin):
     fieldsets = (
         ('Datos Generales', {
             'classes': ('grp-collapse grp-open',),
@@ -77,6 +78,7 @@ class ReciboAdmin(admin.ModelAdmin):
     inlines = [DetalleInlines]
     list_editable = ('contador_inicial', 'contador_final', 'costo_partes',
         'costo_papel', 'costo_administrativo', 'depreciacion_activo', 'meta')
+    totalsum_list = ('costo_partes')
 
     actions = ['generar_imprimir']
 
@@ -103,6 +105,7 @@ class PeriodoAdmin(admin.ModelAdmin):
     list_display = ('fecha_inicial', 'fecha_final', 'total_copias',
         'total_dolares', 'total_costos', 'utilidad_total', 'cuadro', 'cerrado')
     list_filter = ('fecha_final', 'cerrado')
+    #totalsum_list = ('total_copias',)
 
     def save_model(self, request, obj, form, change):
         obj.save()

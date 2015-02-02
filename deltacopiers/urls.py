@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     #url(r'^$', 'recibos.views.principal', name='principal'),
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    # Admin timeline URLs. Should be placed BEFORE the Django admin URLs.
+    (r'^admin/timeline/', include('admin_timeline.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/lookups/', include(ajax_select_urls)),
     url(r'^deltacopiers/', include('recibos.urls')),

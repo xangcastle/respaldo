@@ -463,7 +463,7 @@ class Deposito(transaccion_monetaria):
 
 
 class detalle_pago(base_empresa_model):
-    factura = models.ForeignKey(Factura, null=True, blank=True)
+    #factura = models.ForeignKey(Factura, null=True, blank=True)
     recibo = models.ForeignKey(Recibo, null=True, blank=True)
     pago = models.ForeignKey(Pago)
     monto = models.FloatField(default=0)
@@ -479,3 +479,20 @@ class detalle_pago(base_empresa_model):
     def __unicode__(self):
         return ''
 
+#class Parent(models.Model):
+    #parent_field = models.TextField(default="parent text")
+
+    #class Meta:
+        #abstract = True
+
+#class Child(Parent):
+
+    #def __init__(self, *args, **kwargs):
+        #super(Child, self).__init__(*args, **kwargs)
+        #self.parent_field.default="child text"
+
+
+#import pickle
+#>>> query = pickle.loads(s)     # Assuming 's' is the pickled string.
+#>>> qs = MyModel.objects.all()
+#>>> qs.query = query            # Restore the original 'query'.
