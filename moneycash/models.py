@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.db import models
 from django.db.models import Sum, Manager
 from .middlewares import get_current_user
@@ -113,7 +113,7 @@ class documento(models.Model):
         related_name="%(app_label)s_%(class)s_user")
     sucursal = models.ForeignKey('Sucursal', null=True, blank=True,
         related_name="%(app_label)s_%(class)s_sucursal")
-    autorizado = models.BooleanField(default=False)
+    autorizado = models.BooleanField(default=True)
     impreso = models.BooleanField(default=False)
     contabilizado = models.BooleanField(default=False)
     entregado = models.BooleanField(default=False)
@@ -124,7 +124,19 @@ class documento(models.Model):
         else:
             return type(self).__name__
 
+    def get_periodo(self):
+        p, created = Periodo.objects.get_or_create(
+            fecha_inicial=datetime(self.fecha.year, self.fecha.month, 0o1),
+            fecha_final=datetime(self.fecha.year, self.fecha.month + 1,
+                0o1) - timedelta(days=1))
+        return p
+
+    def save(self):
+        self.periodo = self.get_periodo()
+        super(documento, self).save()
+
     class Meta:
+        ordering = ['-numero']
         abstract = True
 
 
@@ -441,6 +453,73 @@ class Periodo(models.Model):
             return self.compras().aggregate(Sum('ir'))['ir__sum']
         else:
             return 0.0
+
+
+class Factura(documento, base_empresa_model):
+    cliente = models.ForeignKey(Cliente)
+    cliente_codigo = models.CharField(max_length=30, null=True, blank=True)
+    cliente_nombre = models.CharField(max_length=60, null=True, blank=True)
+    cliente_telefono = models.CharField(max_length=25, null=True, blank=True)
+    cliente_direccion = models.CharField(max_length=150, null=True, blank=True)
+    cliente_ident = models.CharField(max_length=25, null=True, blank=True)
+    subtotal = models.FloatField(default=0.0)
+    descuento = models.FloatField(default=0.0)
+    iva = models.FloatField(default=0.0)
+    total = models.FloatField(default=0.0)
+    saldo = models.FloatField(default=0.0)
+    fecha_vence = models.DateField(null=True, blank=True,
+        verbose_name="fecha de vencimiento",
+        help_text="si se deja en blanco se aplica el plazo del cliente")
+    exento_iva = models.BooleanField(default=False)
+    x_iva = models.FloatField(default=100, blank=True)
+    ir = models.FloatField(default=0.0, verbose_name="retencion del ir")
+    exento_ir = models.BooleanField(default=True)
+    x_ir = models.FloatField(default=100, blank=True)
+    al = models.FloatField(default=0.0, verbose_name="retencion de la alcaldia")
+    exento_al = models.BooleanField(default=True,
+        verbose_name="exento alcaldia")
+    x_al = models.FloatField(default=100, blank=True)
+    TIPO_COMPRA = (('CO', 'CONTADO'), ('CR', 'CREDITO'), ('CS', 'CONSIGNACION'))
+    tipo = models.CharField(max_length=2, default="CR",
+        verbose_name="tipo de pago de la factura", choices=TIPO_COMPRA)
+    moneda = models.ForeignKey(Moneda, default=1)
+    comentarios = models.TextField(max_length=400, null=True, blank=True)
+
+    def get_cliente(self):
+        c, created = Cliente.objects.get_or_create(
+            code=self.cliente_codigo, name=self.cliente_nombre,
+            identificacion=self.cliente_ident, telefono=self.cliente_telefono)
+        return c
+
+    def save(self):
+        self.cliente = self.get_cliente()
+        super(Factura, self).save()
+
+    class Meta:
+        app_label = 'facturacion'
+        db_table = 'moneycash_factura'
+
+    def __unicode__(self):
+        if self.numero:
+            return 'factura # ' + str(self.numero)
+        else:
+            return ''
+
+    def get_fecha_vence(self):
+        if self.tipo == "CO":
+            return None
+        if self.tipo == "CR" and self.fecha_vence \
+        and self.fecha_vence > self.fecha:
+            return self.fecha_vence
+        if self.tipo == "CR" and not self.fecha_vence:
+            return self.fecha + timedelta(days=self.provedor.plazo)
+        if self.fecha_vence and self.fecha > self.fecha_vence \
+        and self.tipo == "CR":
+            return self.fecha + timedelta(days=self.provedor.plazo)
+
+    def save(self):
+        self.fecha_vence = self.get_fecha_vence()
+        super(Factura, self).save()
 
 
 class Recibo(documento_caja, base_empresa_model):
