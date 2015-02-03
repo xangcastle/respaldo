@@ -491,10 +491,6 @@ class Factura(documento, base_empresa_model):
         else:
             return ''
 
-    class Meta:
-        app_label = 'facturacion'
-        db_table = 'moneycash_factura'
-
     def get_fecha_vence(self):
         if self.tipo == "CO":
             return None
