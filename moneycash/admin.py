@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Periodo, Sucursal, Caja, Bodega, Pago, Banco,\
-Moneda, TipoCosto, CierreCaja, Empresa
+Moneda, TipoCosto, CierreCaja, Empresa, Factura
 from django.contrib.auth.admin import UserAdmin as base_useradmin
 
 
@@ -71,3 +71,4 @@ admin.site.register(Banco, entidad_admin)
 admin.site.register(Moneda, entidad_admin)
 admin.site.register(TipoCosto, entidad_admin)
 admin.site.register(Empresa, entidad_admin)
+admin.site.register(Factura, documento_admin)
