@@ -485,25 +485,15 @@ class Factura(documento, base_empresa_model):
     moneda = models.ForeignKey(Moneda, default=1)
     comentarios = models.TextField(max_length=400, null=True, blank=True)
 
-    def get_cliente(self):
-        c, created = Cliente.objects.get_or_create(
-            code=self.cliente_codigo, name=self.cliente_nombre,
-            identificacion=self.cliente_ident, telefono=self.cliente_telefono)
-        return c
-
-    def save(self):
-        self.cliente = self.get_cliente()
-        super(Factura, self).save()
-
-    class Meta:
-        app_label = 'facturacion'
-        db_table = 'moneycash_factura'
-
     def __unicode__(self):
         if self.numero:
             return 'factura # ' + str(self.numero)
         else:
             return ''
+
+    class Meta:
+        app_label = 'facturacion'
+        db_table = 'moneycash_factura'
 
     def get_fecha_vence(self):
         if self.tipo == "CO":
@@ -517,8 +507,15 @@ class Factura(documento, base_empresa_model):
         and self.tipo == "CR":
             return self.fecha + timedelta(days=self.provedor.plazo)
 
+    def get_cliente(self):
+        c, created = Cliente.objects.get_or_create(
+            code=self.cliente_codigo, name=self.cliente_nombre,
+            identificacion=self.cliente_ident, telefono=self.cliente_telefono)
+        return c
+
     def save(self):
         self.fecha_vence = self.get_fecha_vence()
+        self.cliente = self.get_cliente()
         super(Factura, self).save()
 
 
