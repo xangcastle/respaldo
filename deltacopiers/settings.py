@@ -104,7 +104,7 @@ INSTALLED_APPS = (
     'moneycash',
     #'moneycash.bodega',
     #'moneycash.caja',
-    #'moneycash.facturacion',
+    'moneycash.facturacion',
     'moneycash.compras',
     #'moneycash.cartera',
     #'moneycash.contabilidad',
