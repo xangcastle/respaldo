@@ -110,8 +110,6 @@ INSTALLED_APPS = (
     #'moneycash.contabilidad',
 
     ## EXTRAS
-    'totalsum',
-    'admin_timeline',
 )
 
 LOGGING = {

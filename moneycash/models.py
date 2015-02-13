@@ -131,10 +131,6 @@ class documento(models.Model):
                 0o1) - timedelta(days=1))
         return p
 
-    def save(self):
-        self.periodo = self.get_periodo()
-        super(documento, self).save()
-
     class Meta:
         ordering = ['-numero']
         abstract = True
@@ -166,9 +162,9 @@ class base_empresa_model(models.Model):
     objects = Manager()
     objects = empresa_manager()
 
-    def save(self):
-        self.empresa = get_current_user().empresa
-        super(base_empresa_model, self).save()
+    #def save(self):
+        #self.empresa = get_current_user().empresa
+        #super(base_empresa_model, self).save()
 
     class Meta:
         abstract = True
@@ -334,7 +330,7 @@ class Compra(documento, base_empresa_model):
         and self.tipo == "CR":
             return self.fecha + timedelta(days=self.provedor.plazo)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.fecha_vence = self.get_fecha_vence()
         super(Compra, self).save()
 
@@ -409,6 +405,9 @@ class Bodega(entidad, base_empresa_model):
 
 
 class Cliente(entidad, base_empresa_model, datos_generales):
+    limite_credito = models.FloatField(default=0.0)
+    plazo = models.FloatField(default=0.0)
+    saldo = models.FloatField(default=0.0)
     bodegas = models.ManyToManyField(Bodega, null=True, blank=True)
 
 
@@ -456,7 +455,7 @@ class Periodo(models.Model):
 
 
 class Factura(documento, base_empresa_model):
-    cliente = models.ForeignKey(Cliente)
+    cliente = models.ForeignKey(Cliente, null=True, blank=True)
     cliente_codigo = models.CharField(max_length=30, null=True, blank=True)
     cliente_nombre = models.CharField(max_length=60, null=True, blank=True)
     cliente_telefono = models.CharField(max_length=25, null=True, blank=True)
@@ -498,20 +497,22 @@ class Factura(documento, base_empresa_model):
         and self.fecha_vence > self.fecha:
             return self.fecha_vence
         if self.tipo == "CR" and not self.fecha_vence:
-            return self.fecha + timedelta(days=self.provedor.plazo)
+            return self.fecha + timedelta(days=self.cliente.plazo)
         if self.fecha_vence and self.fecha > self.fecha_vence \
         and self.tipo == "CR":
-            return self.fecha + timedelta(days=self.provedor.plazo)
+            return self.fecha + timedelta(days=self.cliente.plazo)
 
     def get_cliente(self):
         c, created = Cliente.objects.get_or_create(
             code=self.cliente_codigo, name=self.cliente_nombre,
             identificacion=self.cliente_ident, telefono=self.cliente_telefono)
+        c.save()
         return c
 
-    def save(self):
-        self.fecha_vence = self.get_fecha_vence()
+    def save(self, force_insert=False, force_update=False, using=None):
+        self.periodo = self.get_periodo()
         self.cliente = self.get_cliente()
+        self.fecha_vence = self.get_fecha_vence()
         super(Factura, self).save()
 
 

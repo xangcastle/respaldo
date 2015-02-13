@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Periodo, Sucursal, Caja, Bodega, Pago, Banco,\
-Moneda, TipoCosto, CierreCaja, Empresa, Factura
+Moneda, TipoCosto, CierreCaja, Empresa, Factura, Cliente
 from django.contrib.auth.admin import UserAdmin as base_useradmin
 
 
@@ -41,12 +41,12 @@ class documento_admin(admin.ModelAdmin):
         'entregado', 'contabilizado')
     search_fields = ('numero',)
 
-    def save_model(self, request, obj, form, change):
-        super(documento_admin, self).save_model(request, obj, form, change)
-        obj.user = request.user
-        obj.periodo = Periodo.objects.get(fecha_inicial__lte=obj.fecha,
-        fecha_final__gte=obj.fecha)
-        obj.save()
+    #def save_model(self, request, obj, form, change):
+        #super(documento_admin, self).save_model(request, obj, form, change)
+        #obj.user = request.user
+        #obj.periodo = Periodo.objects.get(fecha_inicial__lte=obj.fecha,
+        #fecha_final__gte=obj.fecha)
+        #obj.save()
 
 
 class documento_caja_admin(admin.ModelAdmin):
@@ -62,6 +62,11 @@ class periodo_admin(admin.ModelAdmin):
         'ir_cobrado', 'cerrado')
 
 
+class factura_admin(documento_admin):
+    fields = ('fecha', 'cliente_codigo', 'cliente_nombre', 'cliente_telefono',
+    'cliente_direccion', 'cliente_ident')
+
+
 admin.site.register(Periodo, periodo_admin)
 admin.site.register(Sucursal, entidad_admin)
 admin.site.register(Caja, entidad_admin)
@@ -71,4 +76,5 @@ admin.site.register(Banco, entidad_admin)
 admin.site.register(Moneda, entidad_admin)
 admin.site.register(TipoCosto, entidad_admin)
 admin.site.register(Empresa, entidad_admin)
-admin.site.register(Factura, documento_admin)
+admin.site.register(Factura, factura_admin)
+admin.site.register(Cliente, entidad_admin)
