@@ -251,7 +251,8 @@ class Provedor(datos_generales, entidad):
         help_text="plazo de credito expresado en cantidad de dias")
 
     class Meta:
-        verbose_name_plural = "provedores"
+        verbose_name = "proveedor"
+        verbose_name_plural = "proveedores"
 
     def compras(self):
         return Compra.objects.filter(provedor=self)

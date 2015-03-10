@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['deltacopiers.dyndns.org']
 
 TIME_ZONE = 'America/Managua'
 
-LANGUAGE_CODE = 'es-NI'
+LANGUAGE_CODE = 'es'
 
 SITE_ID = 1
 
@@ -175,7 +175,7 @@ AJAX_LOOKUP_CHANNELS = {
 
 
 
-
+GRAPPELLI_ADMIN_TITLE = 'Money Cash'
 
 
 

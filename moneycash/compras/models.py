@@ -4,7 +4,7 @@ DetalleCompra as base_detalle_compra, Item as base_item, \
 Compra as base_compra
 
 
-class Item(base_item):
+class Producto(base_item):
     class Meta:
         proxy = True
 
@@ -22,7 +22,8 @@ class Categoria(base_categoria):
 class Provedor(base_provedor):
     class Meta:
         proxy = True
-        verbose_name_plural = "provedores"
+        verbose_name = "proveedor"
+        verbose_name_plural = "proveedores"
 
 
 class Compra(base_compra):

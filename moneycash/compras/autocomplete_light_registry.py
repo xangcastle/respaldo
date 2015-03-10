@@ -1,7 +1,7 @@
 import autocomplete_light
-from .models import Item
+from .models import Producto
 
-autocomplete_light.register(Item,
+autocomplete_light.register(Producto,
     search_fields=['^code', 'name'],
     attrs={
         'data-autocomplete-minimum-characters': 2,
