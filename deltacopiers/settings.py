@@ -137,7 +137,7 @@ LOGGING = {
 }
 
 import dj_database_url
-DATABASES['default'] = dj_database_url.config()
+#DATABASES['default'] = dj_database_url.config()
 import django.conf.global_settings as DEFAULT_SETTINGS
 
 CUSTOM_PROCESSORS = ('django.core.context_processors.request',)

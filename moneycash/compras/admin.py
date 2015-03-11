@@ -65,25 +65,8 @@ class provedor_admin(entidad_admin):
         return super(provedor_admin, self).response_change(request, obj)
 
 
-class provedor_admin_IE(ImportExportModelAdmin, provedor_admin):
-    # resouce_class = provedor_resource
-    pass
-
-
-class producto_admin_IE(ImportExportModelAdmin, producto_admin):
-    # resouce_class = producto_resource
-    pass
-
-
-class entidad_admin_IE(ImportExportModelAdmin, entidad_admin):
-    pass
-
-
-class compra_admin_IE(ImportExportModelAdmin, compra_admin):
-    pass
-
-admin.site.register(Provedor, provedor_admin_IE)
-admin.site.register(Compra, compra_admin_IE)
-admin.site.register(Producto, producto_admin_IE)
-admin.site.register(Marca, entidad_admin_IE)
-admin.site.register(Categoria, entidad_admin_IE)
+admin.site.register(Provedor, provedor_admin)
+admin.site.register(Compra, compra_admin)
+admin.site.register(Producto, producto_admin)
+admin.site.register(Marca, entidad_admin)
+admin.site.register(Categoria, entidad_admin)
