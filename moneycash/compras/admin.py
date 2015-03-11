@@ -5,6 +5,7 @@ Marca, Categoria, ComprasCategoria
 from ajax_select.admin import AjaxSelectAdmin
 from ajax_select import make_ajax_form
 import autocomplete_light
+from import_export.admin import ImportExportModelAdmin
 
 
 class producto_admin(entidad_admin):
@@ -25,16 +26,18 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
         'subtotal', 'iva', 'total', 'ir', 'al', 'abonado', 'saldo',
         'fecha_vence')
     list_filter = ('periodo', 'user', 'provedor', 'tipo')
+
     fieldsets = (
         ('Datos de La compra', {'classes': ('grp-collapse grp-open',),
             'fields': (('numero', 'fecha', 'moneda'),
                 ('tipo', 'fecha_vence'), 'comentarios', 'provedor',
                 ('exento_iva', 'exento_ir', 'exento_al'))}),
         ("Detalle Inlines", {"classes":
-            ("placeholder detalle_set-group",), "fields": ()}),
+            ("placeholder detallecompra_set-group",), "fields": ()}),
         ('Impuestos y totales', {'classes': ('grp-collapse grp-open',),
             'fields': (('iva', 'ir', 'al', 'total'), ('abonado', 'saldo'),)}),
                 )
+
     form = make_ajax_form(Compra, {'provedor': 'provedor'})
     inlines = [compra_detalle]
     readonly_fields = ('iva', 'ir', 'al', 'total', 'abonado', 'saldo')
@@ -61,7 +64,13 @@ class provedor_admin(entidad_admin):
             request.path += '?_popup=1'
         return super(provedor_admin, self).response_change(request, obj)
 
-admin.site.register(Provedor, provedor_admin)
+
+class provedor_admin_IE(ImportExportModelAdmin, provedor_admin):
+    # resouce_class = categoria_resource
+    pass
+
+
+admin.site.register(Provedor, provedor_admin_IE)
 admin.site.register(Compra, compra_admin)
 admin.site.register(Producto, producto_admin)
 admin.site.register(Marca, entidad_admin)

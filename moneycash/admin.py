@@ -66,7 +66,6 @@ class factura_admin(documento_admin):
     fields = ('fecha', 'cliente_codigo', 'cliente_nombre', 'cliente_telefono',
     'cliente_direccion', 'cliente_ident')
 
-
 admin.site.register(Periodo, periodo_admin)
 admin.site.register(Sucursal, entidad_admin)
 admin.site.register(Caja, entidad_admin)
