@@ -70,4 +70,5 @@ admin.site.register(Compra, compra_admin)
 admin.site.register(Producto, producto_admin)
 admin.site.register(Marca, entidad_admin)
 admin.site.register(Categoria, entidad_admin)
-admin.site.register(DetalleCompra, ImportExportModelAdmin)
+#usada unicamente para migracion
+#admin.site.register(DetalleCompra, ImportExportModelAdmin)
