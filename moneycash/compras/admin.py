@@ -1,7 +1,7 @@
 from moneycash.admin import documento_admin, \
 model_empresa_admin as entidad_admin, admin
 from moneycash.compras.models import Compra, Provedor, DetalleCompra, Producto,\
-Marca, Categoria, ComprasCategoria
+Marca, Categoria # , ComprasCategoria
 from ajax_select.admin import AjaxSelectAdmin
 from ajax_select import make_ajax_form
 import autocomplete_light
@@ -43,11 +43,11 @@ class compra_admin(documento_admin, AjaxSelectAdmin):
     readonly_fields = ('iva', 'ir', 'al', 'total', 'abonado', 'saldo')
 
 
-class compras_por_categoria(admin.TabularInline):
-    model = ComprasCategoria
-    fields = ('categoria', 'este_mes', 'este_anno', 'anno_anterior', 'total')
-    readonly_fields = fields
-    extra = 0
+#class compras_por_categoria(admin.TabularInline):
+    #model = ComprasCategoria
+    #fields = ('categoria', 'este_mes', 'este_anno', 'anno_anterior', 'total')
+    #readonly_fields = fields
+    #extra = 0
 
 
 class provedor_admin(entidad_admin):
@@ -57,7 +57,7 @@ class provedor_admin(entidad_admin):
         ('telefono', 'tipo'), 'direccion',
         ('limite_credito', 'saldo', 'plazo'))
     list_filter = ('tipo',)
-    inlines = [compras_por_categoria]
+    #inlines = [compras_por_categoria]
 
     def response_change(self, request, obj):
         if '_popup' in request.REQUEST:
@@ -66,12 +66,20 @@ class provedor_admin(entidad_admin):
 
 
 class provedor_admin_IE(ImportExportModelAdmin, provedor_admin):
-    # resouce_class = categoria_resource
+    # resouce_class = provedor_resource
     pass
 
 
+class producto_admin_IE(ImportExportModelAdmin, producto_admin):
+    # resouce_class = producto_resource
+    pass
+
+
+class entidad_admin_IE(ImportExportModelAdmin, entidad_admin):
+    pass
+
 admin.site.register(Provedor, provedor_admin_IE)
 admin.site.register(Compra, compra_admin)
-admin.site.register(Producto, producto_admin)
-admin.site.register(Marca, entidad_admin)
-admin.site.register(Categoria, entidad_admin)
+admin.site.register(Producto, producto_admin_IE)
+admin.site.register(Marca, entidad_admin_IE)
+admin.site.register(Categoria, entidad_admin_IE)

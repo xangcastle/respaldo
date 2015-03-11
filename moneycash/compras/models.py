@@ -38,16 +38,16 @@ class DetalleCompra(base_detalle_compra):
         verbose_name_plural = "detalle de productos"
 
 
-class ComprasCategoria(models.Model):
-    provedor = models.ForeignKey(Provedor, blank=True)
-    categoria = models.ForeignKey(Categoria, blank=True)
-    este_mes = models.FloatField(blank=True, null=True)
-    este_anno = models.FloatField(blank=True, null=True)
-    anno_anterior = models.FloatField(blank=True, null=True)
-    total = models.FloatField(blank=True, null=True)
+#class ComprasCategoria(models.Model):
+    #provedor = models.ForeignKey(Provedor, blank=True)
+    #categoria = models.ForeignKey(Categoria, blank=True)
+    #este_mes = models.FloatField(blank=True, null=True)
+    #este_anno = models.FloatField(blank=True, null=True)
+    #anno_anterior = models.FloatField(blank=True, null=True)
+    #total = models.FloatField(blank=True, null=True)
 
-    class Meta:
-        managed = False
-        db_table = 'compras_categoria'
-        verbose_name = "categoria"
-        verbose_name_plural = "compras por categorias"
+    #class Meta:
+        #managed = False
+        #db_table = 'compras_categoria'
+        #verbose_name = "categoria"
+        #verbose_name_plural = "compras por categorias"

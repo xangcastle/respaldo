@@ -243,12 +243,13 @@ class Provedor(datos_generales, entidad):
     tipo = models.CharField(max_length=2, choices=TIPO_OPTIONS, default='LO')
     tiempo_entrega = models.PositiveIntegerField(
         help_text="tiempo de entrega en dias para la mercaderia",
-        verbose_name="tiempo de entrega", default=0)
-    limite_credito = models.FloatField(null=True, blank=True)
+        verbose_name="tiempo de entrega", default=0, null=True)
+    limite_credito = models.FloatField(null=True, blank=True, default=0)
     saldo = models.FloatField(default=0, blank=True,
         verbose_name="saldo inicial")
     plazo = models.PositiveIntegerField(default=0,
-        help_text="plazo de credito expresado en cantidad de dias")
+        help_text="plazo de credito expresado en cantidad de dias",
+        null=True)
 
     class Meta:
         verbose_name = "proveedor"
