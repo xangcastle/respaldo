@@ -3,8 +3,11 @@ from ajax_select import urls as ajax_select_urls
 from django.contrib import admin
 import autocomplete_light
 from home.views import *
+
+
 autocomplete_light.autodiscover()
 admin.autodiscover()
+#djadmin2.default.autodiscover()
 
 
 urlpatterns = patterns('',

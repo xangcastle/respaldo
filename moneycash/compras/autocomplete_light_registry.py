@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import autocomplete_light
 from .models import Producto
 

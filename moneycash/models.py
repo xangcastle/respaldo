@@ -6,6 +6,39 @@ from django.db.models import Sum, Manager
 from .middlewares import get_current_user
 
 
+class Periodo(models.Model):
+    fecha_inicial = models.DateField()
+    fecha_final = models.DateField()
+    inicio_produccion = models.DateField(null=True, blank=True)
+    fin_produccion = models.DateField(null=True, blank=True)
+    cerrado = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.fecha_inicial.strftime("%B %Y")
+
+    def short_name(self):
+        return self.fecha_inicial.strftime("%B %Y")
+
+    class Meta:
+        ordering = ['-fecha_final']
+
+    def compras(self):
+        return None
+
+    def iva_pagado(self):
+        if self.compras():
+            return self.compras().aggregate(Sum('iva'))['iva__sum']
+        else:
+            return 0.0
+    iva_pagado.short_description = 'iva a favor'
+
+    def ir_cobrado(self):
+        if self.compras():
+            return self.compras().aggregate(Sum('ir'))['ir__sum']
+        else:
+            return 0.0
+
+
 # ESTADOS DE DOCUMENTOS
 class documento_autorizado(Manager):
     def get_queryset(self):
@@ -104,57 +137,6 @@ class entidad(models.Model):
         ordering = ['name']
 
 
-class documento(models.Model):
-    fecha = models.DateField()
-    numero = models.PositiveIntegerField(null=True, blank=True)
-    periodo = models.ForeignKey('Periodo', null=True, blank=True,
-        related_name="%(app_label)s_%(class)s_periodo")
-    user = models.ForeignKey(User, null=True, blank=True,
-        related_name="%(app_label)s_%(class)s_user")
-    sucursal = models.ForeignKey('Sucursal', null=True, blank=True,
-        related_name="%(app_label)s_%(class)s_sucursal")
-    autorizado = models.BooleanField(default=True)
-    impreso = models.BooleanField(default=False)
-    contabilizado = models.BooleanField(default=False)
-    entregado = models.BooleanField(default=False)
-
-    def __unicode__(self):
-        if self.numero:
-            return type(self).__name__ + " " + str(self.numero)
-        else:
-            return type(self).__name__
-
-    def get_periodo(self):
-        p, created = Periodo.objects.get_or_create(
-            fecha_inicial=datetime(self.fecha.year, self.fecha.month, 0o1),
-            fecha_final=datetime(self.fecha.year, self.fecha.month + 1,
-                0o1) - timedelta(days=1))
-        return p
-
-    class Meta:
-        ordering = ['-numero']
-        abstract = True
-
-
-class documento_caja(documento):
-    caja = models.ForeignKey('Caja', null=True, blank=True,
-        related_name="%(app_label)s_%(class)s_caja")
-    cierre_caja = models.ForeignKey('CierreCaja', null=True, blank=True,
-        related_name="%(app_label)s_%(class)s_cierre_caja")
-
-    class Meta:
-        abstract = True
-
-
-class transaccion_monetaria(documento_caja):
-    moneda = models.ForeignKey('Moneda', default=1,
-        related_name="%(app_label)s_%(class)s_caja")
-    monto = models.FloatField()
-
-    class Meta:
-        abstract = True
-
-
 class base_empresa_model(models.Model):
     empresa = models.ForeignKey('Empresa',
         related_name="%(app_label)s_%(class)s_empresa", null=True)
@@ -218,169 +200,8 @@ class Serie(entidad):
     numero_inicial = models.PositiveIntegerField()
 
 
-class Item(entidad):
-    marca = models.ForeignKey('Marca', null=True, blank=True)
-    categoria = models.ForeignKey('Categoria', null=True, blank=True)
-    existencias = models.FloatField(default=0)
-    descuento = models.FloatField(default=0)
-    precio = models.FloatField(default=0)
-    costo = models.FloatField(default=0)
-
-
-class Marca(entidad):
-    pass
-
-
-class Categoria(entidad):
-    parent = models.ForeignKey('self', null=True, blank=True)
-
-
-class Provedor(datos_generales, entidad):
-    TIPO_OPTIONS = (
-      ('LO', 'NACIONAL'),
-      ('EX', 'EXTRAJERO'),
-    )
-    tipo = models.CharField(max_length=2, choices=TIPO_OPTIONS, default='LO')
-    tiempo_entrega = models.PositiveIntegerField(
-        help_text="tiempo de entrega en dias para la mercaderia",
-        verbose_name="tiempo de entrega", default=0, null=True)
-    limite_credito = models.FloatField(null=True, blank=True, default=0)
-    saldo = models.FloatField(default=0, blank=True,
-        verbose_name="saldo inicial")
-    plazo = models.PositiveIntegerField(default=0,
-        help_text="plazo de credito expresado en cantidad de dias",
-        null=True)
-
-    class Meta:
-        verbose_name = "proveedor"
-        verbose_name_plural = "proveedores"
-
-    def compras(self):
-        return Compra.objects.filter(provedor=self)
-
-    def compras_credito_cordobas(self):
-        return self.compras().filter(tipo="CR", moneda=1)
-
-    def compras_credito_dolares(self):
-        return self.compras().filter(tipo="CR", moneda=2)
-
-    def total_compras(self):
-        if self.compras():
-            return round(self.compras().aggregate(Sum('total'))['total__sum'],
-                 2)
-        else:
-            return 0
-
-    def get_saldo(self):
-        saldo = []
-        if self.compras_credito_cordobas():
-            cordobas = str(round(self.compras_credito_cordobas().aggregate(
-                Sum('saldo'))['saldo__sum'], 2)) + " Cordobas"
-            saldo.append(cordobas)
-        if self.compras_credito_dolares():
-            dolares = str(round(self.compras_credito_dolares().aggregate(
-                Sum('saldo'))['saldo__sum'], 2)) + " Dolares"
-            saldo.append(dolares)
-        if len(saldo) > 0:
-            return " y ".join(saldo)
-        else:
-            return 0
-
-    get_saldo.short_description = "saldo"
-
-    get_saldo.allow_tags = True
-
-
 class TipoCosto(entidad):
     pass
-
-
-class Compra(documento):
-    TIPO_COMPRA = (('CO', 'CONTADO'), ('CR', 'CREDITO'))
-    fecha_vence = models.DateField(null=True, blank=True,
-        verbose_name="fecha de vencimiento",
-        help_text="si se deja en blanco se aplica el plazo del provedor")
-    comentarios = models.TextField(max_length=400, null=True, blank=True)
-    provedor = models.ForeignKey(Provedor)
-    tipo = models.CharField(max_length=2, default="CR",
-        verbose_name="tipo de pago de la compra", choices=TIPO_COMPRA)
-    moneda = models.ForeignKey(Moneda, default=1)
-    subtotal = models.FloatField(default=0.0)
-    iva = models.FloatField(default=0.0)
-    exento_iva = models.BooleanField(default=False)
-    x_iva = models.FloatField(default=100, blank=True)
-    ir = models.FloatField(default=0.0, verbose_name="retencion del ir")
-    exento_ir = models.BooleanField(default=False)
-    x_ir = models.FloatField(default=100, blank=True)
-    al = models.FloatField(default=0.0, verbose_name="retencion de la alcaldia")
-    exento_al = models.BooleanField(default=False,
-        verbose_name="exento alcaldia")
-    x_al = models.FloatField(default=100, blank=True)
-    total = models.FloatField(default=0.0)
-    abonado = models.FloatField(default=0.0)
-    saldo = models.FloatField(default=0.0)
-
-    def get_fecha_vence(self):
-        if self.tipo == "CO":
-            return None
-        if self.tipo == "CR" and self.fecha_vence \
-        and self.fecha_vence > self.fecha:
-            return self.fecha_vence
-        if self.tipo == "CR" and not self.fecha_vence:
-            return self.fecha + timedelta(days=self.provedor.plazo)
-        if self.fecha_vence and self.fecha > self.fecha_vence \
-        and self.tipo == "CR":
-            return self.fecha + timedelta(days=self.provedor.plazo)
-
-    def save(self, *args, **kwargs):
-        self.fecha_vence = self.get_fecha_vence()
-        super(Compra, self).save()
-
-    class Meta:
-        unique_together = ("provedor", "numero")
-        #db_table = "moneycash_compras_compra"
-
-
-class BaseDetalleCompra(models.Model):
-    compra = models.ForeignKey(Compra, null=True, blank=True)
-    item = models.ForeignKey('Item')
-    cantidad = models.FloatField(default=1)
-    precio = models.FloatField(default=0)
-    descuento = models.FloatField(default=0)
-    costo = models.FloatField(default=0)
-    existencias = models.FloatField(default=0)
-    costo_promedio = models.FloatField(default=0)
-    costo_importacion = models.FloatField(default=0)
-    costo_internacion = models.FloatField(default=0)
-    recibido = models.FloatField(null=True, blank=True)
-
-    def __unicode__(self):
-        return str(self.item)
-
-    class Meta:
-        abstract = True
-        verbose_name = "producto"
-
-
-class DetalleCompra(BaseDetalleCompra):
-    pass
-
-
-class Poliza(documento):
-    pass
-
-
-#class poliza_producto(BaseDetalleCompra):
-    #poliza = models.ForeignKey(Poliza)
-
-    #class Meta:
-        #managed = False
-
-
-class DetallePoliza(models.Model):
-    poliza = models.ForeignKey(Poliza)
-    factura = models.ForeignKey(Compra)
-    tipo_costo = models.ForeignKey(TipoCosto)
 
 
 class Sucursal(entidad):
@@ -391,15 +212,6 @@ class Sucursal(entidad):
 class Caja(entidad):
     sucursal = models.ForeignKey(Sucursal)
     series = models.ManyToManyField(Serie)
-
-
-class CierreCaja(documento):
-    caja = models.ForeignKey(Caja)
-    apertura = models.DateTimeField(null=True, blank=True)
-    saldo_inicial = models.FloatField(default=0)
-    cierre = models.DateTimeField(null=True, blank=True)
-    saldo_final = models.FloatField(default=0)
-    cerrado = models.BooleanField(default=False)
 
 
 class Bodega(entidad):
@@ -429,31 +241,81 @@ class Cuenta(entidad):
     saldo = models.FloatField(null=True, blank=True)
 
 
-class Periodo(models.Model):
-    fecha_inicial = models.DateField()
-    fecha_final = models.DateField()
-    cerrado = models.BooleanField(default=False)
+class documento(models.Model):
+    fecha = models.DateField()
+    numero = models.PositiveIntegerField(null=True, blank=True)
+    periodo = models.ForeignKey(Periodo, null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_periodo")
+    user = models.ForeignKey(User, null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_user")
+    sucursal = models.ForeignKey(Sucursal, null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_sucursal")
+    autorizado = models.BooleanField(default=True)
+    impreso = models.BooleanField(default=False)
+    contabilizado = models.BooleanField(default=False)
+    entregado = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return self.fecha_inicial.strftime("%B %Y")
+        if self.numero:
+            return type(self).__name__ + " " + str(self.numero)
+        else:
+            return type(self).__name__
+
+    def get_periodo(self):
+        p, created = Periodo.objects.get_or_create(
+            fecha_inicial=datetime(self.fecha.year, self.fecha.month, 0o1),
+            fecha_final=datetime(self.fecha.year, self.fecha.month + 1,
+                0o1) - timedelta(days=1))
+        return p
 
     class Meta:
-        ordering = ['-fecha_final']
+        ordering = ['-numero']
+        abstract = True
 
-    def compras(self):
-        return Compra.objects.filter(periodo=self)
 
-    def iva_pagado(self):
-        if self.compras():
-            return self.compras().aggregate(Sum('iva'))['iva__sum']
-        else:
-            return 0.0
+class documento_caja(documento):
+    caja = models.ForeignKey('Caja', null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_caja")
+    cierre_caja = models.ForeignKey('CierreCaja', null=True, blank=True,
+        related_name="%(app_label)s_%(class)s_cierre_caja")
 
-    def ir_cobrado(self):
-        if self.compras():
-            return self.compras().aggregate(Sum('ir'))['ir__sum']
-        else:
-            return 0.0
+    class Meta:
+        abstract = True
+
+
+class transaccion_monetaria(documento_caja):
+    moneda = models.ForeignKey('Moneda', default=1,
+        related_name="%(app_label)s_%(class)s_caja")
+    monto = models.FloatField()
+
+    class Meta:
+        abstract = True
+
+
+class CierreCaja(documento):
+    caja = models.ForeignKey(Caja)
+    apertura = models.DateTimeField(null=True, blank=True)
+    saldo_inicial = models.FloatField(default=0)
+    cierre = models.DateTimeField(null=True, blank=True)
+    saldo_final = models.FloatField(default=0)
+    cerrado = models.BooleanField(default=False)
+
+
+class Poliza(documento):
+    pass
+
+
+#class poliza_producto(BaseDetalleCompra):
+    #poliza = models.ForeignKey(Poliza)
+
+    #class Meta:
+        #managed = False
+
+
+class DetallePoliza(models.Model):
+    poliza = models.ForeignKey(Poliza)
+    #factura = models.ForeignKey(Compra)
+    tipo_costo = models.ForeignKey(TipoCosto)
 
 
 class Factura(documento):
@@ -553,6 +415,18 @@ class detalle_pago(models.Model):
 
     def __unicode__(self):
         return ''
+
+
+#class tasa_cambio(models.Model):
+    #moneda1 = models.ForeignKey(Moneda)
+    #fecha = models.DateField()
+    #oficial = models.FloatField()
+    #compra = models.FloatField()
+    #venta = models.FloatField()
+
+    #del __unicode__(self):
+        #return str(self.fecha) + '' + str(self.moneda)
+
 
 #class Parent(models.Model):
     #parent_field = models.TextField(default="parent text")

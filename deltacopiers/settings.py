@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['deltacopiers.dyndns.org']
 
 TIME_ZONE = 'America/Managua'
 
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'es-NI'
 
 SITE_ID = 1
 
@@ -97,6 +97,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'autocomplete_light',
     'recibos', ## SISTEMA DE CONTROL DE COPIADORAS DE DELTACOPIERS NO TOCAR!
 
@@ -106,7 +107,7 @@ INSTALLED_APPS = (
     #'moneycash.caja',
     #'moneycash.facturacion',
     'moneycash.compras',
-    #'moneycash.cartera',
+    'moneycash.produccion',
     #'moneycash.contabilidad',
 
     ## EXTRAS
@@ -137,7 +138,7 @@ LOGGING = {
 }
 
 import dj_database_url
-DATABASES['default'] = dj_database_url.config()
+#DATABASES['default'] = dj_database_url.config()
 import django.conf.global_settings as DEFAULT_SETTINGS
 
 CUSTOM_PROCESSORS = ('django.core.context_processors.request',)
@@ -161,7 +162,7 @@ AJAX_LOOKUP_CHANNELS = {
     'cliche': ('music.lookups', 'ClicheLookup'),
     'cliente': ('moneycash.lookups', 'ClienteLookup'),
     'item': ('moneycash.lookups', 'ItemLookup'),
-    'provedor': ('moneycash.compras.lookups', 'ProvedorLookup'),
+    'proveedor': ('moneycash.compras.lookups', 'ProveedorLookup'),
 }
 
 # By default will use window.jQuery
@@ -176,7 +177,5 @@ AJAX_LOOKUP_CHANNELS = {
 
 
 GRAPPELLI_ADMIN_TITLE = 'Money Cash'
-
-
 
 
