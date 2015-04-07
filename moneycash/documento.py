@@ -5,6 +5,7 @@ from datetime import timedelta, datetime
 from import_export.admin import ImportExportModelAdmin
 from django.db.models import Max
 from .models import Periodo
+from .middlewares import get_current_user
 
 
 def get_numero(documento):

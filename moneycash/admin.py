@@ -1,17 +1,10 @@
 from django.contrib import admin
-from .models import Periodo, Sucursal, Caja, Bodega, Pago, Banco,\
-Moneda, TipoCosto, CierreCaja, Empresa, Factura, Cliente
-from django.contrib.auth.admin import UserAdmin as base_useradmin
+from django.contrib.admin import site
+from .models import *
 from import_export.admin import ImportExportModelAdmin
+import adminactions.actions as actions
 
-
-class user_admin(base_useradmin):
-    list_display = ('username', 'email', 'first_name', 'last_name',
-        'is_staff', 'empresa')
-    list_editable = ('empresa', )
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'empresa')
-
-#admin.site.register(User, user_admin)
+actions.add_to_site(site)
 
 
 class entidad_admin(ImportExportModelAdmin):
@@ -30,8 +23,18 @@ class entidad_admin(ImportExportModelAdmin):
     activar.short_description = "Activate selected objects"
 
 
-class model_empresa_admin(entidad_admin):
-    exclude = ('empresa',)
+class base_tabular(admin.TabularInline):
+    classes = ('grp-collapse grp-open',)
+
+
+class kardex_tabular(base_tabular):
+    model = Kardex
+    extra = 0
+
+
+class movimiento_tabular(base_tabular):
+    model = Movimiento
+    extra = 0
 
 
 class documento_admin(ImportExportModelAdmin):
@@ -41,13 +44,7 @@ class documento_admin(ImportExportModelAdmin):
     list_filter = ('periodo', 'user', 'sucursal', 'impreso',
         'entregado', 'contabilizado')
     search_fields = ('numero',)
-
-    #def save_model(self, request, obj, form, change):
-        #super(documento_admin, self).save_model(request, obj, form, change)
-        #obj.user = request.user
-        #obj.periodo = Periodo.objects.get(fecha_inicial__lte=obj.fecha,
-        #fecha_final__gte=obj.fecha)
-        #obj.save()
+    inlines = [kardex_tabular, movimiento_tabular]
 
 
 class documento_caja_admin(ImportExportModelAdmin):
@@ -59,22 +56,52 @@ class documento_caja_admin(ImportExportModelAdmin):
 
 
 class periodo_admin(ImportExportModelAdmin):
-    list_display = ('fecha_inicial', 'fecha_final', 'iva_pagado',
-        'ir_cobrado', 'cerrado')
+    list_display = ('fecha_inicial', 'fecha_final', 'iva_contra', 'iva_pagado',
+        'ir_cobrado', 'ir_pagado', 'al_recaudado', 'al_pagado', 'cerrado')
 
 
 class factura_admin(documento_admin):
     fields = ('fecha', 'cliente_codigo', 'cliente_nombre', 'cliente_telefono',
     'cliente_direccion', 'cliente_ident')
 
+
+class cuenta_admin(entidad_admin):
+    list_display = ('code', 'name', 'saldo', 'activo')
+    ordering = ('code',)
+
+
+class tipodoc_admin(entidad_admin):
+    list_display = ('code', 'name', 'afectacion', 'contabiliza', 'activo')
+    list_filter = ('afectacion', 'contabiliza', 'activo')
+    fields = (('code', 'name'), ('afectacion', 'contabiliza'), 'activo')
+
+
+class total_periodo_admin(admin.ModelAdmin):
+    list_display = ('periodo', 'iva_pagado', 'iva_contra', 'ir_cobrado',
+        'ir_pagado', 'al_recaudado', 'al_pagado')
+
+
+class item_admin(entidad_admin):
+    list_filter = ('marca', 'categoria')
+    list_display = ('code', 'name', 'marca', 'categoria')
+    fieldsets = (('Datos Generales', {'classes': ('grp-collapse grp-open',),
+    'fields': (('code', 'name'), ('marca', 'categoria'))}),
+        ('Datos de Comercializacion', {'classes': ('grp-collapse grp-open',),
+            'fields': (('precio', 'costo'), ('descuento', 'existencias'),
+                'activo')}))
+
+
+class socio_admin(entidad_admin):
+    exclude = ('socio', 'tipo_relacion')
+    list_display = ('code', 'name', 'identificacion', 'telefono',
+        'limite_credito')
+    fields = ('name', ('code', 'identificacion'),
+        ('telefono',), 'direccion',
+        ('limite_credito', 'saldo', 'plazo'))
+
 admin.site.register(Periodo, periodo_admin)
 admin.site.register(Sucursal, entidad_admin)
-admin.site.register(Caja, entidad_admin)
-admin.site.register(Bodega, entidad_admin)
-admin.site.register(Pago, entidad_admin)
-admin.site.register(Banco, entidad_admin)
 admin.site.register(Moneda, entidad_admin)
-admin.site.register(TipoCosto, entidad_admin)
-admin.site.register(Empresa, entidad_admin)
-admin.site.register(Factura, factura_admin)
-admin.site.register(Cliente, entidad_admin)
+admin.site.register(Cuenta, cuenta_admin)
+admin.site.register(TipoDoc, tipodoc_admin)
+admin.site.register(SocioComercial, entidad_admin)

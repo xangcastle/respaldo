@@ -1,11 +1,8 @@
-from moneycash.admin import documento_admin
-from moneycash.facturacion.admin import admin, factura_admin
-from moneycash.bodega.models import no_entregada, Factura
+from django.contrib import admin
+from moneycash.entidad import entidad_admin
+from moneycash.documento import documento_admin
+from .models import *
 
 
-class no_entragada_admin(documento_admin):
-    pass
-
-
-admin.site.register(Factura, factura_admin)
-admin.site.register(no_entregada, no_entragada_admin)
+admin.site.register(Producto, entidad_admin)
+#admin.site.register(Documento, documento_admin)

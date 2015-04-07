@@ -30,7 +30,7 @@ class recibo_admin(documento_admin):
                 ('Datos de Facturacion',
             {'classes': ('grp-collapse grp-open',),
             'fields': (('copias', 'importe', 'tc'),), }),)
-    actions = ['generar_imprimir']
+    actions = ['generar_imprimir', 'facturar']
     list_filter = ('periodo', 'area')
 
     def generar_imprimir(self, request, queryset):
@@ -42,10 +42,13 @@ class recibo_admin(documento_admin):
             context_instance=RequestContext(request))
     generar_imprimir.short_description = "Imprimir recibos selecionados"
 
+    def facturar(self, request, queryset):
+        facturar(queryset)
+
 
 class periodo_admin(admin.ModelAdmin):
     list_display = ('short_name', 'inicio_produccion', 'fin_produccion',
-    'copias_equipos', 'copias_areas', 'cerrado')
+    'copias_equipos', 'copias_areas', 'importe_produccion', 'cerrado')
     inlines = [contadores_tabular]
     fieldsets = (('Datos del Periodo', {'classes': ('grp-collapse grp-open',),
         'fields': (('fecha_inicial', 'fecha_final'),
@@ -89,7 +92,8 @@ class equipo_admin(entidad_admin):
             {'classes': ('grp-collapse grp-open',),
             'fields': (('contador_inicial', 'contador_actual', 'vida_util'),
                 ('costo_compra', 'depreciacion_copia', 'valor_depreciado'),
-                ('precio_venta', 'activo')), }),)
+                ('precio_venta', 'activo'), ('costo_copia',
+                    'precio_copia')), }),)
     ordering = ['code']
 
 
@@ -101,7 +105,7 @@ class cliente_admin(entidad_admin):
     fieldsets = (('Datos Generales',
             {'classes': ('grp-collapse grp-open',),
             'fields': (('code', 'name'), ('identificacion', 'telefono'),
-                ('direccion',), 'activo'), }),)
+                ('direccion',), ('contacto', 'nombre_area'), 'activo'), }),)
 
 
 class area_admin(entidad_admin):
@@ -112,7 +116,47 @@ class area_admin(entidad_admin):
     fieldsets = (('Datos del Area',
             {'classes': ('grp-collapse grp-open',),
             'fields': (('code', 'name'), ('encargado', 'unidad_ejecutora'),
-                ('equipos', 'activo'), ('ubicacion', 'cliente')), }),)
+                ('equipos', 'activo'), ('ubicacion', 'cliente'), 'item'), }),)
+
+
+class factura_detalle_admin(admin.TabularInline):
+    model = factura_detalle
+    extra = 0
+    classes = ('grp-collapse grp-open',)
+
+
+class factura_admin(documento_admin):
+    list_display = ('numero', 'fecha', 'cliente', 'subtotal', 'descuento',
+        'iva', 'total', 'total', 'tc', 'ir', 'al', 'impreso')
+
+    fieldsets = (
+            ('Datos de la Factura',
+            {'classes': ('grp-collapse grp-open',),
+            'fields': (('numero', 'fecha'), 'cliente',
+            ('exento_iva', 'exento_ir', 'exento_al')), }),
+
+            ("Detalle Inlines",
+            {"classes": ("placeholder factura_detalle_set-group",),
+            'fields': ()}),
+
+            ('Totales de la Factura',
+            {'classes': ('grp-collapse grp-open',),
+            'fields': (('subtotal', 'descuento'),
+            ('iva', 'total'), ('ir', 'al'), 'tc'), }),
+                )
+    inlines = [factura_detalle_admin]
+
+    actions = ['generar_imprimir']
+
+    def generar_imprimir(self, request, queryset):
+        id_unico = False
+        if queryset.count() == 1:
+            id_unico = True
+        ctx = {'queryset': queryset, 'id_unico': id_unico}
+        queryset.update(impreso=True)
+        return render_to_response('moneycash/produccion/factura.html', ctx,
+            context_instance=RequestContext(request))
+    generar_imprimir.short_description = "Imprimir Facturas Selecionadas"
 
 
 admin.site.register(Marca, entidad_admin)
@@ -122,3 +166,7 @@ admin.site.register(Ubicacion, entidad_admin)
 admin.site.register(Cliente, cliente_admin)
 admin.site.register(Periodo, periodo_admin)
 admin.site.register(Recibo, recibo_admin)
+admin.site.register(Factura, factura_admin)
+admin.site.register(Item, entidad_admin)
+admin.site.register(Categoria, entidad_admin)
+

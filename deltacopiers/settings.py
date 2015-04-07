@@ -99,16 +99,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'autocomplete_light',
-    'recibos', ## SISTEMA DE CONTROL DE COPIADORAS DE DELTACOPIERS NO TOCAR!
+    #'recibos', ## SISTEMA DE CONTROL DE COPIADORAS DE DELTACOPIERS NO TOCAR!
 
     ##APLICACIONES DEL SISTEMA INTEGRADO MONEYCASH##
     'moneycash',
-    #'moneycash.bodega',
-    #'moneycash.caja',
-    #'moneycash.facturacion',
     'moneycash.compras',
     'moneycash.produccion',
-    #'moneycash.contabilidad',
+    'moneycash.bodega',
 
     ## EXTRAS
 )

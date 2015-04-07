@@ -1,0 +1,50 @@
+<HTML>
+    <HEAD>
+        <meta charset="utf-8" />
+        <title>Factura</title>
+    </HEAD>
+    <BODY>
+        <style>    div {position:absolute; z-index:25}
+            a {text-decoration:none}
+            a img {border-style:none; border-width:0}
+            .fci4az01lucw7k-0 {font-size:9pt;color:#000000;font-family:Microsoft Sans Serif;font-weight:normal;}
+            .fci4az01lucw7k-1 {font-size:8pt;color:#000000;font-family:Microsoft Sans Serif;font-weight:normal;}
+            .fci4az01lucw7k-2 {font-size:9pt;color:#000000;font-family:Arial;font-weight:normal;}
+            .adi4az01lucw7k-0 {border-color:#000000;border-left-width:0;border-right-width:0;border-top-width:0;border-bottom-width:0;}
+        </style>
+        {% load i18n grp_tags log %}
+        {% for f in queryset %}
+
+        <div style="z-index:3;clip:rect(0px,816px,280px,0px);top:0px;left:0px;width:816px;height:280px;"></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:184px;left:576px;width:40px;height:16px;"><table width="40px" border="0" cellpadding="0" cellspacing="0"><td align="center"><span class="fci4az01lucw7k-0">25</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:184px;left:640px;width:40px;height:16px;"><table width="40px" border="0" cellpadding="0" cellspacing="0"><td align="center"><span class="fci4az01lucw7k-0">Junio</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:184px;left:720px;width:40px;height:16px;"><table width="40px" border="0" cellpadding="0" cellspacing="0"><td align="center"><span class="fci4az01lucw7k-0">2014</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:232px;left:728px;width:40px;height:16px;"><table width="40px" border="0" cellpadding="0" cellspacing="0"><td align="center"><span class="fci4az01lucw7k-0">X</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:168px;left:96px;width:440px;height:16px;"><table width="440px" border="0" cellpadding="0" cellspacing="0"><td align="left"><span class="fci4az01lucw7k-1">{{f.cliente.name}}</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:192px;left:104px;width:328px;height:24px;"><table width="328px" border="0" cellpadding="0" cellspacing="0"><td align="left"><span class="fci4az01lucw7k-1">{{f.cliente.direccion}}</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:224px;left:104px;width:272px;height:16px;"><table width="272px" border="0" cellpadding="0" cellspacing="0"><td align="left"><span class="fci4az01lucw7k-1">{{f.cliente.contacto}}</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:224px;left:384px;width:152px;height:16px;"><table width="152px" border="0" cellpadding="0" cellspacing="0"><td align="left"><span class="fci4az01lucw7k-1">{{f.cliente.nombre_area}}</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:192px;left:440px;width:96px;height:24px;"><table width="96px" border="0" cellpadding="0" cellspacing="0"><td align="left"><span class="fci4az01lucw7k-1">{{f.cliente.telefono}}</span></td></table></div>
+        <div style="z-index:3;clip:rect(0px,816px,242px,0px);top:280px;left:0px;width:816px;height:242px;"></div>
+        {% for d in f.detalle %}
+
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:{{d.top}}px;left:16px;width:88px;height:16px;"><table width="88px" border="0" cellpadding="0" cellspacing="0"><td align="right"><span class="fci4az01lucw7k-1">{{d.cantidad}}</span></td></table></div>
+
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:{{d.top}}px;left:128px;width:464px;height:16px;"><table width="464px" border="0" cellpadding="0" cellspacing="0"><td align="left"><span class="fci4az01lucw7k-1">{{d.area.unidad_ejecutora}} - {{d.area.name}}</span></td></table></div>
+
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:{{d.top}}px;left:600px;width:56px;height:16px;"><table width="56px" border="0" cellpadding="0" cellspacing="0"><tr><td align="right"><span class="fci4az01lucw7k-1">U$&nbsp;{{d.precio}}</span></td></tr></table></div>
+
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:{{d.top}}px;left:680px;width:72px;height:16px;"><table width="72px" border="0" cellpadding="0" cellspacing="0"><tr><td align="right"><span class="fci4az01lucw7k-1">U$&nbsp;{{d.total}}</span></td></tr></table></div>
+
+        <div style="z-index:3;clip:rect(0px,816px,252px,0px);top:804px;left:0px;width:816px;height:252px;"></div>
+        {% endfor %}
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:812px;left:672px;width:80px;height:16px;"><table width="80px" border="0" cellpadding="0" cellspacing="0"><td align="right"><span class="fci4az01lucw7k-2">U$&nbsp;{{f.subtotal}}</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:868px;left:672px;width:80px;height:24px;"><table width="80px" border="0" cellpadding="0" cellspacing="0"><td align="right"><span class="fci4az01lucw7k-2">{{f.iva_cordobas}}</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:900px;left:672px;width:80px;height:16px;"><table width="80px" border="0" cellpadding="0" cellspacing="0"><td align="right"><span class="fci4az01lucw7k-2">{{f.total_cordobas}}</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:844px;left:672px;width:80px;height:16px;"><table width="80px" border="0" cellpadding="0" cellspacing="0"><td align="right"><span class="fci4az01lucw7k-2">{{f.subtotal_cordobas}}</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:884px;left:328px;width:256px;height:16px;"><table width="256px" border="0" cellpadding="0" cellspacing="0"><td align="center"><span class="fci4az01lucw7k-0"></span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:812px;left:128px;width:112px;height:16px;"><table width="112px" border="0" cellpadding="0" cellspacing="0"><td align="left"><span class="fci4az01lucw7k-2">Tasa&nbsp;de&nbsp;Cambio&nbsp;:</span></td></table></div>
+        <div class="adi4az01lucw7k-0" nowrap="true" style="z-index:25;top:812px;left:248px;width:56px;height:16px;"><table width="56px" border="0" cellpadding="0" cellspacing="0"><td align="right"><span class="fci4az01lucw7k-2">{{f.tc}}</span></td></table></div>
+        {% endfor %}
+    </body>
+</html>
