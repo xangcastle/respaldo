@@ -2,9 +2,11 @@ from django.db import models
 from moneycash.entidad import Entidad, datos_generales
 from moneycash.documento import Documento
 from django.contrib.auth.models import User
-from moneycash.models import Periodo as base_periodo, Moneda
+from moneycash.models import Periodo as base_periodo, Moneda,\
+Documento as comprobante, Movimiento, TipoDoc
 from django.db.models import Sum
 from datetime import timedelta
+from moneycash.contabilidad.models import Cuenta
 
 
 def activar_equipos(periodo):
@@ -56,6 +58,38 @@ def facturar(recibos):
         dd = factura_detalle(factura=f, item=r.area.item,
             precio=r.area.item.precio, cantidad=r.copias, area=r.area)
         dd.save()
+
+
+def contabilizar_depreciacion(periodos):
+    for p in periodos:
+        d = comprobante()
+        d.fecha = p.fin_produccion
+        d.tipodoc = TipoDoc.objects.get(name='DEPRECIACION')
+        d.name = 'Se Registra Comprobante por Depreciacion de Equipos del Periodo ' + str(p)
+        d.save()
+        for e in equipo_periodo.objects.filter(periodo=p):
+            mi = Movimiento()
+            mi.documento = d
+            mi.cuenta = e.equipo.get_cuenta_inventario()
+            mi.debe = (e.contador_final
+            - e.contador_inicial) * e.equipo.depreciacion_copia
+            mi.save()
+            md = Movimiento()
+            md.documento = d
+            md.cuenta = e.equipo.get_cuenta_depreciacion()
+            md.haber = (e.contador_final
+            - e.contador_inicial) * e.equipo.depreciacion_copia
+            md.save()
+
+
+def cerrar(periodo):
+        for r in periodo.equipos():
+            e = Equipo.objects.get(id=r.equipo.id)
+            e.contador_actual = r.contador_final
+            e.depreciar()
+            e.save()
+        periodo.cerrado = True
+        periodo.save()
 
 
 class Periodo(base_periodo):
@@ -268,6 +302,20 @@ class Equipo(Entidad):
                 self.contador_actual - self.contador_inicial), 2)
             self.precio_venta = round(self.costo_compra
             - self.valor_depreciado, 2)
+
+    def get_cuenta_inventario(self):
+        c, created = Cuenta.objects.get_or_create(
+            cuenta=Cuenta.objects.get(code='010201'),
+            code='010201' + self.code, name=self.modelo + ' - '
+            + self.serie, saldo=round(self.costo_compra * 25.3352, 2))
+        return c
+
+    def get_cuenta_depreciacion(self):
+        c, created = Cuenta.objects.get_or_create(
+            cuenta=Cuenta.objects.get(code='010205'),
+            code='010205' + self.code, name=self.modelo + ' - '
+            + self.serie)
+        return c
 
     def save(self, *args, **kwargs):
         self.depreciar()

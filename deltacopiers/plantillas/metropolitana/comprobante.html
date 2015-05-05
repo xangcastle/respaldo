@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+		<link href="/static/css/fonts.css" rel="stylesheet" type="text/css"/>
+		<title>Comprobante de Entrega</title>
+		<style>
+			.comprobante {
+				width: 215mm;
+				height: 69.85mm;
+			}
+            .bordeado {
+				border-color:#000000;
+				border-style:solid;
+				border-width:1px;
+			}
+			.campo {
+				margin-top: 5mm;
+				margin-left: 5mm;
+			}
+			.cliente {
+				margin-top: 10mm;
+				margin-left: 5mm;
+			}
+			.direccion {
+				margin-top: 21mm;
+				margin-left: 5mm;
+			}
+			.barra {
+			    font-family:'Connect-Code-39',Sans-Serif;
+			    }
+        </style>
+	</head>
+	<body>
+	{% load i18n grp_tags log %}
+         {% for l in queryset %}
+         {% for p in l.paquetes %}
+		
+	<div class="comprobante bordeado">
+	            <p class="barra">*{{p.barra}}*</p>
+		<p class="campo cliente">{{p.cliente}}</p>
+		<p class="campo">{{p.direccion}}</p>
+		<p class="campo">{{p.lote}}</p>
+		<p class="campo">{{p.consecutivo}}</p>
+		<p class="campo">{{p.lote.departamento}}</p>
+	</div>
+	
+	{% endfor %}
+	{% endfor %}
+	
+	</body>
+</html>

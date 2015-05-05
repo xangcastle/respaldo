@@ -76,3 +76,5 @@ class entidad_admin(ImportExportModelAdmin):
     def activar(self, request, queryset):
         queryset.update(activo=True)
     activar.short_description = "Activar selected objects"
+
+

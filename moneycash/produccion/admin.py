@@ -75,7 +75,14 @@ class periodo_admin(admin.ModelAdmin):
     activar_equipos.short_description = \
     'activar equipos de los periodos seleccionados'
 
-    actions = [generar_recibos, cargar_copias, activar_equipos]
+    def cerrar_(self, request, queryset):
+        for p in queryset:
+            cerrar(p)
+
+    cerrar.short_description = \
+    'cerrar periodos seleccionados'
+
+    actions = [generar_recibos, cargar_copias, activar_equipos, cerrar_]
 
 
 class equipo_admin(entidad_admin):

@@ -6,7 +6,21 @@ from .middlewares import get_current_user
 from django.contrib.auth.models import User
 
 
-class datos_generales(models.Model):
+class base(models.Model):
+
+    def __iter__(self):
+        for field_name in self._meta.get_all_field_names():
+            try:
+                value = getattr(self, field_name)
+            except:
+                value = None
+            yield (field_name, value)
+
+    class Meta:
+        abstract = True
+
+
+class datos_generales(base):
     identificacion = models.CharField(max_length=25, null=True, blank=True,
         verbose_name="ruc/cedula")
     telefono = models.CharField(max_length=100, null=True, blank=True)
@@ -38,7 +52,7 @@ def get_code(entidad):
         return str(code).zfill(4)
 
 
-class base_entidad(models.Model):
+class base_entidad(base):
     code = models.CharField(max_length=25, null=True, blank=True,
         verbose_name="codigo")
     name = models.CharField(max_length=100, verbose_name="nombre")
@@ -74,7 +88,17 @@ class Moneda(Entidad):
     pass
 
 
-class Periodo(models.Model):
+class Tc(models.Model):
+    fecha = models.DateField()
+    oficial = models.FloatField()
+    moneda = models.ForeignKey(Moneda, default=1)
+
+    class Meta:
+        verbose_name_plural = 'tasas de cambio'
+        verbose_name = 'tasa de cambio'
+
+
+class Periodo(base):
     fecha_inicial = models.DateField()
     fecha_final = models.DateField()
     inicio_produccion = models.DateField(null=True, blank=True)
@@ -142,7 +166,7 @@ class Periodo(models.Model):
     al_pagado.short_description = 'AL a favor'
 
 
-class total_periodo(models.Model):
+class total_periodo(base):
     periodo = models.ForeignKey(Periodo)
     iva_pagado = models.FloatField(default=0)
     iva_contra = models.FloatField(default=0)
@@ -159,7 +183,8 @@ class total_periodo(models.Model):
 
 
 class Sucursal(Entidad):
-    pass
+    class Meta:
+        verbose_name_plural = 'sucursales'
 
 
 class Bodega(Entidad):
@@ -174,6 +199,10 @@ class Cuenta(Entidad):
     cuenta = models.ForeignKey('self', related_name='cuenta_madre', null=True,
         blank=True)
     saldo = models.FloatField(default=0, help_text='saldo actual de la cuenta')
+
+    def __unicode__(self, *args, **kwargs):
+        return super(Cuenta, self).__unicode__(
+            ) + ' Saldo: ' + str(self.saldo)
 
     def total_grupos(self):
         return Cuenta.objects.filter(cuenta=None).count()
@@ -195,27 +224,50 @@ class Cuenta(Entidad):
         else:
             return str(self.total_grupos() + 1).zfill(2)
 
+    def get_saldo(self):
+        if self.sub_cuentas():
+            return round(self.sub_cuentas().aggregate(
+                Sum('saldo'))['saldo__sum'], 2)
+        else:
+            return self.saldo
+
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = self.get_code()
+        self.saldo = self.get_saldo()
         super(Cuenta, self).save()
+        if self.cuenta:
+            self.cuenta.saldo = self.cuenta.get_saldo()
+            self.cuenta.save()
+
+    def delete(self, *args, **kwargs):
+        self.saldo = self.get_saldo()
+        super(Cuenta, self).delete()
 
     class Meta:
         ordering = ['code']
 
 
-class cuenta_periodo(models.Model):
+class cuenta_periodo(base):
     periodo = models.ForeignKey(Periodo)
     cuenta = models.ForeignKey(Cuenta)
     saldo_inicial = models.FloatField(default=0)
     saldo_final = models.FloatField(default=0)
 
 
-class Movimiento(models.Model):
+class Movimiento(base):
     documento = models.ForeignKey('Documento')
     cuenta = models.ForeignKey(Cuenta)
     debe = models.FloatField(default=0)
     haber = models.FloatField(default=0)
+
+    def __unicode__(self):
+        texto = []
+        if self.debe > 0:
+            texto.append('debitar ' + str(self.debe))
+        if self.haber > 0:
+            texto.append('acreditar ' + str(self.haber))
+        return ' y '.join(texto)
 
 
 class TipoDoc(Entidad):
@@ -231,7 +283,7 @@ class TipoDoc(Entidad):
         verbose_name_plural = 'tipos de documentos'
 
 
-class Numeracion(models.Model):
+class Numeracion(base):
     tipodoc = models.ForeignKey(TipoDoc)
     sucursal = models.ForeignKey(Sucursal)
     numero_inicial = models.PositiveIntegerField(default=1)
@@ -244,8 +296,8 @@ def get_numeracion(tipodoc, sucursal):
     return Numeracion.objects.get(tipodoc=tipodoc, sucursal=sucursal)
 
 
-class datos_documento(models.Model):
-    fecha = models.DateTimeField()
+class datos_documento(base):
+    fecha = models.DateTimeField(null=True, blank=True)
     fecha_vence = models.DateField(null=True, blank=True,
         verbose_name="fecha de vencimiento",
         help_text="si se deja en blanco se aplica el plazo del provedor")
@@ -322,7 +374,7 @@ class datos_cliente(base_entidad, datos_generales):
         abstract = True
 
 
-class datos_factura(models.Model):
+class datos_factura(base):
     subtotal = models.FloatField(default=0.0)
     descuento = models.FloatField(default=0.0)
     iva = models.FloatField(default=0.0)
@@ -416,15 +468,18 @@ class Documento(base_documento):
     pass
 
 
-class Kardex(models.Model):
+class Kardex(base):
     documento = models.ForeignKey(Documento, null=True, blank=True)
     item = models.ForeignKey('Item')
+    bodega = models.ForeignKey(Bodega, null=True, blank=True)
+    ubicacion = models.CharField(max_length=10, null=True, blank=True)
     cantidad = models.FloatField(default=1)
     existencias = models.FloatField(default=0)
     saldo = models.FloatField(default=0)
     precio = models.FloatField(default=0)
     descuento = models.FloatField(default=0)
     costo_entrada = models.FloatField(default=0)
+    costo_anterior = models.FloatField(default=0)
     costo_promedio = models.FloatField(default=0)
     costo_importacion = models.FloatField(default=0)
     costo_internacion = models.FloatField(default=0)
@@ -438,6 +493,10 @@ class Item(Entidad):
     descuento = models.FloatField(default=0)
     precio = models.FloatField(default=0)
     costo = models.FloatField(default=0)
+    comprar = models.BooleanField(default=True)
+    vender = models.BooleanField(default=True)
+    almacenar = models.BooleanField(default=True)
+    factor = models.FloatField(default=2)
 
 
 class Marca(Entidad):
@@ -454,17 +513,19 @@ class base_sc(Entidad, datos_generales):
 
 
 class SocioComercial(base_sc):
-    pass
+    class Meta:
+        verbose_name_plural = 'socios comerciales'
 
 
-class base_relacion_comercial(models.Model):
+class base_relacion_comercial(base):
     socio = models.ForeignKey(SocioComercial)
     RELACIONES = (
       ('CL', 'CLIENTE'),
       ('PR', 'PROVEEDOR'),
     )
     tipo_relacion = models.CharField(max_length=2,
-        choices=RELACIONES, default='CL')
+        choices=RELACIONES, default='CL',
+        verbose_name='tipo de relacion')
     tiempo_entrega = models.PositiveIntegerField(
         help_text="tiempo de entrega en dias para la mercaderia",
         verbose_name="tiempo de entrega", default=0, null=True)
@@ -481,7 +542,9 @@ class base_relacion_comercial(models.Model):
 
 
 class relacion_comercial(base_relacion_comercial):
-    pass
+    class Meta:
+        verbose_name = 'relacion comercial'
+        verbose_name_plural = 'relaciones comerciales'
 
 
 def update_cliente(cliente, datos):
@@ -531,6 +594,16 @@ class socio(base_sc, base_relacion_comercial):
 
     class Meta:
         abstract = True
+
+
+class Peb(base):
+    item = models.ForeignKey(Item, blank=True, null=True)
+    bodega = models.ForeignKey(Bodega, blank=True, null=True)
+    existencias = models.FloatField(blank=True, null=True)
+    ubicacion = models.CharField(max_length=10, blank=True)
+
+    class Meta:
+        managed = False
 
 
 class cliente_manager(models.Manager):
@@ -613,3 +686,50 @@ def importar_compras(compras):
             dd.precio = cd.precio
             dd.descuento = cd.descuento
             dd.save()
+
+
+def importar_ventas(ventas):
+    for c in ventas:
+        d = Documento()
+        d.fecha = c.fecha
+        d.tipodoc = TipoDoc.objects.get(name='VENTA')
+        d.fecha_vence = c.fecha_vence
+        d.user = c.user
+        d.periodo = c.periodo
+        d.numero = c.numero
+        d.proveedor = get_by_code(SocioComercial(), c.cliente.code)
+        d.moneda = c.moneda
+        d.subtotal = c.subtotal
+        d.iva = c.iva
+        d.ir = c.ir
+        d.al = c.al
+        d.total = c.total
+        d.exento_al = c.exento_al
+        d.exento_ir = c.exento_ir
+        d.exento_iva = c.exento_iva
+        d.saldo = c.saldo
+        d.abonado = c.abonado
+        d.forma_pago = c.tipo
+        d.save()
+
+        for cd in c.detalle():
+            dd = Kardex()
+            dd.documento = d
+            dd.item = get_by_code(Item(), cd.item.code)
+            dd.cantidad = cd.cantidad
+            dd.precio = cd.precio
+            dd.descuento = cd.descuento
+            dd.save()
+
+
+def inicializar_saldos(periodos):
+    cuentas = Cuenta.objects.filter(activo=True)
+    for p in periodos:
+        for c in cuentas:
+            cp, created = cuenta_periodo.objects.get_or_create(periodo=p,
+                cuenta=c)
+            cp.saldo_inicial = c.saldo
+            cp.save()
+
+def aperturar(periodos):
+    pass

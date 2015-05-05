@@ -2,8 +2,8 @@ from django.contrib import admin
 from moneycash.admin import documento_admin, entidad_admin
 #from moneycash.entidad import entidad_admin
 from .models import *
-#from ajax_select.admin import AjaxSelectAdmin
-#from ajax_select import make_ajax_form
+from ajax_select.admin import AjaxSelectAdmin
+from ajax_select import make_ajax_form
 #import autocomplete_light
 
 
@@ -70,7 +70,7 @@ class proveedor_admin(entidad_admin):
 ##admin.site.register(Marca, entidad_admin)
 ##admin.site.register(Categoria, entidad_admin)
 
-class compra_admin(documento_admin):
+class compra_admin(documento_admin, AjaxSelectAdmin):
     list_display = ('numero', 'fecha', 'proveedor',
         'subtotal', 'iva', 'total', 'ir', 'al', 'abonado', 'saldo',
         'fecha_vence')
@@ -89,7 +89,8 @@ class compra_admin(documento_admin):
                         ('iva', ),
                         ('total', 'abonado', 'saldo'))}),
                 )
-    inlines = [compra_detalle]
+    form = make_ajax_form(Documento, {'proveedor': 'proveedor'})
+    #inlines = [compra_detalle]
 
 admin.site.register(Documento, compra_admin)
 admin.site.register(Proveedor, proveedor_admin)

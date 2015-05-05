@@ -89,6 +89,7 @@ INSTALLED_APPS = (
     'ajax_select',
     'grappelli',
     'import_export',
+    #'reporting',
 
     ##APLICACIONES BASICAS DEL ADMIN
     'django.contrib.admin',
@@ -103,9 +104,12 @@ INSTALLED_APPS = (
 
     ##APLICACIONES DEL SISTEMA INTEGRADO MONEYCASH##
     'moneycash',
-    'moneycash.compras',
+    #'moneycash.compras',
     'moneycash.produccion',
-    'moneycash.bodega',
+    'moneycash.contabilidad',
+    'metropolitana',
+    'moneycash.tarjetas',
+    #'multifilefield',
 
     ## EXTRAS
 )
@@ -160,6 +164,7 @@ AJAX_LOOKUP_CHANNELS = {
     'cliente': ('moneycash.lookups', 'ClienteLookup'),
     'item': ('moneycash.lookups', 'ItemLookup'),
     'proveedor': ('moneycash.compras.lookups', 'ProveedorLookup'),
+    'paquete': ('moneycash.metropolitana.lookups', 'PaqueteLookup'),
 }
 
 # By default will use window.jQuery

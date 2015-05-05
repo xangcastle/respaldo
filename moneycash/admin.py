@@ -3,12 +3,14 @@ from django.contrib.admin import site
 from .models import *
 from import_export.admin import ImportExportModelAdmin
 import adminactions.actions as actions
+import autocomplete_light
 
 actions.add_to_site(site)
 
 
 class entidad_admin(ImportExportModelAdmin):
-    list_display = ('code', 'name')
+    list_display = ('code', 'name', 'activo')
+    list_filter = ('activo',)
     actions = ['activar', 'inactivar']
     ordering = ('code',)
     search_fields = ('code', 'name')
@@ -25,25 +27,33 @@ class entidad_admin(ImportExportModelAdmin):
 
 class base_tabular(admin.TabularInline):
     classes = ('grp-collapse grp-open',)
+    extra = 0
 
 
 class kardex_tabular(base_tabular):
+    form = autocomplete_light.modelform_factory(Kardex)
     model = Kardex
-    extra = 0
+    fields = ('item', 'cantidad')
 
 
 class movimiento_tabular(base_tabular):
     model = Movimiento
-    extra = 0
 
 
-class documento_admin(ImportExportModelAdmin):
+class base_documento_admin(ImportExportModelAdmin):
     date_hierarchy = 'fecha'
     list_display = ('numero', 'fecha', 'user', 'sucursal',
         'impreso', 'entregado', 'contabilizado')
-    list_filter = ('periodo', 'user', 'sucursal', 'impreso',
+    list_filter = ('tipodoc', 'periodo', 'user', 'sucursal', 'impreso',
         'entregado', 'contabilizado')
     search_fields = ('numero',)
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        obj.save()
+
+
+class documento_admin(base_documento_admin):
     inlines = [kardex_tabular, movimiento_tabular]
 
 
@@ -83,7 +93,7 @@ class total_periodo_admin(admin.ModelAdmin):
 
 class item_admin(entidad_admin):
     list_filter = ('marca', 'categoria')
-    list_display = ('code', 'name', 'marca', 'categoria')
+    list_display = ('code', 'name', 'marca', 'categoria', 'existencias')
     fieldsets = (('Datos Generales', {'classes': ('grp-collapse grp-open',),
     'fields': (('code', 'name'), ('marca', 'categoria'))}),
         ('Datos de Comercializacion', {'classes': ('grp-collapse grp-open',),
@@ -91,17 +101,40 @@ class item_admin(entidad_admin):
                 'activo')}))
 
 
-class socio_admin(entidad_admin):
-    exclude = ('socio', 'tipo_relacion')
-    list_display = ('code', 'name', 'identificacion', 'telefono',
-        'limite_credito')
-    fields = ('name', ('code', 'identificacion'),
-        ('telefono',), 'direccion',
-        ('limite_credito', 'saldo', 'plazo'))
+class relaciones_comerciales(base_tabular):
+    model = relacion_comercial
+
+
+class socio_comercial(entidad_admin):
+    list_display = ('code', 'name', 'identificacion', 'telefono')
+    inlines = [relaciones_comerciales]
 
 admin.site.register(Periodo, periodo_admin)
 admin.site.register(Sucursal, entidad_admin)
+admin.site.register(Bodega, entidad_admin)
 admin.site.register(Moneda, entidad_admin)
 admin.site.register(Cuenta, cuenta_admin)
 admin.site.register(TipoDoc, tipodoc_admin)
-admin.site.register(SocioComercial, entidad_admin)
+admin.site.register(SocioComercial, socio_comercial)
+
+
+admin.site.register(Item, item_admin)
+admin.site.register(Marca, entidad_admin)
+admin.site.register(Categoria, entidad_admin)
+
+admin.site.register(Documento, documento_admin)
+
+
+class peb_admin(admin.ModelAdmin):
+    list_display = ('item', 'bodega', 'existencias', 'ubicacion')
+
+admin.site.register(Peb, peb_admin)
+
+
+class tc_admin(ImportExportModelAdmin):
+    list_display = ('fecha', 'oficial')
+    list_filter = ('moneda',)
+    date_hierarchy = 'fecha'
+
+
+admin.site.register(Tc, tc_admin)
