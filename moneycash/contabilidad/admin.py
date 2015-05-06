@@ -53,18 +53,21 @@ class comprobante_movimientos(base_tabular):
 
 class comprobante_admin(admin.ModelAdmin):
     date_hierarchy = 'fecha'
-    list_display = ('numero', 'fecha', 'concepto', 'user')
+    list_display = ('code', 'fecha', 'concepto',
+        'sucursal', 'sumas_iguales', 'diferencia')
     list_filter = ('periodo', 'user', 'sumas_iguales')
-    search_fields = ('numero',)
+    search_fields = ('numero', 'code', 'concepto')
 
     fieldsets = (('Datos Generales', {'classes': ('grp-collapse grp-open',),
     'fields': (('numero', 'fecha'), 'concepto')}),
         ("Detalle Inlines", {"classes":
             ("placeholder movimiento_set-group",), "fields": ()}),
         ('Totales', {'classes': ('grp-collapse grp-open',),
-            'fields': (('sumas_iguales', 'total_debe', 'total_haber'),)}))
+            'fields': (('sumas_iguales', 'total_debe', 'total_haber',
+            'diferencia'),)}))
 
-    readonly_fields = ('sumas_iguales', 'total_debe', 'total_haber')
+    readonly_fields = ('sumas_iguales', 'total_debe', 'total_haber',
+        'diferencia')
 
     def save_model(self, request, obj, form, change):
         obj.user = request.user
@@ -73,6 +76,9 @@ class comprobante_admin(admin.ModelAdmin):
     inlines = [comprobante_movimientos]
 
 
+
+
 admin.site.register(Periodo, periodo_admin)
 admin.site.register(Cuenta, cuenta_admin)
 admin.site.register(Comprobante, comprobante_admin)
+admin.site.register(migracion, ImportExportModelAdmin)

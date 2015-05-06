@@ -45,7 +45,7 @@ class Periodo(base):
 class Cuenta(Entidad):
     cuenta = models.ForeignKey('self', related_name='cuenta_madre', null=True,
         blank=True)
-    saldo = models.FloatField(default=0, help_text='saldo inicial de la cuenta',
+    saldo = models.FloatField(default=0,
         verbose_name='saldo inicial')
     saldo_actual = models.FloatField(default=0)
 
@@ -295,12 +295,12 @@ class Movimiento(base):
         c = Comprobante.objects.get(id=self.comprobante.id)
         c.calcular()
 
-    def delete(self, *args, **kwargs):
-        c = Comprobante.objects.get(id=self.comprobante.id)
-        b = Balanza.objects.get(cuenta=self.cuenta, periodo=self.periodo)
-        super(Movimiento, self).delete()
-        c.calcular()
-        b.actualizar_saldo()
+    #def delete(self, *args, **kwargs):
+        #c = Comprobante.objects.get(id=self.comprobante.id)
+        #b = Balanza.objects.get(cuenta=self.cuenta, periodo=self.periodo)
+        #super(Movimiento, self).delete()
+        #c.calcular()
+        #b.actualizar_saldo()
 
 
 class datos_documento(base):
@@ -355,11 +355,12 @@ class datos_documento(base):
 
 
 class Comprobante(datos_documento):
-    concepto = models.CharField(max_length=150)
+    concepto = models.TextField(max_length=400)
     code = models.CharField(max_length=30, null=True, blank=True)
     sucursal = models.CharField(max_length=65, null=True, blank=True)
     total_debe = models.FloatField(default=0)
     total_haber = models.FloatField(default=0)
+    diferencia = models.FloatField(default=0)
     sumas_iguales = models.BooleanField(default=True)
 
     def movimientos(self):
@@ -387,6 +388,7 @@ class Comprobante(datos_documento):
             self.sumas_iguales = True
         else:
             self.sumas_iguales = False
+        self.diferencia = round(abs(self.total_debe - self.total_haber), 2)
 
     def calcular(self):
         if self.total_debe != self.get_total_debe():
@@ -408,3 +410,34 @@ class Comprobante(datos_documento):
             super(Comprobante, self).save()
             self.calcular()
             self.actualizar_saldos_cuentas()
+
+
+class migracion(models.Model):
+    fecha = models.DateField()
+    poliza = models.CharField(max_length=30, null=True, blank=True)
+    concepto = models.TextField(max_length=400)
+    sucursal = models.CharField(max_length=65, null=True, blank=True)
+    numero_cuenta = models.CharField(max_length=30, null=True, blank=True)
+    nombre_cuenta = models.CharField(max_length=65, null=True, blank=True)
+    debe = models.FloatField(default=0)
+    haber = models.FloatField(default=0)
+
+    def get_comprobante(self):
+        c, created = Comprobante.objects.get_or_create(code=self.poliza,
+            concepto=self.concepto, fecha=self.fecha, sucursal=self.sucursal)
+        return c
+
+    def get_cuenta(self):
+        c, created = Cuenta.objects.get_or_create(code=self.numero_cuenta,
+            activo=True, name=self.nombre_cuenta)
+        return c
+
+    def save(self, *args, **kwargs):
+        m, created = Movimiento.objects.get_or_create(
+            comprobante=self.get_comprobante(),
+            cuenta=self.get_cuenta(), debe=self.debe,
+            haber=self.haber)
+
+    class Meta:
+        verbose_name = 'comprobante'
+        verbose_name_plural = 'migracion de comprobantes'
