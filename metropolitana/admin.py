@@ -8,6 +8,7 @@ from django.template.context import RequestContext
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from .views import *
+import math
 
 actions.add_to_site(site)
 
@@ -29,7 +30,7 @@ class entidad_admin(ImportExportModelAdmin):
 
 
 class control_entregas_admin(entidad_admin):
-    list_display = ('code', 'name', 'pendientes', 'asignados', 'entregados')
+    list_display = ('code', 'name', 'asignados', 'entregados', 'pendientes')
     readonly_fields = ('pendientes', 'asignados', 'entregados')
     actions = ['actualizar_estadisticas_entrega']
 
@@ -60,13 +61,15 @@ class paquete_admin(ImportExportModelAdmin):
         ('Datos de Facturacion', {'classes': ('grp-collapse grp-open',),
             'fields': (('segmento', 'tarifa', 'servicio'),
                 ('cupon', 'total_mes_factura', 'valor_pagar'),
-                ('numero_fiscal', 'factura_interna', 'entrega'))}))
+                ('numero_fiscal', 'factura_interna', 'entrega'))}),
+        ('Entrega y Digitalizacion', {'classes': ('grp-collapse grp-open',),
+            'fields': (('comprobante', 'colector'),)}))
 
     readonly_fields = ('factura', 'cliente', 'contrato', 'cupon', 'ciclo',
         'mes', 'ano', 'departamento', 'municipio', 'barrio', 'direccion',
         'telefono_contacto', 'ruta', 'zona', 'segmento', 'tarifa', 'servicio',
         'cupon', 'total_mes_factura', 'valor_pagar', 'numero_fiscal',
-        'factura_interna', 'entrega', 'lote')
+        'factura_interna', 'entrega', 'lote', 'colector')
     actions = ['action_lotificar']
 
     change_list_template = 'admin/metropolitana/paquete/change_list.html'
@@ -95,16 +98,17 @@ class cliente_admin(entidad_admin):
 
 class facturas_asignadas(base_tabular):
     model = Paquete
-    fields = ('consecutivo', 'factura', 'cliente', 'direccion',
-        'telefono_contacto', 'comprobante')
+    fields = ('factura', 'cliente', 'comprobante', 'direccion',
+        'telefono_contacto')
     readonly_fields = ('factura', 'cliente', 'direccion',
         'telefono_contacto')
-    sortable_field_name = 'consecutivo'
-    #sortable_excludes = ('telefono_contacto', 'comprobante', 'consecutivo')
+    #sortable_field_name = 'consecutivo'
 
 
 class lote_admin(ImportExportModelAdmin):
     date_hierarchy = 'fecha'
+    search_fields = ('numero', 'colector__name', 'departamento__name',
+        )
     list_display = ('numero', 'municipio', 'departamento', 'barrio',
         'cerrado', 'cantidad_paquetes', 'entregados', 'avance', 'asignado',
         'colector', 'ciclo', 'mes', 'ano')
@@ -120,19 +124,75 @@ class lote_admin(ImportExportModelAdmin):
     readonly_fields = ('numero', 'municipio', 'departamento', 'barrio',
         'cantidad_paquetes', 'entregados', 'avance')
     inlines = [facturas_asignadas]
-    actions = ['generar_comprobantes']
-
-    #list_editable = ('comprobantes',)
+    actions = ['generar_comprobantes', 'ordenar_cliente', 'ordenar_direccion']
 
     def generar_comprobantes(self, request, queryset):
+        paginas = []
         id_unico = False
         if queryset.count() == 1:
             id_unico = True
-        ctx = {'queryset': queryset, 'id_unico': id_unico}
+        comprobantes = Paquete.objects.filter(
+            lote__in=queryset).order_by('lote', 'consecutivo')
+        if comprobantes:
+            pagina = {'comprobantes': []}
+            for c in comprobantes:
+                pagina['comprobantes'].append(c)
+                if len(pagina['comprobantes']) == 4:
+                    paginas.append(pagina)
+                    pagina = {'comprobantes': []}
+            if len(pagina['comprobantes']) > 0:
+                paginas.append(pagina)
+        ctx = {'queryset': queryset, 'id_unico': id_unico, 'paginas': paginas}
         return render_to_response('metropolitana/comprobante.html',
             ctx, context_instance=RequestContext(request))
     generar_comprobantes.short_description = \
     "Generar comprobantes de los lotes selecionados"
+
+    def ordenar_cliente(self, request, queryset):
+        for p in queryset:
+            p.ordenar_por_cliente()
+    ordenar_cliente.short_description = 'ordenar paquetes por cliente'
+
+    def ordenar_direccion(self, request, queryset):
+        for p in queryset:
+            p.ordenar_por_direccion()
+    ordenar_direccion.short_description = 'ordenar paquetes por direccion'
+
+
+class impresion_admin(ImportExportModelAdmin):
+    date_hierarchy = 'fecha_verificacion'
+    list_display = ('consecutivo', 'paquete', 'cliente', 'user', 'fecha_verificacion')
+    list_filter = ('user',)
+    search_fields = ('paquete__cliente', 'paquete__factura', 'paquete__barra',
+        'paquete__contrato')
+    actions = ['generar_comprobantes']
+
+    def generar_comprobantes(self, request, queryset):
+        paginas = []
+        id_unico = False
+        if queryset.count() == 1:
+            id_unico = True
+        for q in queryset:
+            c = Paquete.objects.get(id=q.paquete.id)
+            c.orden_impresion = q.consecutivo
+            c.save()
+        comprobantes = Paquete.objects.filter(
+            id__in=queryset.order_by('consecutivo').values_list('paquete',
+                flat=True)).order_by('orden_impresion')
+        if comprobantes:
+            pagina = {'comprobantes': []}
+            for c in comprobantes:
+                pagina['comprobantes'].append(c)
+                if len(pagina['comprobantes']) == 4:
+                    paginas.append(pagina)
+                    pagina = {'comprobantes': []}
+            if len(pagina['comprobantes']) > 0:
+                paginas.append(pagina)
+        ctx = {'queryset': queryset, 'id_unico': id_unico, 'paginas': paginas}
+        return render_to_response('metropolitana/comprobante.html',
+            ctx, context_instance=RequestContext(request))
+    generar_comprobantes.short_description = \
+    "Generar comprobantes selecionados"
 
 
 admin.site.register(Paquete, paquete_admin)
@@ -142,4 +202,21 @@ admin.site.register(Municipio, control_entregas_admin)
 admin.site.register(Barrio, barrio_admin)
 admin.site.register(Cliente, cliente_admin)
 admin.site.register(Lote, lote_admin)
+admin.site.register(impresion, impresion_admin)
 
+
+       #If ch.Cuenta.Producto.Formato.Codigo = 2 Then
+            #For bucle = 1 To CInt(ch.cantidad / ch.Cuenta.Producto.Plana.ChequesxPagina)
+                #For index = bucle - 1 To (ch.cantidad - 1) Step CInt(ch.cantidad / ch.Cuenta.Producto.Plana.ChequesxPagina)
+                    #tb.Rows.Add(lc(index).agencia, lc(index).ruta, lc(index).cuenta, lc(index).cheque, lc(index).moneda, lc(index).barra, lc(index).nombre, lc(index).nombreAd, lc(index).direccion1, lc(index).direccion2, lc(index).direccion3, lc(index).direccion4, lc(index).telefono, Imagen_Bytes(lc(index).logoProducto), Imagen_Bytes(lc(index).logoCliente))
+                #Next
+            #Next
+        #Else
+
+
+        #for a in range(1, total, cantidadxpagina):
+            #for
+
+
+#def cantidad_paginas(total):
+    #if

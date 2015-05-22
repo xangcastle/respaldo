@@ -15,7 +15,10 @@ def datos_paquete(request):
         try:
             p = Paquete.objects.get(barra=request.GET.get('barra', ''))
             datos = {'cliente': p.cliente, 'departamento': p.departamento,
-                'municipio': p.municipio, 'lote': p.lote.numero}
+                'municipio': p.municipio, 'lote': p.lote.numero,
+                'cantidad': p.lote.cantidad_paquetes}
+            i = impresion(paquete=p, user=request.user)
+            i.save()
         except p.DoesNotExist:
             datos = {'cliente': 'nada'}
         resp =  HttpResponse(json.dumps(datos), content_type='application/json')
@@ -33,7 +36,7 @@ def datos_paquete(request):
         return resp
 
 
-########################################################
+#######################################################
 #import ho.pisa as pisa
 #import cStringIO as StringIO
 #import cgi
@@ -58,3 +61,4 @@ def datos_paquete(request):
 
 
 
+##

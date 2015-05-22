@@ -26,23 +26,25 @@ class cuenta_admin(ImportExportModelAdmin):
     inlines = [cuenta_tabular]
 
 
-class cuentas_periodo(base_tabular):
-    model = Balanza
-    fields = ('cuenta', 'saldo_inicial', 'saldo_final')
-    readonly_fields = ('cuenta', 'saldo_inicial', 'saldo_final')
-
-
 class periodo_admin(admin.ModelAdmin):
     fields = (('fecha_inicial', 'fecha_final'), ('code', 'cerrado'))
     readonly_fields = ('code', 'cerrado')
     list_display = ('code', 'fecha_inicial', 'fecha_final', 'cerrado')
-    inlines = [cuentas_periodo]
-    actions = ['action_cerrar']
+    actions = ['action_recalcular', 'action_cerrar']
+
+    def action_recalcular(self, request, queryset):
+        grupos = Cuenta().grupos()
+        cuentas = Cuenta.objects.filter(id__in=grupos)
+        balanza = Balanza.objects.filter(cuenta__in=cuentas)
+        for b in balanza:
+            b.actualizar_saldo()
+    action_recalcular.short_description = \
+    'recalcular saldos de los periodos seleccionados'
 
     def action_cerrar(self, request, queryset):
         for p in queryset:
             cerrar(p)
-    action_cerrar.short_description = 'cerrar periodos seleccionadas'
+    action_cerrar.short_description = 'cerrar periodos seleccionados'
 
 
 class comprobante_movimientos(base_tabular):
@@ -76,9 +78,14 @@ class comprobante_admin(admin.ModelAdmin):
     inlines = [comprobante_movimientos]
 
 
+class balanza_admin(admin.ModelAdmin):
+    list_display = ('cuenta', 'saldo_inicial', 'saldo_final', 'periodo')
+    list_filter = ('periodo',)
+    search_fields = ('cuenta__code', 'cuenta__name')
 
 
 admin.site.register(Periodo, periodo_admin)
 admin.site.register(Cuenta, cuenta_admin)
 admin.site.register(Comprobante, comprobante_admin)
 admin.site.register(migracion, ImportExportModelAdmin)
+admin.site.register(Balanza, balanza_admin)

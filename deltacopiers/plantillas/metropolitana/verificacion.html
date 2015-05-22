@@ -17,11 +17,13 @@ $(document).keypress(function(e) {
 			$('#id_departamento').val(response.departamento);
 			$('#id_municipio').val(response.municipio);
 			$('#id_lote').val(response.lote);
+			$('#id_cantidad').val(response.cantidad);
 		} else {
 			$('#id_cliente').val('');
 			$('#id_departamento').val('');
 			$('#id_municipio').val('');
 			$('#id_lote').val('');
+			$('#id_cantidad').val('');
 		  }
 	}
 	});
@@ -58,6 +60,8 @@ $(document).keypress(function(e) {
 <input type="text" id="id_municipio" class="form-control">
 <label for="id_lote"> numero de lote </label>
 <input type="text" id="id_lote" class="form-control">
+<label for="id_cantidad"> cantidad de facturas </label>
+<input type="text" id="id_cantidad" class="form-control">
 </div>
 </body>
 </html>

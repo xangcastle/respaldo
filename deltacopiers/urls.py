@@ -24,5 +24,6 @@ urlpatterns = patterns('',
     url(r'^adminactions/', include('adminactions.urls')),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
     url(r'^entregas/', include('metropolitana.urls')),
+    url(r'^imprimir/', include('moneycash.contabilidad.urls')),
     #url(r'^reporting/', include(reporting.urls)),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

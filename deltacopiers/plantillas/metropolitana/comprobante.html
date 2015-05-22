@@ -1,52 +1,173 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html PUBLIC "Metropolitana Distribucion">
 <html>
 	<head>
 		<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
 		<link href="/static/css/fonts.css" rel="stylesheet" type="text/css"/>
-		<title>Comprobante de Entrega</title>
+		{% if id_unico %}
+		{% for l in queryset %}
+		<title>Comprobantes de Entrega Lote {{ l.numero }}</title>
+		{% endfor %}
+		{% endif %}
 		<style>
 			.comprobante {
-				width: 215mm;
-				height: 69.85mm;
+			width: 215mm;
+			height: 69.85mm;
 			}
-            .bordeado {
-				border-color:#000000;
-				border-style:solid;
-				border-width:1px;
+			.bordeado {
+			border-color:#000000;
+			border-style:solid;
+			border-width:1px;
 			}
 			.campo {
-				margin-top: 5mm;
-				margin-left: 5mm;
+			margin-top: 2mm;
+			margin-left: 5mm;
+			height: 5mm;
+			font-size:9pt;
+			color:#000000;
+			font-family:Microsoft Sans Serif;
+			font-weight:normal;
 			}
-			.cliente {
-				margin-top: 10mm;
-				margin-left: 5mm;
+			.izquierdo {
+			max-width: 140mm;
 			}
-			.direccion {
-				margin-top: 21mm;
-				margin-left: 5mm;
+			.derecho {
+			max-width: 65mm;
+			}				
+			.contenedor-izquierdo {
+			max-width: 150mm;
+			height: 66.85mm;
+			border-right-style: dashed;
+			border-width: 3px;
+			}
+			.contenedor-derecho {
+			margin-left: 150mm;
+			max-width: 90mm;
+			height: 69.85mm;
+			margin-top: -69.85mm;
 			}
 			.barra {
-			    font-family:'Connect-Code-39',Sans-Serif;
-			    }
+			font-family:'Connect-Code-39',Sans-Serif;
+			font-size: 14px;
+			}
+			.recibido {
+			width: 110mm;
+			margin: 7mm;
+			border-top-style: double;
+			border-width: 3px;
+			text-align: center;
+			}
+			.rotar {
+			-webkit-transform: rotate(-90deg);
+			transform: rotate(-90deg)
+			}
+			.logo-metro {
+			margin-right: 30mm;
+			}
+			.barra-derecho {
+			margin-top: 28mm;
+			margin-left: -24mm;
+			}
+			.ciclo-derecho {
+			margin-left: -14mm;
+			margin-top: -7mm;
+			}
+			.cliente-derecho {
+			margin-left: -4mm;
+			max-width: 60mm;
+			margin-top: -1mm;
+			}
+			.recibido-derecho {
+			margin-top: -14mm;
+			margin-left: 24mm;
+			}
+			
+			@media all{
+			   div.saltopagina{
+			   }
+			}
+
+			@media print{
+			   div.saltopagina{
+				  display:block;
+				  page-break-before:always;
+			   }
+			}
+			
+			@media all{
+			   .invicible{
+			       color: transparent;
+			   }
+			}
+
+			@media print{
+			   .invicible{
+                                    color: transparent;
+			   }
+			}
+			<!-- Agregado x Harvy -->
+			.borde-campo {
+			border-top-style: simple;
+			border-width: 3px;
+			}
+			
+			.firma-data {
+			margin-top: -8px;
+			margin-left: 5mm;
+			font-size:9pt;
+			color:#000000;
+			font-family:Microsoft Sans Serif;
+			font-weight:normal;
+			}
+			
+			.posicion-tabla {
+			margin-top: -10px;
+			margin-left: 15px;
+			}
+			.cuadro-select {
+			color: transparent;
+			}
+			
         </style>
 	</head>
 	<body>
 	{% load i18n grp_tags log %}
-         {% for l in queryset %}
-         {% for p in l.paquetes %}
+         {% for pa in paginas %}
+         {% for p in pa.comprobantes %}
 		
-	<div class="comprobante bordeado">
-	            <p class="barra">*{{p.barra}}*</p>
-		<p class="campo cliente">{{p.cliente}}</p>
-		<p class="campo">{{p.direccion}}</p>
-		<p class="campo">{{p.lote}}</p>
-		<p class="campo">{{p.consecutivo}}</p>
-		<p class="campo">{{p.lote.departamento}}</p>
+<div class="comprobante bordeado">
+	<div class="izquierdo contenedor-izquierdo">
+		<p class="campo izquierdo barra"><img class="logo-metro" src="{{ STATIC_URL }}/metropolitana/logo-metro.jpg" border="0" width="150mm" height="35mm">*{{p.barra}}*</p>
+		<p class="campo izquierdo">AÑO : {{ p.ano }} | MES : {{p.mes}} | CICLO : {{ p.ciclo }}</p>
+		<p class="campo izquierdo">LOTE # : {{p.lote.numero}} | CONSECUTIVO : {{p.consecutivo}}</p>
+		<p class="campo izquierdo">CLIENTE : {{p.cliente}} | TELEFONO: {{p.get_telefono}}</p>
+		<p class="campo izquierdo">DIRECCION : {{p.direccion}}</p>
+		<p class="campo izquierdo">DEPARTAMENTO : {{p.lote.departamento.name}} | MUNICIPIO : {{p.lote.municipio.name}} | BARRIO : {{p.lote.barrio.name}}</p>
+		<div style="margin-top: 8mm;">
+			<p class="firma-data izquierdo">Recibido Por :_________________________________________________________________</p>
+			<p class="firma-data izquierdo">Parentezco :___________________________ Fecha Rec.:_____________________________</p>
+			
+			<table class="posicion-tabla firma-data">
+				<tr>
+					<td>Cambio</td> <td class="bordeado cuadro-select">XX</td>
+					<td>No existe</td> <td class="bordeado cuadro-select">XX</td>
+					<td>Direccion mala</td> <td class="bordeado cuadro-select">XX</td>
+					<td>Rechazada</td> <td class="bordeado cuadro-select">XX</td>
+				</tr>
+			</table>			
+		</div>				
 	</div>
 	
+	<div class="derecho contenedor-derecho">
+		<p class="campo derecho barra rotar barra-derecho">*{{p.barra}}*</p>
+		<p class="campo derecho rotar ciclo-derecho">AÑO : {{ p.ano }} | MES : {{p.mes}} | CICLO : {{ p.ciclo }}</p>
+		<p class="campo derecho rotar cliente-derecho">CLIENTE : {{p.cliente}}</p>
+		<div class="recibido derecho rotar recibido-derecho">
+			<p>Firma del Colector</p>
+		</div>
+	</div>
+</div>
 	{% endfor %}
+<div class="saltopagina"></dib>
 	{% endfor %}
-	
 	</body>
 </html>
