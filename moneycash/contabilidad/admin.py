@@ -2,7 +2,6 @@ from django.contrib import admin
 from moneycash.admin import base_tabular
 from import_export.admin import ImportExportModelAdmin
 from .models import *
-import autocomplete_light
 
 
 class cuenta_tabular(base_tabular):
@@ -12,9 +11,8 @@ class cuenta_tabular(base_tabular):
 
 
 class cuenta_admin(ImportExportModelAdmin):
-    form = autocomplete_light.modelform_factory(Cuenta)
     list_display = ('code', 'name', 'saldo', 'saldo_actual', 'activo',
-        'naturaleza')
+        'naturaleza', 'grupo')
     list_filter = ('activo', 'naturaleza')
     fieldsets = (('Datos de la Cuenta', {'classes': ('grp-collapse grp-open',),
     'fields': (('name', 'code', 'activo'), ('cuenta', 'naturaleza'),
@@ -48,7 +46,10 @@ class periodo_admin(admin.ModelAdmin):
 
 
 class comprobante_movimientos(base_tabular):
-    form = autocomplete_light.modelform_factory(Movimiento)
+    raw_id_fields = ('cuenta', )
+    autocomplete_lookup_fields = {
+        'fk': ['cuenta', ],
+        }
     model = Movimiento
     fields = ('cuenta', 'debe', 'haber')
 

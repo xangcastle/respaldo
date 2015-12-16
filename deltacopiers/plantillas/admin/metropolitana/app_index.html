@@ -11,9 +11,9 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Departamento', 'Asignados', 'Entregados', 'Pendientes'],
+          ['Ciclo', 'Total', 'Entregados', 'Pendientes'],
         {% for e in sts %}
-            ['{{e.name}}', {{e.asignados}}, {{e.entregados}}, {{e.pendientes}}],
+            ['{{e.code}}', {{e.total}}, {{e.entregados}}, {{e.pendientes}}],
 
         {% endfor %}
         ]);

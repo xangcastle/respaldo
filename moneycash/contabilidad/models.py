@@ -57,6 +57,10 @@ class Cuenta(Entidad):
     naturaleza = models.CharField(max_length=2, choices=TIPOS_CUENTA,
         blank=True)
 
+    @property
+    def grupo(self):
+        return len(self.code)
+
     def __unicode__(self, *args, **kwargs):
         return super(Cuenta, self).__unicode__(
             ) + ' Saldo: ' + str(self.saldo_actual)
@@ -178,6 +182,7 @@ class Cuenta(Entidad):
 
     class Meta:
         ordering = ['code']
+        verbose_name_plural = "catalogo de cuentas"
 
 
 def cambiar_naturaleza(cuentas, naturaleza):
@@ -445,6 +450,9 @@ class Comprobante(datos_documento):
             super(Comprobante, self).save()
             self.calcular()
             self.actualizar_saldos_cuentas()
+
+    class Meta:
+        verbose_name = 'comprobantes de diario'
 
 
 class comprobante_detalle(models.Model):

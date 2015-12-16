@@ -1,0 +1,14 @@
+<html>
+<head>
+
+</head>
+<body>
+{% for pa in paginas %}
+<li>{{pa.numero}}
+{% for p in pa.comprobantes %}
+<ul>{{p.factura}}</ul>
+{% endfor %}
+</li>
+{% endfor %}
+</body>
+</html>

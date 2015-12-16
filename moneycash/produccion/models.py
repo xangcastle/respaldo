@@ -37,7 +37,7 @@ def crear_recibos(periodo):
 
 def cargar_copias(periodo):
     equipos = equipo_periodo.objects.filter(periodo=periodo)
-    recibos = Recibo.objects.filter(periodo=periodo)
+    recibos = Recibo.objects.filter(periodo=periodo, impreso=False)
     for e in equipos:
         areas = recibo_detalle.objects.filter(equipo=e.equipo,
             recibo__in=recibos)
@@ -214,7 +214,7 @@ class Recibo(Documento):
             area=self.area).order_by('fecha')
         data = []
         for r in rs:
-            d = {'periodo': str(r.periodo)[:3], 'copias': r.copias}
+            d = {'periodo': str(r.periodo)[:3], 'copias': int(r.copias)}
             data.append(d)
         return data
 
@@ -483,3 +483,7 @@ class Item(Entidad):
 class Categoria(Entidad):
     pass
 
+
+class Consumible(Entidad):
+    costo = models.FloatField(null=True, blank=True)
+    existencia = models.FloatField(null=True, blank=True)

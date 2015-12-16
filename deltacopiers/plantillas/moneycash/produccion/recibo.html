@@ -136,8 +136,7 @@
         <div class="adi49vv1b4n800-3" nowrap="true" style="z-index:25;top:702px;left:581px;width:181px;height:37px;"><table width="171px" border="0" cellpadding="0" cellspacing="0"><td align="center"><span class="fci49vv1b4n800-6">Si</span></td></table></div>
         <div class="adi49vv1b4n800-3" nowrap="true" style="z-index:25;top:742px;left:581px;width:181px;height:37px;"><table width="171px" border="0" cellpadding="0" cellspacing="0"><td align="center"><span class="fci49vv1b4n800-6">{{r.area.ubicacion.user}}</span></td></table></div>
         <div class="adi49vv1b4n800-3" nowrap="true" style="z-index:25;top:798px;left:389px;width:373px;height:117px;"><table width="363px" border="0" cellpadding="0" cellspacing="0"><td align="center"><span class="fci49vv1b4n800-3">{{r.area.encargado}}</span></td></table></div>
-
-        <style>
+<style>
 
             .bar {
                 fill: steelblue;
@@ -169,7 +168,7 @@
         <script>
             var data = [
                 {% for d in r.ultimos_seis %}
-                { name: '{{d.periodo}}', meta: {{d.copias}}},
+                { name: '{{d.periodo}}', meta: {{d.copias}} },
                 {% endfor %}
             ];
         </script>
@@ -239,6 +238,7 @@
             }
 
         </script>
+
 <div class="saltopagina"></div>
         {% endfor %}
     </body>

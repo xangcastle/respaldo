@@ -74,6 +74,10 @@ class Entidad(base_entidad):
         else:
             return ''
 
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("code__iexact", "name__icontains",)
+
     def save(self, *args, **kwargs):
         if self.code is None or self.code == '':
             self.code = get_code(self)

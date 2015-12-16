@@ -12,19 +12,9 @@ $(document).keypress(function(e) {
 	url:"{% url 'datos_paquete' %}",
 	data: {barra:$("#barra").val(),csrfmiddlewaretoken:$('input[name="csrfmiddlewaretoken"]').val()},
 	success:function(response){
-		if(response.nombre!='nada') {
-			$('#id_cliente').val(response.cliente);
-			$('#id_departamento').val(response.departamento);
-			$('#id_municipio').val(response.municipio);
-			$('#id_lote').val(response.lote);
-			$('#id_cantidad').val(response.cantidad);
-		} else {
-			$('#id_cliente').val('');
-			$('#id_departamento').val('');
-			$('#id_municipio').val('');
-			$('#id_lote').val('');
-			$('#id_cantidad').val('');
-		  }
+	    $('#id_cliente').val(response.fields.cliente);
+	    $('#id_departamento').val(response.fields.departamento);
+	    $('#id_municipio').val(response.fields.municipio);
 	}
 	});
 	$('#barra').val('');

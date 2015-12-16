@@ -24,9 +24,27 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "deltacopiers.settings")
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
+
 from django.core.wsgi import get_wsgi_application
+from whitenoise.django import DjangoWhiteNoise
+
 application = get_wsgi_application()
+application = DjangoWhiteNoise(application)
 
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+
+
+# -.- coding: utf-8 -.-
+#import os, sys
+#from myApp import settings
+
+#path = settings.PATH
+#if path not in sys.path:
+    #sys.path.append(path)
+
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myApp.settings")
+
+#from django.core.wsgi import get_wsgi_application
+#_application = get_wsgi_application()

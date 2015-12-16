@@ -27,11 +27,11 @@ DATABASES = {
 }
 }
 
-ALLOWED_HOSTS = ['deltacopiers.dyndns.org']
+ALLOWED_HOSTS = ['*']
 
 TIME_ZONE = 'America/Managua'
 
-LANGUAGE_CODE = 'es-NI'
+LANGUAGE_CODE = 'es_NI'
 
 SITE_ID = 1
 
@@ -43,7 +43,7 @@ USE_TZ = True
 RUTA_PROYECTO = os.path.dirname(os.path.realpath(__file__))
 MEDIA_ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), 'media/'))
 MEDIA_URL = '/media/'
-STATIC_ROOT = ''
+STATIC_ROOT = 'static'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
@@ -62,7 +62,7 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
     'apptemplates.Loader',
-#     'django.template.loaders.eggs.Loader',
+    'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,7 +89,8 @@ INSTALLED_APPS = (
     'ajax_select',
     'grappelli',
     'import_export',
-    #'reporting',
+    'movil',
+    'geoposition',
 
     ##APLICACIONES BASICAS DEL ADMIN
     'django.contrib.admin',
@@ -99,19 +100,24 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'autocomplete_light',
     #'recibos', ## SISTEMA DE CONTROL DE COPIADORAS DE DELTACOPIERS NO TOCAR!
 
     ##APLICACIONES DEL SISTEMA INTEGRADO MONEYCASH##
     'moneycash',
-    #'moneycash.compras',
+    ##'moneycash.compras',
     'moneycash.produccion',
     'moneycash.contabilidad',
     'metropolitana',
-    'moneycash.tarjetas',
-    #'multifilefield',
+    'digitalizacion',
+    #'logistica',
+    #'moneycash.tarjetas',
+    'multifilefield',
+    'wkhtmltopdf',
 
     ## EXTRAS
+    'inventario',
+    'quickdocs',
+    'tienda',
 )
 
 LOGGING = {
@@ -167,6 +173,9 @@ AJAX_LOOKUP_CHANNELS = {
     'paquete': ('moneycash.metropolitana.lookups', 'PaqueteLookup'),
 }
 
+SESSION_COOKIE_AGE = 7200
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 # By default will use window.jQuery
 # or Django Admin's jQuery
 # or load one from google ajax apis
@@ -180,4 +189,9 @@ AJAX_LOOKUP_CHANNELS = {
 
 GRAPPELLI_ADMIN_TITLE = 'Money Cash'
 
+
+#STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+
+PATH = '/home/abel/deltacopiers/'
 

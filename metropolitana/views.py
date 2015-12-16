@@ -2,26 +2,39 @@ from django.views.generic.base import TemplateView
 import json
 from django.http.response import HttpResponse
 from .models import *
+from digitalizacion.models import *
+#    from django.shortcuts import render_to_response
+#from django.forms.models import model_to_dict
+
+
+class indexar(TemplateView):
+    template_name = "metropolitana/pods.html"
 
 
 class verificacion_paquete(TemplateView):
     template_name = "metropolitana/verificacion.html"
 
 
-def datos_paquete(request):
+class entrega_paquete(TemplateView):
+    template_name = "metropolitana/entrega.html"
+
+
+def datos_paquete_(request):
 
     if request.method == 'GET':
         p = Paquete()
         try:
             p = Paquete.objects.get(barra=request.GET.get('barra', ''))
             datos = {'cliente': p.cliente, 'departamento': p.departamento,
-                'municipio': p.municipio, 'lote': p.lote.numero,
-                'cantidad': p.lote.cantidad_paquetes}
-            i = impresion(paquete=p, user=request.user)
+                'municipio': p.municipio, 'lote': 23,
+                'cantidad': 5, 'clase': estado(p)[0],
+                'valor': estado(p)[1]}
+            i = Impresion(paquete=p, user=request.user)
             i.save()
         except p.DoesNotExist:
             datos = {'cliente': 'nada'}
-        resp =  HttpResponse(json.dumps(datos), content_type='application/json')
+        resp = HttpResponse(json.dumps(datos),
+            content_type='application/json')
         resp["Access-Control-Allow-Origin"] = "*"
         resp["Access-Control-Allow-Methods"] = "GET, OPTIONS"
         resp["Access-Control-Allow-Headers"] = "X-Requested-With"
@@ -36,29 +49,25 @@ def datos_paquete(request):
         return resp
 
 
-#######################################################
-#import ho.pisa as pisa
-#import cStringIO as StringIO
-#import cgi
-#from django.template import RequestContext
-#from django.template.loader import render_to_string
+from django.core import serializers
 
 
-#def generar_pdf(html):
-    #result = StringIO.StringIO()
-    #pdf = pisa.pisaDocument(StringIO.StringIO(html.encode("UTF-8")), result)
-    #if not pdf.err:
-        #return HttpResponse(result.getvalue(), content_type='application/pdf')
-    #return HttpResponse('Error al generar el PDF: %s' % cgi.escape(html))
+def datos_paquete(request):
+    p = Paquete()
+    try:
+        p = Paquete.objects.get(barra=request.GET.get('barra', ''))
+        i = Impresion(paquete=p, user=request.user)
+        i.save()
+    except:
+        pass
+    data = serializers.serialize('json', [p, ])
+    struct = json.loads(data)
+    data = json.dumps(struct[0])
+    return HttpResponse(data, content_type='application/json')
 
 
-#def comprobantes_pdf(request, id):
-    #queryset = Lote.objects.filter(id__in=id)
-    #html = render_to_string('metropolitana/comprobante.html',
-        #{'pagesize': 'A4', 'queryset': queryset},
-        #context_instance=RequestContext(request))
-    #return generar_pdf(html)
-
-
-
-##
+def descarga(request):
+    response = HttpResponse(content_type='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s' % "1065.pdf"
+    response['X-Sendfile'] = "/home/abel/PDF/1075.pdf"
+    return response

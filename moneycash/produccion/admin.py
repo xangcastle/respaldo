@@ -34,6 +34,9 @@ class recibo_admin(documento_admin):
     list_filter = ('periodo', 'area')
 
     def generar_imprimir(self, request, queryset):
+        for r in queryset:
+            r.impreso = True
+            r.save()
         id_unico = False
         if queryset.count() == 1:
             id_unico = True
